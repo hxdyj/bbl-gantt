@@ -13,7 +13,7 @@ export class Render {
 		this.gantt.body.style.height = `${containerBox.height}px`
 		this.gantt.stage.size(containerBox.width, containerBox.height)
 		this.gantt.stage.css({
-			background: '#272e3b'
+			background: '#e5e6eb'
 		})
 		this.renderTicks()
 		this.renderRows()
@@ -39,7 +39,7 @@ export class Render {
 			const x = index * this.gantt.options.column.width
 			const y = 0
 			const rect = new Rect()
-			rect.size(0.2, this.gantt.stage.height()).fill('#c9cdd4').move(x, y).addClass('tick-item')
+			rect.size(0.2, this.gantt.stage.height()).fill('#86909c').move(x, y).addClass('tick-item')
 			if (index === 0 || index === ticks.length - 1) {
 				rect.opacity(0)
 			}
@@ -55,7 +55,7 @@ export class Render {
 		rows.forEach((row, index) => {
 			const y = index * this.gantt.options.row.height
 			const rect = new Rect()
-			rect.size(this.gantt.stage.width(), 0.2).fill('#c9cdd4').move(0, y).addClass('row-line')
+			rect.size(this.gantt.stage.width(), 0.2).fill('#86909c').move(0, y).addClass('row-line')
 			if (index === 0) {
 				rect.opacity(0)
 			}
