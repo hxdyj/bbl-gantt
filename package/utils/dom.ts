@@ -23,3 +23,12 @@ export function getContainerInfo(el: ContainerType) {
 	}
 	return containerInfo
 }
+
+export function createOrGetEle(className: string, parent: HTMLElement, tagName: string = 'div'): HTMLElement {
+	let ele = parent.querySelector(`.${className}`)
+	if (ele) return ele as HTMLElement
+	ele = document.createElement(tagName)
+	ele.classList.add(className)
+	parent.appendChild(ele)
+	return ele as HTMLElement
+}

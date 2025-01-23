@@ -3,11 +3,13 @@ import EventEmitter from "eventemitter3";
 import { EventBindingThis } from "./event";
 import { EventBusEventName } from "./event/const";
 import duration from "dayjs/plugin/duration"
+import minMax from "dayjs/plugin/minMax"
 import dayjs from "dayjs";
 dayjs.extend(duration)
+dayjs.extend(minMax)
 import { CssNameKey } from "./const/const";
 import { uid } from 'uid'
-import { getContainerInfo, getElement } from "./utils/dom";
+import { createOrGetEle, getContainerInfo, getElement } from "./utils/dom";
 import { DeepPartial } from "@arco-design/web-react/es/Form/store";
 import { cloneDeep, defaultsDeep } from "lodash-es";
 import { initDealData } from "./utils/data";
@@ -48,6 +50,9 @@ export type GanttOptions = {
 	row?: {
 		height: number
 	}
+	header?: {
+		height: number
+	}
 	data: GanttItem[]
 }
 
@@ -64,6 +69,9 @@ export const defaultGanttOptions: DeepPartial<GanttOptions> = {
 	},
 	row: {
 		height: 60
+	},
+	header: {
+		height: 70
 	}
 }
 export class GanttManager {
@@ -104,6 +112,7 @@ export type GanttItem = {
 	name: string
 	events: GanttEventItem[]
 	children?: GanttItem[]
+	bg?: string
 	[key: string]: any
 }
 
@@ -133,17 +142,7 @@ export class Gantt extends EventBindingThis {
 
 		this.container = getElement(this.options.el as ContainerType)
 
-		const body = this.container.querySelector(`.${CssNameKey.bbl_gantt_body}`)
-
-		if (!body) {
-			const body = document.createElement('div')
-			body.classList.add(CssNameKey.bbl_gantt_body)
-			this.container.appendChild(body)
-			this.body = body
-		} else {
-			this.body = body as HTMLElement
-		}
-
+		this.body = createOrGetEle(CssNameKey.bbl_gantt_body, this.container)
 		ganttManager.addNewInstance(this)
 
 		this.createTime = Date.now()

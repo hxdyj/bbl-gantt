@@ -1,28 +1,6 @@
-- [x] Plugin System
-- [x] Rect Or Other Mode use plugin system implement
-- [x] limit move not out of container
-- [x] dropable
-- [x] commonly action class
-- [x] resize deal: resize event maybe can't listen container size change , use MutationObserver instead
-- [x] caculate next step chunk
-- [x] company map demo finished
-- [x] use react write demo
-- [x] multiple instance demo
-- [x] shape rect、circle support
-- [x] shape line、polygon、polyline、pathline support
-- [x] Shape draw function call config
-
-- [ ] single/multiple select (delete can use del key)
-- [ ] context menu support
-- [ ] resize action
-- [ ] rect select (delay)
-- [ ] editPlugin editAction to resize shape or rotate shape
-- [ ] rotate action (all shape rotate by bbox center)
-- [ ] zIndex support
-- [ ] operate history and undo redo
-- [ ] mini map
-- [ ] move action add mode to holder and custom holder ui
-- [ ] shortcut system
-- [ ] mask base image support
-- [ ] mobile support
-- [ ] docs
+- [x] bar different style
+- [x] row bg color
+- [ ] scroll to first event bar
+- [ ] css var control style
+- [ ] while container resize rerender all
+- [ ] change option

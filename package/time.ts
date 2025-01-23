@@ -12,13 +12,21 @@ const MONTH = 30 * DAY
 
 
 export class Time {
-	ticks: Tick[] = []
+	ticks: Tick[] = [] // 用户划分的column算出的ticks
+	timeTicks: Tick[] = [] // 按照时间度量的ticks
 	stepTime: number = 0
+	fixUnit: OpUnitType | null = null
 	constructor(public gantt: Gantt) {
 		this.caculateTicks(this.gantt.minTime!, this.gantt.maxTime!)
 		console.log(`ticks: `, this.ticks)
+		console.log(`timeTicks: `, this.timeTicks)
 		console.log(`stepTime: `, this.stepTime)
 	}
+
+	x2time(x: number): Dayjs {
+		return this.ticks[0].time.add((x / this.gantt.options.column.width) * this.stepTime, 'millisecond')
+	}
+
 	caculateTicks(minTime: Dayjs, maxTime: Dayjs) {
 		let startTime = dayjs(minTime)
 		let endTime = dayjs(maxTime)
@@ -53,6 +61,7 @@ export class Time {
 				}
 			}
 		}
+		this.fixUnit = fixUnit
 		console.log(`startTime,endTime`, startTime.format(), endTime.format())
 		{
 			this.ticks = []
@@ -67,6 +76,18 @@ export class Time {
 			}
 			if (currentTime.isSame(endTime)) {
 				this.ticks.push({ time: currentTime })
+			}
+		}
+
+		{
+			this.timeTicks = []
+			let currentTime = dayjs(startTime)
+			while (currentTime.isBefore(endTime)) {
+				this.timeTicks.push({ time: currentTime })
+				currentTime = currentTime.add(1, fixUnit!)
+			}
+			if (currentTime.isSame(endTime)) {
+				this.timeTicks.push({ time: currentTime })
 			}
 		}
 	}

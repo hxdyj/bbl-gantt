@@ -2,13 +2,14 @@ import { Button, Space } from "@arco-design/web-react"
 import { useEffect, useRef } from "react"
 import { OperateGroup } from "../components/OperateGroup"
 import Gantt, { GanttItem, TimeMetric } from "#/index"
-
+import './Base.scss'
 export function Base() {
 	let gantt = useRef<Gantt | null>(null)
 	const containerRef = useRef<HTMLDivElement>(null)
 	const data: GanttItem[] = [
 		{
 			name: '1',
+			bg: 'red-group',
 			events: [
 				{
 					name: '1-event-1',
