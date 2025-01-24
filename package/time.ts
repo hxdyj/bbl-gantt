@@ -1,5 +1,6 @@
 import dayjs, { Dayjs, ManipulateType, OpUnitType } from "dayjs";
 import Gantt, { TimeMetric, TimeScale } from "./index";
+import { last } from "lodash-es";
 export type Tick = {
 	time: Dayjs
 }
@@ -89,6 +90,14 @@ export class Time {
 			if (currentTime.isSame(endTime)) {
 				this.timeTicks.push({ time: currentTime })
 			}
+		}
+	}
+
+	//TODO(songle):
+	caculateTicksByEndTime(endTime: Dayjs) {
+		const lastTick = last(this.ticks)
+		if (!lastTick || endTime.valueOf() < lastTick.time.valueOf()) {
+
 		}
 	}
 }
