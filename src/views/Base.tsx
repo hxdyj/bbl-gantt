@@ -151,11 +151,13 @@ export function Base() {
 		<div className="page-base">
 			<div className="operate-panel h-[fit] py-[16px]">
 				<Space size={'large'} wrap>
-					<OperateGroup desc="">
+					<OperateGroup desc="scroll">
 						<Button.Group>
-							{/* <Button onClick={() => {
-								imgMark.current?.moveTo('center')
-							}}>center</Button> */}
+							<Button onClick={() => {
+								gantt.current?.view.scrollToEarliestItem({
+									behavior: 'smooth',
+								})
+							}}>scrollToEarliestItem</Button>
 						</Button.Group>
 					</OperateGroup>
 				</Space>

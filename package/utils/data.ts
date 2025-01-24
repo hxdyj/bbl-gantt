@@ -1,6 +1,10 @@
 import dayjs from "dayjs";
 import { _GanttItem, GanttItem } from "..";
+import { uid } from "uid";
 
+function getUID() {
+	return `gantt-uid-${uid(6)}`
+}
 
 //深度优先遍历数据
 export function walkData(
@@ -32,6 +36,7 @@ export function initDealData(data: GanttItem[]) {
 	let minTime = Infinity
 	let list: _GanttItem[] = []
 	walkData(data, ({ item, level, parent }) => {
+		item.id = item.id ?? getUID()
 		item.level = level
 		if (parent) {
 			item.parent = parent
@@ -41,6 +46,7 @@ export function initDealData(data: GanttItem[]) {
 		let maxEnd = -Infinity
 
 		item.events.forEach(ev => {
+			ev.id = ev.id ?? getUID()
 			ev.start = dayjs(ev.start)
 			ev.end = dayjs(ev.end)
 			if (ev.start.valueOf() < minStart.valueOf()) {
@@ -50,6 +56,9 @@ export function initDealData(data: GanttItem[]) {
 				maxEnd = ev.end.valueOf()
 			}
 		})
+
+		item.minStart = minStart
+		item.maxEnd = maxEnd
 
 		if (minStart < minTime) {
 			minTime = minStart

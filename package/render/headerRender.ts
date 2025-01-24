@@ -3,6 +3,7 @@ import Gantt from "..";
 import { UnitType } from "dayjs";
 import { PartRender } from "./index";
 import { Render } from "../render";
+import { CssNameKey } from "../const/const";
 
 export class HeaderRender extends PartRender {
 	constructor(public gantt: Gantt, public renderer: Render) {
@@ -16,15 +17,15 @@ export class HeaderRender extends PartRender {
 		this.gantt.body.addEventListener('click', this.onBodyClick)
 
 	}
+
 	unbindEvent(): void {
 		this.gantt.container.removeEventListener('scroll', this.onScroll)
 		this.gantt.body.removeEventListener('click', this.onBodyClick)
-
 	}
 
 	onScroll(event: Event) {
 		this.render()
-		const currentTime = this.gantt.stage.find('.g-current-time-line')[0]
+		const currentTime = this.gantt.stage.find(`.${CssNameKey.current_time_line}`)[0]
 		if (currentTime) {
 			this.renderCureentTime(parseFloat(currentTime.x() + ''))
 		}
@@ -37,24 +38,20 @@ export class HeaderRender extends PartRender {
 
 
 	private renderCureentTime(x: number) {
-		const className = 'g-current-time'
-		const g = this.gantt.stage.find(`.${className}`)[0] || new G().addClass(className)
-		const lineClassName = 'g-current-time-line'
-		const rect = g.find(`.${lineClassName}`)[0] || new Rect().addClass(lineClassName)
+		const g = this.gantt.stage.find(`.${CssNameKey.current_time}`)[0] || new G().addClass(CssNameKey.current_time)
+		const rect = g.find(`.${CssNameKey.current_time_line}`)[0] || new Rect().addClass(CssNameKey.current_time_line)
 		const height = 26
 		rect.size(0.01, parseFloat(this.gantt.stage.height() + '') - this.gantt.container.scrollTop - height).move(x, height + this.gantt.container.scrollTop)
-			.fill('transparent').stroke({ width: 1, color: '#FF7D00', dasharray: '0,5,10' })
-
+			.fill('transparent')
 		rect.addTo(g)
 
-		const textClassName = 'g-current-time-text'
-		const text = (g.find(`.${textClassName}`)[0] || new Text().addClass(textClassName)) as Text
+		const text = (g.find(`.${CssNameKey.current_time_text}`)[0] || new Text().addClass(CssNameKey.current_time_text)) as Text
 
 		const timeFormat = this.gantt.time.x2time(x).format('YYYY-MM-DD HH:mm:ss')
 		text.text(timeFormat).font({
 			size: 13,
 			weight: 'bold'
-		}).fill('#FF7D00')
+		})
 		const textBox = text.bbox()
 		text.move(x - textBox.width / 2, 4 + this.gantt.container.scrollTop)
 		text.attr({
@@ -66,13 +63,9 @@ export class HeaderRender extends PartRender {
 	}
 
 	render() {
-		const gClassName = 'header'
-		const g = this.gantt.stage.find(`.${gClassName}`)[0] || new G().addClass(gClassName)
-
-		const bgClassName = 'header-bg'
-		const bgRect = g.find(`.${bgClassName}`)[0] || new Rect().addClass(bgClassName)
+		const g = this.gantt.stage.find(`.${CssNameKey.header}`)[0] || new G().addClass(CssNameKey.header)
+		const bgRect = g.find(`.${CssNameKey.header_bg}`)[0] || new Rect().addClass(CssNameKey.header_bg)
 		bgRect.size(this.gantt.stage.width(), this.gantt.options.header.height).move(0, 0)
-			.fill('#e5e6eb')
 
 		g.add(bgRect)
 		this.gantt.time.timeTicks.forEach((tick, index) => {
@@ -80,19 +73,16 @@ export class HeaderRender extends PartRender {
 			const height = 20
 			const idClassName = `tick-id-${index}-${tick.time.valueOf()}`
 
-			const rectClassName = 'time-tick-item'
-			const rect = g.find(`.${idClassName}.${rectClassName}`)[0] || new Rect().addClass(rectClassName).addClass(idClassName)
+			const rect = g.find(`.${idClassName}.${CssNameKey.header_time_tick_item}`)[0] || new Rect().addClass(CssNameKey.header_time_tick_item).addClass(idClassName)
 
 			rect.size(0.2, height).move(x, this.gantt.options.header.height - height)
-				.fill('#86909c')
 			rect.addTo(g)
 
-			const textClassName = 'time-tick-text'
-			const text = (g.find(`.${idClassName}.${textClassName}`)[0] || new Text().addClass(textClassName).addClass(idClassName)) as Text
+			const text = (g.find(`.${idClassName}.${CssNameKey.header_time_tick_text}`)[0] || new Text().addClass(CssNameKey.header_time_tick_text).addClass(idClassName)) as Text
 
 			text.text(tick.time.get(this.gantt.time.fixUnit as unknown as UnitType).toString()).font({
 				size: 14
-			}).fill('#4e5969')
+			})
 			const textBox = text.bbox()
 			text.move(x - textBox.width / 2, 26)
 			text.attr({
@@ -106,5 +96,11 @@ export class HeaderRender extends PartRender {
 			translate: [0, this.gantt.container.scrollTop]
 		}, false)
 		g.addTo(this.gantt.stage)
+	}
+
+	destroy(): void {
+		this.unbindEvent()
+		const g = this.gantt.stage.find(`.${CssNameKey.header}`)[0]
+		g?.remove()
 	}
 }

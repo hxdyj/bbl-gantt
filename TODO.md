@@ -1,6 +1,8 @@
 - [x] bar different style
 - [x] row bg color
-- [ ] scroll to first event bar
-- [ ] css var control style
-- [ ] while container resize rerender all
+- [x] className to CssKey
+- [x] destroy implementation
+- [x] css var control style
+- [x] while container
+- [x] scroll to first event bar
 - [ ] change option

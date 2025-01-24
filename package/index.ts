@@ -18,7 +18,7 @@ import { View } from "./view";
 import { DeepRequired } from 'utility-types'
 import { Time } from "./time";
 import { Render } from "./render";
-
+import './style.scss'
 export enum TimeMetric {
 	MINUTE = 'MINUTE',
 	QUARTER_HOUR = 'QUARTER_HOUR',
@@ -94,6 +94,7 @@ export class GanttManager {
 export const ganttManager = new GanttManager()
 
 export type GanttEventItem = {
+	id: string
 	start: string | number | Date | Dayjs
 	end: string | number | Date | Dayjs
 	name: string
@@ -109,6 +110,7 @@ export type _GanttItem = Omit<GanttItem, 'events'> & {
 }
 
 export type GanttItem = {
+	id: string
 	name: string
 	events: GanttEventItem[]
 	children?: GanttItem[]
@@ -139,10 +141,9 @@ export class Gantt extends EventBindingThis {
 		if (!this.options.el) {
 			throw new Error('Container must be provided')
 		}
-
 		this.container = getElement(this.options.el as ContainerType)
 
-		this.body = createOrGetEle(CssNameKey.bbl_gantt_body, this.container)
+		this.body = createOrGetEle(CssNameKey.body, this.container)
 		ganttManager.addNewInstance(this)
 
 		this.createTime = Date.now()
@@ -151,25 +152,22 @@ export class Gantt extends EventBindingThis {
 			throw new Error('Container not found')
 		}
 
+		this.container.classList.add(CssNameKey.container)
+
 		this.containerRectInfo = getContainerInfo(this.container)
-		this.container.style.maxWidth = `${this.containerRectInfo.width}px`
+		this.container.style.maxWidth = `100%`
 		this.container.style.height = `${this.containerRectInfo.height}px`
 		this.container.style.overflow = 'auto'
-
 		console.log('init containerRectInfo', this.id, this.containerRectInfo)
 		this.stage = SVG()
-		// this.stage.size(this.containerRectInfo.width, this.containerRectInfo.height)
-		this.initBindAllEventsThis()
+		this.bindEventThis([])
 		this.init()
 		this.time = new Time(this)
 		this.view = new View(this)
 		this.render = new Render(this)
+		this.bindEvent()
 	}
 
-	protected initBindAllEventsThis() {
-		this.bindEventThis([])
-		this.addContainerEvent()
-	}
 
 	minTime: Dayjs | null = null
 	maxTime: Dayjs | null = null
@@ -184,34 +182,26 @@ export class Gantt extends EventBindingThis {
 		// this.eventBus.emit(EventBusEventName.init, this)
 	}
 
+	bindEvent() { }
+
+	unbindEvent() { }
+
+
+	updateOptions(options: Partial<Omit<GanttOptions, 'el'>>) {
+		//TODO(songle):
+		this.destroy()
+	}
+
 	destroy() {
 		this.destroyed = true
-		this.removeContainerEvent()
+		this.unbindEvent()
+		this.render.destroy()
 		this.stage.remove()
 		ganttManager.removeInstance(this)
 	}
 
 	protected draw() {
 		this.eventBus.emit(EventBusEventName.draw, this)
-	}
-
-	// protected removeContainerRenderItems() {
-	// 	const list = this.container.querySelectorAll(`.${CssNameKey.bbl_gantt_render_item}`)
-	// 	list.forEach(item => item.remove())
-	// }
-
-	// protected render() {
-	// 	this.removeContainerRenderItems()
-	// 	this.stage.addClass(CssNameKey.bbl_gantt_render_item)
-	// 	this.stage.addTo(this.container)
-	// }
-
-	addContainerEvent() {
-		return this
-	}
-
-	removeContainerEvent() {
-		return this
 	}
 
 	on(...rest: any) {

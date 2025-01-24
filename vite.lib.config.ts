@@ -10,6 +10,19 @@ export default defineConfig({
 			name: pkg.name,
 			fileName: format => `index.${format}.js`,
 		},
+		// rollupOptions: {
+		// 	external: (id) => {
+		// 		return Object.keys(pkg.dependencies).includes(id); // ESM 格式下设置外部依赖
+		// 	},
+		// 	output:{
+		// 		globals:{
+		// 			dayjs:'dayjs',
+		// 			uid:'uid',
+		// 			"@svgdotjs/svg.js":"svgjs"
+		// 		},
+		// 		exports:"named"
+		// 	}
+		// },
 		minify: false
 	},
 	plugins: [

@@ -1,0 +1,100 @@
+:root {
+	--gantt-bg-color: #e5e6eb;
+	--gantt-tick-color: #86909c;
+	--gantt-header-tick-color: var(--gantt-tick-color);
+	--gantt-header-text-color: #4e5969;
+
+	--gantt-row-line-color: var(--gantt-tick-color);
+
+	--gantt-current-time-line-stroke-width: 1;
+	--gantt-current-time-line-stroke-color: #ff7d00;
+	--gantt-current-time-line-stroke-dasharray: 0, 5, 10;
+
+	--gantt-current-time-line-text-color: var(
+		--gantt-current-time-line-stroke-color
+	);
+
+	--gantt-event-item-style-rect-text-color: white;
+	--gantt-event-item-style-line-text-color: #165dff;
+	--gantt-event-item-style-rect-color: #165dff;
+	--gantt-event-item-style-line-color: var(--gantt-event-item-style-rect-color);
+
+	--gantt-scrollbar-thumb-bg-color: rgb(201, 205, 212);
+}
+
+.bbl-gantt-container {
+	&:hover {
+		&::-webkit-scrollbar-thumb {
+			background-color: var(--gantt-scrollbar-thumb-bg-color);
+		}
+	}
+	&::-webkit-scrollbar-thumb {
+		border: 4px solid transparent;
+		background-clip: padding-box;
+		border-radius: 7px;
+		background-color: transparent;
+	}
+
+	&::-webkit-scrollbar {
+		width: 12px;
+		height: 12px;
+	}
+
+	.bbl-gantt-body {
+		.header {
+			.header-bg {
+				fill: var(--gantt-bg-color);
+			}
+
+			.time-tick-item {
+				fill: var(--gantt-header-tick-color);
+			}
+
+			.time-tick-text {
+				fill: var(--gantt-header-text-color);
+			}
+		}
+
+		.current-time {
+			.current-time-line {
+				stroke-width: var(--gantt-current-time-line-stroke-width);
+				stroke: var(--gantt-current-time-line-stroke-color);
+				stroke-dasharray: var(--gantt-current-time-line-stroke-dasharray);
+			}
+
+			.current-time-text {
+				fill: var(--gantt-current-time-line-text-color);
+			}
+		}
+
+		.rows {
+			.row-line {
+				fill: var(--gantt-row-line-color);
+			}
+		}
+
+		.ticks {
+			.tick-item {
+				fill: var(--gantt-tick-color);
+			}
+		}
+
+		.events {
+			.event-item {
+				fill: var(--gantt-event-item-style-rect-color);
+			}
+			.event-text {
+				color: var(--gantt-event-item-style-rect-text-color);
+			}
+
+			.style-rect {
+			}
+
+			.style-line {
+				.event-text {
+					color: var(--gantt-event-item-style-line-text-color);
+				}
+			}
+		}
+	}
+}

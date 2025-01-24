@@ -18,6 +18,9 @@ export class Render extends EventBindingThis {
 		this.rows = new RowsRender(this.gantt, this)
 		this.events = new EventsRender(this.gantt, this)
 		this.render()
+		this.gantt.view.scrollToEarliestItem({
+			behavior: 'instant',
+		})
 		this.bindEvent()
 	}
 
@@ -28,6 +31,14 @@ export class Render extends EventBindingThis {
 
 	}
 
+	destroy() {
+		this.unbindEvent()
+		this.header.destroy()
+		this.ticks.destroy()
+		this.rows.destroy()
+		this.events.destroy()
+	}
+
 	render() {
 		const containerBox = this.caculateContainerBox()
 		this.gantt.body.style.width = `${containerBox.width}px`
@@ -35,13 +46,14 @@ export class Render extends EventBindingThis {
 
 		this.gantt.stage.size(containerBox.width, containerBox.height)
 		this.gantt.stage.css({
-			background: '#e5e6eb'
+			background: 'var(--gantt-bg-color)'
 		})
 		this.ticks.render()
 		this.rows.render()
 		this.events.render()
 		this.header.render()
 		this.gantt.stage.addTo(this.gantt.body)
+
 	}
 
 	caculateContainerBox() {
