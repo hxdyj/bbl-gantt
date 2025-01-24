@@ -11,7 +11,7 @@ import { CssNameKey } from "./const/const";
 import { uid } from 'uid'
 import { createOrGetEle, getContainerInfo, getElement } from "./utils/dom";
 import { DeepPartial } from "@arco-design/web-react/es/Form/store";
-import { cloneDeep, defaultsDeep } from "lodash-es";
+import { cloneDeep, defaultsDeep, omit } from "lodash-es";
 import { initDealData } from "./utils/data";
 import { Dayjs } from "dayjs";
 import { View } from "./view";
@@ -94,7 +94,7 @@ export class GanttManager {
 export const ganttManager = new GanttManager()
 
 export type GanttEventItem = {
-	id: string
+	id: string //必须是字母开头 因为是用来做css里id或者class的
 	start: string | number | Date | Dayjs
 	end: string | number | Date | Dayjs
 	name: string
@@ -110,7 +110,7 @@ export type _GanttItem = Omit<GanttItem, 'events'> & {
 }
 
 export type GanttItem = {
-	id: string
+	id: string //必须是字母开头 因为是用来做css里id或者class的
 	name: string
 	events: GanttEventItem[]
 	children?: GanttItem[]
@@ -182,19 +182,38 @@ export class Gantt extends EventBindingThis {
 		// this.eventBus.emit(EventBusEventName.init, this)
 	}
 
-	bindEvent() { }
+	bindEvent() {
+		this.containerResizeObserver.observe(this.container)
+	}
 
-	unbindEvent() { }
+	unbindEvent() {
+		this.containerResizeObserver.disconnect()
+	}
 
 
 	updateOptions(options: Partial<Omit<GanttOptions, 'el'>>) {
-		//TODO(songle):
 		this.destroy()
+		this.destroyed = false
+		const constructor = Object.getPrototypeOf(this).constructor
+		const _options = defaultsDeep(options, this.options)
+		Object.assign(this, omit(new constructor(_options), 'uid'))
 	}
+
+	protected containerResizeObserverCallback: ResizeObserverCallback = (entries: any) => {
+		if (entries[0]?.target === this.container) {
+			this.containerRectInfo = getContainerInfo(this.container)
+			this.render.render()
+			console.log('containerResizeObserverCallback', this.containerRectInfo, Date())
+		}
+	}
+
+	protected containerResizeObserver = new ResizeObserver(this.containerResizeObserverCallback)
+
 
 	destroy() {
 		this.destroyed = true
 		this.unbindEvent()
+		this.eventBus.removeAllListeners()
 		this.render.destroy()
 		this.stage.remove()
 		ganttManager.removeInstance(this)

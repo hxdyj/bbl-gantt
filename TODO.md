@@ -5,4 +5,5 @@
 - [x] css var control style
 - [x] while container
 - [x] scroll to first event bar
-- [ ] change option
+- [x] change option
+- [ ] padding add none option to fill container

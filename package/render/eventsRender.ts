@@ -34,6 +34,7 @@ export class EventsRender extends PartRender {
 		foreignObject.attr({
 			style: 'overflow:visible;'
 		})
+		foreignObject.clear()
 		foreignObject.add(SVG(`<div class="h-full flex items-center w-full" style="padding:0 6px;color:white;overflow:visible;white-space:nowrap;font-size:12px;font-weight:600">${event.name}</div>`, true))
 		foreignObject.move(x, y)
 		_g.addTo(g)
@@ -67,6 +68,7 @@ export class EventsRender extends PartRender {
 		foreignObject.attr({
 			style: 'overflow:visible;'
 		})
+		foreignObject.clear()
 		foreignObject.add(SVG(`<div class="h-full flex items-center w-full" style="padding:0 6px;overflow:visible;white-space:nowrap;font-size:12px;font-weight:600">${event.name}</div>`, true))
 		foreignObject.move(x + 3, y - 12)
 		_g.addTo(g)
