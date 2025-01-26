@@ -18,14 +18,28 @@ export class Time {
 	stepTime: number = 0
 	fixUnit: OpUnitType | null = null
 	constructor(public gantt: Gantt) {
-		this.caculateTicks(this.gantt.minTime!, this.gantt.maxTime!)
+		this.init()
 		console.log(`ticks: `, this.ticks)
 		console.log(`timeTicks: `, this.timeTicks)
 		console.log(`stepTime: `, this.stepTime)
 	}
 
-	x2time(x: number): Dayjs {
-		return this.ticks[0].time.add((x / this.gantt.options.column.width) * this.stepTime, 'millisecond')
+	init() {
+		const startTime = this.gantt.minTime || dayjs()
+		this.caculateTicks(startTime, this.gantt.maxTime || this.x2time(this.gantt.containerRectInfo.width))
+	}
+
+
+	getNoneEventStartTime() {
+		return dayjs().startOf(this.fixUnit!)
+	}
+
+	x2time(x: number, startTime?: Dayjs): Dayjs {
+		let _startTime = startTime || this.ticks[0]?.time
+		if (!_startTime) {
+			_startTime = this.getNoneEventStartTime()
+		}
+		return _startTime.add((x / this.gantt.options.column.width) * this.stepTime, 'millisecond')
 	}
 
 	caculateTicks(minTime: Dayjs, maxTime: Dayjs) {
@@ -34,8 +48,12 @@ export class Time {
 		const { timeMetric, padding } = this.gantt.options.column
 		const { fixTimeMetric, params: subtractParams } = timeMetricToDayjsAddParams(timeMetric, padding.left)
 		const { params: addParams } = timeMetricToDayjsAddParams(timeMetric, padding.right)
-		startTime = startTime.subtract(...subtractParams)
-		endTime = endTime.add(...addParams)
+
+		if (this.gantt.minTime) {
+			startTime = startTime.subtract(...subtractParams)
+			endTime = endTime.add(...addParams)
+		}
+
 		let fixUnit: OpUnitType | null = null
 		{
 
@@ -66,39 +84,67 @@ export class Time {
 		console.log(`startTime,endTime`, startTime.format(), endTime.format())
 		{
 			this.ticks = []
-			let currentTime = dayjs(startTime)
 			const { params } = timeMetricToDayjsAddParams(timeMetric)
 			//@ts-ignore
 			this.stepTime = dayjs.duration(params[0], params[1] + 's').asMilliseconds()
 
-			while (currentTime.isBefore(endTime)) {
-				this.ticks.push({ time: currentTime })
-				currentTime = currentTime.add(...params)
-			}
-			if (currentTime.isSame(endTime)) {
-				this.ticks.push({ time: currentTime })
-			}
+			stepTime({
+				startTime,
+				endTime,
+				step: params,
+				callback: (time) => {
+					this.ticks.push({ time })
+				}
+			})
 		}
 
 		{
 			this.timeTicks = []
-			let currentTime = dayjs(startTime)
-			while (currentTime.isBefore(endTime)) {
-				this.timeTicks.push({ time: currentTime })
-				currentTime = currentTime.add(1, fixUnit!)
-			}
-			if (currentTime.isSame(endTime)) {
-				this.timeTicks.push({ time: currentTime })
-			}
+			stepTime({
+				startTime,
+				endTime,
+				step: [1, fixUnit!],
+				callback: (time) => {
+					this.timeTicks.push({ time })
+				}
+			})
 		}
 	}
 
-	//TODO(songle):
 	caculateTicksByEndTime(endTime: Dayjs) {
+		if (!endTime.startOf(this.fixUnit!).isSame(endTime)) {
+			//@ts-ignore
+			endTime = endTime.add(1, this.fixUnit!).startOf(this.fixUnit!)
+		}
+
 		const lastTick = last(this.ticks)
-		if (!lastTick || endTime.valueOf() < lastTick.time.valueOf()) {
+		if (!lastTick || lastTick.time.valueOf() < endTime.valueOf()) {
+			stepTime({
+				startTime: last(this.ticks)?.time || this.getNoneEventStartTime(),
+				endTime,
+				step: [this.stepTime, 'millisecond'],
+				callback: (time) => {
+					if (time.isSame(last(this.ticks).time)) return
+					this.ticks.push({ time })
+				},
+			})
+
+			stepTime({
+				startTime: last(this.timeTicks)?.time || this.getNoneEventStartTime(),
+				endTime,
+				///@ts-ignore
+				step: [1, this.fixUnit!],
+				callback: (time) => {
+					if (time.isSame(last(this.timeTicks).time)) return
+					this.timeTicks.push({ time })
+				}
+			})
 
 		}
+	}
+
+	caculateTicksByX(x: number) {
+		this.caculateTicksByEndTime(this.x2time(x))
 	}
 }
 
@@ -162,3 +208,23 @@ export function timeMetricToDayjsAddParams(timeMetric: TimeMetric | number, num 
 	throw new Error("Invalid time metric")
 }
 
+
+
+function stepTime(params: {
+	startTime: Dayjs,
+	endTime: Dayjs,
+	step: [value: number, unit?: dayjs.ManipulateType | undefined],
+	callback: (time: Dayjs) => void
+	name?: string
+}) {
+	const { startTime, endTime, step, callback } = params
+	if (startTime.isSame(endTime)) return
+	let currentTime = dayjs(startTime)
+	while (currentTime.isBefore(endTime)) {
+		callback(currentTime)
+		currentTime = currentTime.add(...step)
+	}
+	if (!startTime.isSame(endTime) && currentTime.isSame(endTime)) {
+		callback(currentTime)
+	}
+}

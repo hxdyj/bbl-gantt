@@ -41,10 +41,16 @@ export class Render extends EventBindingThis {
 
 
 	render() {
-		const ganttBox = this.caculateGanttBox()
+		let ganttBox = this.caculateGanttBox()
 
 		const width = Math.max(ganttBox.width, this.gantt.containerRectInfo.width)
 		const height = Math.max(ganttBox.height, this.gantt.containerRectInfo.height)
+
+		if (ganttBox.width < this.gantt.containerRectInfo.width) {
+			this.gantt.time.caculateTicksByX(this.gantt.containerRectInfo.width)
+			ganttBox = this.caculateGanttBox()
+		}
+
 
 		this.gantt.body.style.width = `${width}px`
 		this.gantt.body.style.height = `${height}px`
@@ -63,7 +69,7 @@ export class Render extends EventBindingThis {
 
 	caculateGanttBox() {
 		const ticks = this.gantt.time.ticks
-		const width = this.gantt.options.column.width * (ticks.length - 1)
+		const width = this.gantt.options.column.width * (ticks.length - 2) //减去2的时候，因为最前边和最后边的刻度都不需要显示
 		const height = this.gantt.list.length * this.gantt.options.row.height + this.gantt.options.header.height
 		return {
 			width,

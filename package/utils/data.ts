@@ -1,7 +1,6 @@
 import dayjs from "dayjs";
 import { _GanttItem, GanttItem } from "..";
 import { uid } from "uid";
-
 export function getUID() {
 	return `gantt-uid-${uid(6)}`
 }
@@ -70,8 +69,13 @@ export function initDealData(data: GanttItem[]) {
 	})
 
 	return {
-		maxTime: dayjs(maxTime),
-		minTime: dayjs(minTime),
+		maxTime: isInfinity(maxTime) ? null : dayjs(maxTime),
+		minTime: isInfinity(minTime) ? null : dayjs(minTime),
 		list
 	}
+}
+
+
+export function isInfinity(num: number) {
+	return num === Infinity || num === -Infinity
 }

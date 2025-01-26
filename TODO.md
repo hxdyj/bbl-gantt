@@ -6,5 +6,5 @@
 - [x] while container
 - [x] scroll to first event bar
 - [x] change option
-- [ ] padding add none option to fill container
-- [ ] event none deal with
+- [x] padding add none option to fill container
+- [x] event none deal with

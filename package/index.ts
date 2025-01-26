@@ -202,6 +202,10 @@ export class Gantt extends EventBindingThis {
 	protected containerResizeObserverCallback: ResizeObserverCallback = (entries: any) => {
 		if (entries[0]?.target === this.container) {
 			this.containerRectInfo = getContainerInfo(this.container)
+			if (Date.now() - this.createTime < 300) {
+				console.log('inital resize')
+				this.time.init()
+			}
 			this.render.render()
 			console.log('containerResizeObserverCallback', this.containerRectInfo, Date())
 		}

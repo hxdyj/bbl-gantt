@@ -60,10 +60,19 @@ export function Base() {
 								gantt.current?.updateOptions({
 									column: {
 										// width: 900,
+										timeMetric: 18000
+									}
+								})
+							}}>18000</Button>
+							<Button onClick={() => {
+								gantt.current?.updateOptions({
+									column: {
+										// width: 900,
 										timeMetric: 30000
 									}
 								})
 							}}>30000</Button>
+
 							<Button onClick={() => {
 								gantt.current?.updateOptions({
 									column: {
