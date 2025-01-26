@@ -19,6 +19,7 @@ import { DeepRequired } from 'utility-types'
 import { Time } from "./time";
 import { Render } from "./render";
 import './style.scss'
+import { EventShapeType } from './render/eventsRender';
 export enum TimeMetric {
 	MINUTE = 'MINUTE',
 	QUARTER_HOUR = 'QUARTER_HOUR',
@@ -98,6 +99,9 @@ export type GanttEventItem = {
 	start: string | number | Date | Dayjs
 	end: string | number | Date | Dayjs
 	name: string
+	shape?: EventShapeType
+	color?: string
+	textColor?: string
 	[key: string]: any
 }
 export type _GanttEventItem = Omit<GanttEventItem, 'start' | 'end'> & {

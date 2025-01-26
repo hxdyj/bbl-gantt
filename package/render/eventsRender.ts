@@ -3,7 +3,10 @@ import Gantt, { _GanttEventItem } from "..";
 import { PartRender } from "./index";
 import { Render } from "../render";
 import { CssNameKey } from "../const/const";
-
+export enum EventShapeType {
+	rect = 'rect',
+	line = 'line'
+}
 export class EventsRender extends PartRender {
 	constructor(public gantt: Gantt, public renderer: Render) {
 		super(gantt, renderer)
@@ -29,14 +32,18 @@ export class EventsRender extends PartRender {
 		rect.size(width, height)
 			.move(x, y).radius(5)
 		rect.addTo(_g)
-
-		const foreignObject = _g.find(`.${CssNameKey.event_text}`)[0] || _g.foreignObject(width, height).addClass(CssNameKey.event_text)
+		if (event.color) {
+			rect.fill(event.color)
+		}
+		const textG = (_g.find(`.${CssNameKey.event_text_g}`)[0] || new G().addClass(CssNameKey.event_text_g)) as G
+		const foreignObject = textG.find(`.${CssNameKey.event_text}`)[0] || textG.foreignObject(width, height).addClass(CssNameKey.event_text)
 		foreignObject.attr({
 			style: 'overflow:visible;'
 		})
 		foreignObject.clear()
-		foreignObject.add(SVG(`<div class="h-full flex items-center w-full" style="padding:0 6px;color:white;overflow:visible;white-space:nowrap;font-size:12px;font-weight:600">${event.name}</div>`, true))
+		foreignObject.add(SVG(`<div class="h-full flex items-center w-full" style="padding:0 6px;overflow:visible;white-space:nowrap;font-size:12px;font-weight:600;">${event.name}</div>`, true))
 		foreignObject.move(x, y)
+		textG.addTo(_g)
 		_g.addTo(g)
 	}
 
@@ -64,18 +71,35 @@ export class EventsRender extends PartRender {
 		circleLeft.addTo(_g)
 		circleRight.addTo(_g)
 
+		if (event.color) {
+			rect.fill(event.color)
+			circleLeft.fill(event.color)
+			circleRight.fill(event.color)
+		}
+
+		let textColor = ''
+		if (event.textColor) {
+			textColor = `color:${event.textColor};`
+		}
+
 		const foreignObject = _g.find(`.${CssNameKey.event_text}`)[0] || _g.foreignObject(width, height).addClass(CssNameKey.event_text)
 		foreignObject.attr({
 			style: 'overflow:visible;'
 		})
 		foreignObject.clear()
-		foreignObject.add(SVG(`<div class="h-full flex items-center w-full" style="padding:0 6px;overflow:visible;white-space:nowrap;font-size:12px;font-weight:600">${event.name}</div>`, true))
+		foreignObject.add(SVG(`<div class="h-full flex items-center w-full" style="padding:0 6px;overflow:visible;white-space:nowrap;font-size:12px;font-weight:600;${textColor}">${event.name}</div>`, true))
 		foreignObject.move(x + 3, y - 12)
 		_g.addTo(g)
 	}
 
 	renderEvent(event: _GanttEventItem, index: number, eventIndex: number, g: G) {
-		this.renderLine(event, index, eventIndex, g)
+		if (!event.shape || event.shape === EventShapeType.rect) {
+			this.renderRect(event, index, eventIndex, g)
+		}
+
+		if (event.shape === EventShapeType.line) {
+			this.renderLine(event, index, eventIndex, g)
+		}
 	}
 
 	render() {

@@ -30,5 +30,6 @@ export class CssNameKey {
 	static event_style_line_circle_left = 'event-circle-left'
 	static event_style_line_circle_right = 'event-circle-right'
 	static event_item = 'event-item'
+	static event_text_g = 'event-text-g'
 	static event_text = 'event-text'
 }
