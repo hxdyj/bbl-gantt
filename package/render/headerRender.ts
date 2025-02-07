@@ -23,12 +23,25 @@ export class HeaderRender extends PartRender {
 		this.gantt.body.removeEventListener('click', this.onBodyClick)
 	}
 
+	getCurrentTime() {
+		const currentTime = this.gantt.stage.find(`.${CssNameKey.current_time_line}`)[0]
+		const exist = !!currentTime
+		return {
+			exist: exist,
+			currentTime,
+			currentTimeX: exist ? parseFloat(currentTime.x() + '') : NaN
+		}
+	}
+
+	onCurrentTimeExistRender() {
+		const { exist, currentTimeX } = this.getCurrentTime()
+		if (exist) {
+			this.renderCureentTime(currentTimeX)
+		}
+	}
+
 	onScroll(event: Event) {
 		this.render()
-		const currentTime = this.gantt.stage.find(`.${CssNameKey.current_time_line}`)[0]
-		if (currentTime) {
-			this.renderCureentTime(parseFloat(currentTime.x() + ''))
-		}
 	}
 
 	private onBodyClick(e: MouseEvent) {
@@ -108,6 +121,8 @@ export class HeaderRender extends PartRender {
 			translate: [0, this.gantt.container.scrollTop]
 		}, false)
 		g.addTo(this.gantt.stage)
+
+		this.onCurrentTimeExistRender()
 	}
 
 	destroy(): void {

@@ -1,5 +1,5 @@
-import { Button, Space } from "@arco-design/web-react"
-import { useEffect, useRef } from "react"
+import { Button, Input, InputNumber, Select, Space } from "@arco-design/web-react"
+import { useEffect, useRef, useState } from "react"
 import { OperateGroup } from "../components/OperateGroup"
 import Gantt, { GanttItem, TimeMetric } from "#/index"
 import './Base.scss'
@@ -17,7 +17,8 @@ export function Base() {
 	let gantt = useRef<Gantt | null>(null)
 	const containerRef = useRef<HTMLDivElement>(null)
 	const data: GanttItem[] = ganttData as unknown as GanttItem[]
-
+	const [timeMetric, setTimeMetric] = useState(TimeMetric.MINUTE)
+	const [tickWidth, setTickWidth] = useState(30)
 	useEffect(() => {
 		if (!containerRef.current) throw new Error("containerRef is null")
 		gantt.current = new Gantt({
@@ -55,108 +56,86 @@ export function Base() {
 						</Button.Group>
 					</OperateGroup>
 					<OperateGroup desc="time">
-						<Button.Group>
-							<Button onClick={() => {
-								gantt.current?.updateOptions({
-									column: {
-										// width: 900,
-										timeMetric: 18000
-									}
-								})
-							}}>18000</Button>
-							<Button onClick={() => {
-								gantt.current?.updateOptions({
-									column: {
-										// width: 900,
-										timeMetric: 30000
-									}
-								})
-							}}>30000</Button>
+						<Select
+							autoWidth={{ minWidth: 280, maxWidth: 500 }}
+							placeholder='Select time metric'
+							value={timeMetric}
+							options={[
+								{
+									label: '18000 ms',
+									value: 18000
+								},
+								{
+									label: '30000 ms',
+									value: 30000
+								},
+								{
+									label: 'MINUTE',
+									value: TimeMetric.MINUTE
+								},
+								{
+									label: 'QUARTER_HOUR',
+									value: TimeMetric.QUARTER_HOUR
+								},
+								{
+									label: 'HALF_HOUR',
+									value: TimeMetric.HALF_HOUR
+								},
+								{
+									label: 'HOUR',
+									value: TimeMetric.HOUR
+								},
+								{
+									label: 'QUARTER_DAY',
+									value: TimeMetric.QUARTER_DAY
+								},
+								{
+									label: 'HALF_DAY',
+									value: TimeMetric.HALF_DAY
+								},
+								{
+									label: 'DAY',
+									value: TimeMetric.DAY
+								},
+								{
+									label: 'WEEK',
+									value: TimeMetric.WEEK
+								},
+								{
+									label: 'MONTH',
+									value: TimeMetric.MONTH
+								},
+								{
+									label: 'YEAR',
+									value: TimeMetric.YEAR
+								},
+							]}
 
-							<Button onClick={() => {
+							addBefore='Time Metric'
+							onChange={val => {
+								if (val === TimeMetric.YEAR) {
+									setTickWidth(100)
+								}
 								gantt.current?.updateOptions({
 									column: {
-										// width: 900,
-										timeMetric: TimeMetric.MINUTE
+										width: val === TimeMetric.YEAR ? 100 : undefined,
+										timeMetric: val
 									}
 								})
-							}}>MINUTE</Button>
-							<Button onClick={() => {
-								gantt.current?.updateOptions({
-									column: {
-										// width: 900,
-										timeMetric: TimeMetric.QUARTER_HOUR
-									}
-								})
-							}}>QUARTER_HOUR</Button>
-							<Button onClick={() => {
-								gantt.current?.updateOptions({
-									column: {
-										// width: 900,
-										timeMetric: TimeMetric.HALF_HOUR
-									}
-								})
-							}}>HALF_HOUR</Button>
-							<Button onClick={() => {
-								gantt.current?.updateOptions({
-									column: {
-										// width: 900,
-										timeMetric: TimeMetric.HOUR
-									}
-								})
-							}}>HOUR</Button>
-							<Button onClick={() => {
-								gantt.current?.updateOptions({
-									column: {
-										// width: 900,
-										timeMetric: TimeMetric.QUARTER_DAY
-									}
-								})
-							}}>QUARTER_DAY</Button>
-							<Button onClick={() => {
-								gantt.current?.updateOptions({
-									column: {
-										// width: 900,
-										timeMetric: TimeMetric.HALF_DAY
-									}
-								})
-							}}>HALF_DAY</Button>
-							<Button onClick={() => {
-								gantt.current?.updateOptions({
-									column: {
-										// width: 900,
-										timeMetric: TimeMetric.DAY
-									}
-								})
-							}}>DAY</Button>
-							<Button onClick={() => {
-								gantt.current?.updateOptions({
-									column: {
-										// width: 900,
-										timeMetric: TimeMetric.WEEK
-									}
-								})
-							}}>WEEK</Button>
-							<Button onClick={() => {
-								gantt.current?.updateOptions({
-									column: {
-										// width: 900,
-										timeMetric: TimeMetric.MONTH
-									}
-								})
-							}}>MONTH</Button>
-							<Button onClick={() => {
-								gantt.current?.updateOptions({
-									column: {
-										width: 100,
-										timeMetric: TimeMetric.YEAR
-									}
-								})
-							}}>YEAR</Button>
-
-						</Button.Group>
-
-
+								setTimeMetric(val)
+							}}
+						>
+						</Select>
+					</OperateGroup>
+					<OperateGroup desc="tick">
+						<InputNumber prefix={<div>Tick Width</div>} value={tickWidth} min={30} max={500} placeholder="Input tick width" onChange={val => {
+							gantt.current?.updateOptions({
+								column: {
+									width: val
+								}
+							})
+							setTickWidth(val)
+						}} />
 					</OperateGroup>
 				</Space>
 			</div>
