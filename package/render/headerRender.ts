@@ -80,7 +80,14 @@ export class HeaderRender extends PartRender {
 
 			const text = (g.find(`.${idClassName}.${CssNameKey.header_time_tick_text}`)[0] || new Text().addClass(CssNameKey.header_time_tick_text).addClass(idClassName)) as Text
 
-			text.text(tick.time.get(this.gantt.time.fixUnit as unknown as UnitType).toString()).font({
+			let getMetric = this.gantt.time.fixUnit as unknown as UnitType
+
+			if (getMetric === 'day') getMetric = 'date'
+			let showTimeStr = tick.time.get(getMetric).toString()
+			if (getMetric == 'month') {
+				showTimeStr = parseInt(showTimeStr) + 1 + ''
+			}
+			text.text(showTimeStr).font({
 				size: 14
 			})
 			const textBox = text.bbox()

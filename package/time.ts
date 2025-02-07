@@ -69,6 +69,9 @@ export class Time {
 			if (fixTimeMetric == TimeMetric.WEEK) {
 				fixUnit = 'week'
 			}
+			if (fixTimeMetric == TimeMetric.MONTH) {
+				fixUnit = 'month'
+			}
 			if (fixTimeMetric == TimeMetric.YEAR) {
 				fixUnit = 'year'
 			}
@@ -82,12 +85,12 @@ export class Time {
 		}
 		this.fixUnit = fixUnit
 		console.log(`startTime,endTime`, startTime.format(), endTime.format())
+		console.log(`fixUnit`, fixUnit)
 		{
 			this.ticks = []
 			const { params } = timeMetricToDayjsAddParams(timeMetric)
 			//@ts-ignore
 			this.stepTime = dayjs.duration(params[0], params[1] + 's').asMilliseconds()
-
 			stepTime({
 				startTime,
 				endTime,
@@ -96,10 +99,12 @@ export class Time {
 					this.ticks.push({ time })
 				}
 			})
+
 		}
 
 		{
 			this.timeTicks = []
+
 			stepTime({
 				startTime,
 				endTime,
@@ -108,6 +113,7 @@ export class Time {
 					this.timeTicks.push({ time })
 				}
 			})
+
 		}
 	}
 
@@ -183,6 +189,9 @@ export function timeMetricToDayjsAddParams(timeMetric: TimeMetric | number, num 
 		if (timeMetric === TimeMetric.QUARTER_HOUR) {
 			return { params: [num * 15, 'minute'], fixTimeMetric: TimeMetric.HOUR }
 		}
+		if (timeMetric === TimeMetric.HALF_HOUR) {
+			return { params: [num * 30, 'minute'], fixTimeMetric: TimeMetric.HOUR }
+		}
 		if (timeMetric === TimeMetric.HOUR) {
 			return { params: [num, 'hour'], fixTimeMetric: TimeMetric.HOUR }
 		}
@@ -221,6 +230,7 @@ function stepTime(params: {
 	if (startTime.isSame(endTime)) return
 	let currentTime = dayjs(startTime)
 	while (currentTime.isBefore(endTime)) {
+		console.log(111, startTime.format(), endTime.format(), currentTime.format())
 		callback(currentTime)
 		currentTime = currentTime.add(...step)
 	}

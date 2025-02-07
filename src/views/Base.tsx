@@ -80,7 +80,79 @@ export function Base() {
 										timeMetric: TimeMetric.MINUTE
 									}
 								})
-							}}>minut</Button>
+							}}>MINUTE</Button>
+							<Button onClick={() => {
+								gantt.current?.updateOptions({
+									column: {
+										// width: 900,
+										timeMetric: TimeMetric.QUARTER_HOUR
+									}
+								})
+							}}>QUARTER_HOUR</Button>
+							<Button onClick={() => {
+								gantt.current?.updateOptions({
+									column: {
+										// width: 900,
+										timeMetric: TimeMetric.HALF_HOUR
+									}
+								})
+							}}>HALF_HOUR</Button>
+							<Button onClick={() => {
+								gantt.current?.updateOptions({
+									column: {
+										// width: 900,
+										timeMetric: TimeMetric.HOUR
+									}
+								})
+							}}>HOUR</Button>
+							<Button onClick={() => {
+								gantt.current?.updateOptions({
+									column: {
+										// width: 900,
+										timeMetric: TimeMetric.QUARTER_DAY
+									}
+								})
+							}}>QUARTER_DAY</Button>
+							<Button onClick={() => {
+								gantt.current?.updateOptions({
+									column: {
+										// width: 900,
+										timeMetric: TimeMetric.HALF_DAY
+									}
+								})
+							}}>HALF_DAY</Button>
+							<Button onClick={() => {
+								gantt.current?.updateOptions({
+									column: {
+										// width: 900,
+										timeMetric: TimeMetric.DAY
+									}
+								})
+							}}>DAY</Button>
+							<Button onClick={() => {
+								gantt.current?.updateOptions({
+									column: {
+										// width: 900,
+										timeMetric: TimeMetric.WEEK
+									}
+								})
+							}}>WEEK</Button>
+							<Button onClick={() => {
+								gantt.current?.updateOptions({
+									column: {
+										// width: 900,
+										timeMetric: TimeMetric.MONTH
+									}
+								})
+							}}>MONTH</Button>
+							<Button onClick={() => {
+								gantt.current?.updateOptions({
+									column: {
+										width: 100,
+										timeMetric: TimeMetric.YEAR
+									}
+								})
+							}}>YEAR</Button>
 
 						</Button.Group>
 
