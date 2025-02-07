@@ -128,7 +128,7 @@ export function Base() {
 						</Select>
 					</OperateGroup>
 					<OperateGroup desc="tick">
-						<InputNumber prefix={<div>Tick Width</div>} value={tickWidth} min={30} max={500} placeholder="Input tick width" onChange={val => {
+						<InputNumber prefix={<div>Tick Width</div>} value={tickWidth} min={30} max={10000} placeholder="Input tick width" onChange={val => {
 							gantt.current?.updateOptions({
 								column: {
 									width: val
