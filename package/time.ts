@@ -230,7 +230,6 @@ function stepTime(params: {
 	if (startTime.isSame(endTime)) return
 	let currentTime = dayjs(startTime)
 	while (currentTime.isBefore(endTime)) {
-		console.log(111, startTime.format(), endTime.format(), currentTime.format())
 		callback(currentTime)
 		currentTime = currentTime.add(...step)
 	}
