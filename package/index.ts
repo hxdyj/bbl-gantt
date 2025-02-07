@@ -4,9 +4,11 @@ import { EventBindingThis } from "./event";
 import { EventBusEventName } from "./event/const";
 import duration from "dayjs/plugin/duration"
 import minMax from "dayjs/plugin/minMax"
+import weekOfYear from "dayjs/plugin/weekOfYear"
 import dayjs from "dayjs";
 dayjs.extend(duration)
 dayjs.extend(minMax)
+dayjs.extend(weekOfYear)
 import { CssNameKey } from "./const/const";
 import { uid } from 'uid'
 import { createOrGetEle, getContainerInfo, getElement } from "./utils/dom";

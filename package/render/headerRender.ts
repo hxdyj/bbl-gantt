@@ -83,7 +83,12 @@ export class HeaderRender extends PartRender {
 			let getMetric = this.gantt.time.fixUnit as unknown as UnitType
 
 			if (getMetric === 'day') getMetric = 'date'
-			let showTimeStr = tick.time.get(getMetric).toString()
+
+			let showTimeStr =
+				//@ts-ignore
+				getMetric === 'week' ? tick.time.week() + ''
+					: tick.time.get(getMetric).toString()
+
 			if (getMetric == 'month') {
 				showTimeStr = parseInt(showTimeStr) + 1 + ''
 			}
