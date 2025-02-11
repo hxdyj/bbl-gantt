@@ -1,5 +1,5 @@
 import { defaultsDeep, find, last, minBy } from "lodash-es";
-import Gantt, { _GanttItem } from ".";
+import Gantt, { _GanttItem, TimeMetric } from ".";
 import { CssNameKey } from "./const/const";
 import { Rect } from "@svgdotjs/svg.js";
 
@@ -40,11 +40,9 @@ export class View {
 		}
 
 		const point: Point = [parseFloat(anchor.x() + ''), parseFloat(anchor.y() + '')]
-
 		if (!pointInBox(point, viewBox)) {
-
 			this.gantt.container.scrollTo({
-				left: parseFloat(anchor.x() + '') - this.gantt.options.column.width,
+				left: parseFloat(anchor.x() + '') - (this.gantt.options.column.width * 2 > this.gantt.containerRectInfo.width ? this.gantt.containerRectInfo.width * 0.1 : this.gantt.options.column.width),
 				top: parseFloat(anchor.y() + '') - this.gantt.options.header.height,
 				behavior: _options.behavior
 			})
