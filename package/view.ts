@@ -31,6 +31,7 @@ export class View {
 		})
 		const ele = this.gantt.stage.findOne(`#${id}`)
 		const anchor = ele?.findOne(`.${CssNameKey.event_anchor}`) as Rect
+		if (!anchor) return
 		// anchor?.scrollIntoView(_options)
 		const viewBox: Box = {
 			x: this.gantt.container.scrollLeft,
@@ -51,7 +52,7 @@ export class View {
 
 	scrollToItem(itemId: string, options: ScrollToOptions = {}) {
 		const item = find(this.gantt.list, (i: _GanttItem) => i.id === itemId)
-		if (!item.events[0]) return
+		if (!item?.events[0]) return
 		this.scrollToEvent(item.events[0].id, options)
 	}
 
@@ -61,6 +62,7 @@ export class View {
 
 	scrollToEarliestItem(options: ScrollToOptions = {}) {
 		const item = minBy(this.gantt.list, (i: _GanttItem) => i.minStart)
+		if (!item) return
 		this.scrollToItem(item.id, options)
 	}
 }
