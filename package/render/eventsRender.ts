@@ -7,6 +7,23 @@ export enum EventShapeType {
 	rect = 'rect',
 	line = 'line'
 }
+
+
+export type RenderItemOptions = {
+	event: _GanttEventItem,
+	index: number,
+	eventIndex: number,
+	addTo: G,
+	gClassName?: string
+	bodyClassName?: string
+	callback?: (options: RenderItemCallbackOptions) => void
+}
+
+export type RenderItemCallbackOptions = Omit<RenderItemOptions, 'callback'> & {
+	g: G,
+	context: EventsRender
+}
+
 export class EventsRender extends PartRender {
 	constructor(public gantt: Gantt, public renderer: Render) {
 		super(gantt, renderer)
@@ -18,87 +35,50 @@ export class EventsRender extends PartRender {
 		anchor.addTo(parent)
 	}
 
-	renderRect(event: _GanttEventItem, index: number, eventIndex: number, g: G) {
-		const _g = (g.find(`#${event.id}`)[0] || new G().id(event.id)).addClass(CssNameKey.event_item).addClass(CssNameKey.event_style_rect) as G
 
-		this.renderViewAnchor(_g, event, index)
-
-		const rect = (_g.find(`.${CssNameKey.event_style_rect_bar}`)[0] || new Rect().addClass(CssNameKey.event_style_rect_bar)) as Rect
-		const width = this.renderer.getWidthByTwoTime(event.start, event.end)
-		const x = this.renderer.getXbyTime(event.start)
-		const y = this.renderer.getYbyIndex(index) + (this.gantt.options.row.height / 4)
-
-		const height = this.gantt.options.row.height / 2
-		rect.size(width, height)
-			.move(x, y).radius(5)
-		rect.addTo(_g)
-		if (event.color) {
-			rect.fill(event.color)
-		}
-		const textG = (_g.find(`.${CssNameKey.event_text_g}`)[0] || new G().addClass(CssNameKey.event_text_g)) as G
-		const foreignObject = textG.find(`.${CssNameKey.event_text}`)[0] || textG.foreignObject(width, height).addClass(CssNameKey.event_text)
-		foreignObject.attr({
-			style: 'overflow:visible;'
+	renderItem(options: RenderItemOptions) {
+		const { event, index, addTo, gClassName, bodyClassName, callback } = options
+		const g = (addTo.find(`#${event.id}`)[0] || new G().id(event.id)).addClass(CssNameKey.event_item) as G
+		gClassName && g.addClass(gClassName)
+		this.renderViewAnchor(g, event, index)
+		callback?.({
+			...options,
+			g,
+			context: this
 		})
-		foreignObject.clear()
-		foreignObject.add(SVG(`<div class="h-full flex items-center w-full" style="padding:0 6px;overflow:visible;white-space:nowrap;font-size:12px;font-weight:600;">${event.name}</div>`, true))
-		foreignObject.move(x, y)
-		textG.addTo(_g)
-		_g.addTo(g)
-	}
-
-	renderLine(event: _GanttEventItem, index: number, eventIndex: number, g: G) {
-		const _g = (g.find(`#${event.id}`)[0] || new G().id(event.id)).addClass(CssNameKey.event_item).addClass(CssNameKey.event_style_line) as G
-
-		this.renderViewAnchor(_g, event, index)
-
-		const rect = (_g.find(`.${CssNameKey.event_style_line_line}`)[0] || new Rect().addClass(CssNameKey.event_style_line_line)) as Rect
-		const width = this.renderer.getWidthByTwoTime(event.start, event.end)
-		const x = this.renderer.getXbyTime(event.start)
-		const height = 4
-		const y = this.renderer.getYbyIndex(index) + (this.gantt.options.row.height - height) / 2
-
-		const r = 4
-		const circleLeft = (_g.find(`.${CssNameKey.event_style_line_circle_left}`)[0] || new Circle().addClass(CssNameKey.event_style_line_circle_left)) as Circle
-		const circleRight = (_g.find(`.${CssNameKey.event_style_line_circle_right}`)[0] || new Circle().addClass(CssNameKey.event_style_line_circle_right)) as Circle
-
-		rect.size(width - 2 * r, height)
-			.move(x + r, y)
-		rect.addTo(_g)
-
-		circleLeft.cx(x + r).cy(y + r / 2).radius(r)
-		circleRight.cx(circleLeft.cx() + parseFloat(rect.width() + '')).cy(circleLeft.cy()).radius(r)
-		circleLeft.addTo(_g)
-		circleRight.addTo(_g)
-
-		if (event.color) {
-			rect.fill(event.color)
-			circleLeft.fill(event.color)
-			circleRight.fill(event.color)
+		const body = g.find(`.${CssNameKey.event_body}`)[0]
+		if (body) {
+			body.addClass(CssNameKey.event_body)
+			if (bodyClassName) {
+				body.addClass(bodyClassName)
+			}
 		}
-
-		let textColor = ''
-		if (event.textColor) {
-			textColor = `color:${event.textColor};`
-		}
-
-		const foreignObject = _g.find(`.${CssNameKey.event_text}`)[0] || _g.foreignObject(width, height).addClass(CssNameKey.event_text)
-		foreignObject.attr({
-			style: 'overflow:visible;'
-		})
-		foreignObject.clear()
-		foreignObject.add(SVG(`<div class="h-full flex items-center w-full" style="padding:0 6px;overflow:visible;white-space:nowrap;font-size:12px;font-weight:600;${textColor}">${event.name}</div>`, true))
-		foreignObject.move(x + 3, y - 12)
-		_g.addTo(g)
+		g.addTo(addTo)
 	}
 
 	renderEvent(event: _GanttEventItem, index: number, eventIndex: number, g: G) {
 		if (!event.shape || event.shape === EventShapeType.rect) {
-			this.renderRect(event, index, eventIndex, g)
+			this.renderItem({
+				event,
+				index,
+				eventIndex,
+				addTo: g,
+				gClassName: CssNameKey.event_style_rect,
+				bodyClassName: CssNameKey.event_style_rect_bar,
+				callback: renderRect
+			})
 		}
 
 		if (event.shape === EventShapeType.line) {
-			this.renderLine(event, index, eventIndex, g)
+			this.renderItem({
+				event,
+				index,
+				eventIndex,
+				addTo: g,
+				gClassName: CssNameKey.event_style_line,
+				bodyClassName: CssNameKey.event_style_line_line,
+				callback: renderLine
+			})
 		}
 	}
 
@@ -117,4 +97,72 @@ export class EventsRender extends PartRender {
 		const g = this.gantt.stage.find(`.${CssNameKey.events}`)[0]
 		g?.remove()
 	}
+}
+
+
+
+export function renderRect(options: RenderItemCallbackOptions) {
+	const { event, index, g, context } = options
+	const rect = (g.find(`.${CssNameKey.event_body}`)[0] || new Rect()) as Rect
+	const width = context.renderer.getWidthByTwoTime(event.start, event.end)
+	const x = context.renderer.getXbyTime(event.start)
+	const y = context.renderer.getYbyIndex(index) + (context.gantt.options.row.height / 4)
+
+	const height = context.gantt.options.row.height / 2
+	rect.size(width, height)
+		.move(x, y).radius(5)
+	rect.addTo(g)
+	if (event.color) {
+		rect.fill(event.color)
+	}
+	const textG = (g.find(`.${CssNameKey.event_text_g}`)[0] || new G().addClass(CssNameKey.event_text_g)) as G
+	const foreignObject = textG.find(`.${CssNameKey.event_text}`)[0] || textG.foreignObject(width, height).addClass(CssNameKey.event_text)
+	foreignObject.attr({
+		style: 'overflow:visible;'
+	})
+	foreignObject.clear()
+	foreignObject.add(SVG(`<div class="h-full flex items-center w-full" style="padding:0 6px;overflow:visible;white-space:nowrap;font-size:12px;font-weight:600;">${event.name}</div>`, true))
+	foreignObject.move(x, y)
+	textG.addTo(g)
+}
+
+export function renderLine(options: RenderItemCallbackOptions) {
+	const { event, index, g, context } = options
+	const rect = (g.find(`.${CssNameKey.event_body}`)[0] || new Rect()) as Rect
+	const width = context.renderer.getWidthByTwoTime(event.start, event.end)
+	const x = context.renderer.getXbyTime(event.start)
+	const height = 4
+	const y = context.renderer.getYbyIndex(index) + (context.gantt.options.row.height - height) / 2
+
+	const r = 4
+	const circleLeft = (g.find(`.${CssNameKey.event_style_line_circle_left}`)[0] || new Circle().addClass(CssNameKey.event_style_line_circle_left)) as Circle
+	const circleRight = (g.find(`.${CssNameKey.event_style_line_circle_right}`)[0] || new Circle().addClass(CssNameKey.event_style_line_circle_right)) as Circle
+
+	rect.size(width - 2 * r, height)
+		.move(x + r, y)
+	rect.addTo(g)
+
+	circleLeft.cx(x + r).cy(y + r / 2).radius(r)
+	circleRight.cx(circleLeft.cx() + parseFloat(rect.width() + '')).cy(circleLeft.cy()).radius(r)
+	circleLeft.addTo(g)
+	circleRight.addTo(g)
+
+	if (event.color) {
+		rect.fill(event.color)
+		circleLeft.fill(event.color)
+		circleRight.fill(event.color)
+	}
+
+	let textColor = ''
+	if (event.textColor) {
+		textColor = `color:${event.textColor};`
+	}
+
+	const foreignObject = g.find(`.${CssNameKey.event_text}`)[0] || g.foreignObject(width, height).addClass(CssNameKey.event_text)
+	foreignObject.attr({
+		style: 'overflow:visible;'
+	})
+	foreignObject.clear()
+	foreignObject.add(SVG(`<div class="h-full flex items-center w-full" style="padding:0 6px;overflow:visible;white-space:nowrap;font-size:12px;font-weight:600;${textColor}">${event.name}</div>`, true))
+	foreignObject.move(x + 3, y - 12)
 }

@@ -82,6 +82,7 @@
 		.events {
 			.event-item {
 				fill: var(--gantt-event-item-style-rect-color);
+				cursor: move;
 			}
 			.event-text {
 				color: var(--gantt-event-item-style-rect-text-color);
