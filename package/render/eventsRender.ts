@@ -100,34 +100,35 @@ export class EventsRender extends PartRender {
 	}
 
 	onContainerMouseMove(event: MouseEvent) {
-		if (event.button === 0) {
-			if (!this.startEvent || !this.itemRender) return
-			this.itemRender.g.hide()
+		if (!this.startEvent || !this.itemRender) return
+		const { x: eventX } = this.gantt.stage.point(event.clientX, event.clientY)
+		const { x: startEventX } = this.gantt.stage.point(this.startEvent.clientX, this.startEvent.clientY)
 
-			const { x: eventX } = this.gantt.stage.point(event.clientX, event.clientY)
-			const { x: startEventX } = this.gantt.stage.point(this.startEvent.clientX, this.startEvent.clientY)
+		const newX = (eventX - startEventX)
+		// if (Math.abs(newX) < 5) {
+		// 	return console.warn('move too small, less than 5px')
+		// }
 
-			const newX = (eventX - startEventX)
-			if (!this.tmpItem) {
-				//@ts-ignore
-				const cls = this.itemRender.__proto__.constructor
-				const options = cloneDeep(this.itemRender.options)
-				options.event.id = `tmp-${options.event.id}`
-				options.bindEvent = false
-				this.tmpItem = new cls(this.gantt, this.renderer, options)
-			}
+		this.itemRender.g.hide()
 
-			this.tmpItem?.g.transform({
-				translate: [newX, 0]
-			})
-			this.gantt.status.eventMoving = true
+		if (!this.tmpItem) {
+			//@ts-ignore
+			const cls = this.itemRender.__proto__.constructor
+			const options = cloneDeep(this.itemRender.options)
+			options.event.id = `tmp-${options.event.id}`
+			options.bindEvent = false
+			this.tmpItem = new cls(this.gantt, this.renderer, options)
 		}
+
+		this.tmpItem?.g.transform({
+			translate: [newX, 0]
+		})
+		this.gantt.status.eventMoving = true
 	}
 
 	onContainerMouseUp() {
-
-		if (!this.startEvent || !this.itemRender || !this.tmpItem) return
-		const { translateX = 0 } = this.tmpItem.g.transform()
+		if (!this.startEvent || !this.itemRender) return
+		const { translateX = 0 } = this.tmpItem?.g.transform() || {}
 		const anchor = this.itemRender.g.find(`.${CssNameKey.event_anchor}`)[0]
 		const oldX = parseFloat(anchor.x().toString())
 		const newX = oldX + translateX
