@@ -55,9 +55,9 @@ export abstract class EventItemRender extends EventBindingThis {
 			if (bodyClassName) {
 				body.addClass(bodyClassName)
 			}
-			const { x, y, width, height } = body.bbox()
+
 			const moveRect = (this.g.find(`.${CssNameKey.event_move_rect}`)[0] || new Rect().addClass(CssNameKey.event_move_rect)) as Rect
-			moveRect.size(width, height).move(x, y).fill('transparent').addTo(this.g)
+			moveRect.size(this.renderer.getWidthByTwoTime(event.start, event.end), this.gantt.options.row.height).move(this.renderer.getXbyTime(event.start), this.renderer.getYbyIndex(index)).fill('transparent').addTo(this.g)
 			if (!this.isRendered) {
 				moveRect.on('mousedown', this.onBodyMouseDown)
 			}
