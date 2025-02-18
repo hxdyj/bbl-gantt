@@ -95,11 +95,12 @@ export abstract class EventItemRender extends EventBindingThis {
 			const leftResize = (this.g.find(`.${CssNameKey.event_left_reisze}`)[0] || new Rect().addClass(CssNameKey.event_left_reisze).addClass(CssNameKey.event_reisze)) as Rect
 			const rightResize = (this.g.find(`.${CssNameKey.event_right_reisze}`)[0] || new Rect().addClass(CssNameKey.event_right_reisze).addClass(CssNameKey.event_reisze)) as Rect
 
-			const resizeWidth = 6
-			const resizeHeight = height / 4
+			const resizeWidth = 8
+			const resizeHeight = height / 3
 			const resizeY = y + (height - resizeHeight) / 2
-			leftResize.size(resizeWidth, resizeHeight).move(x, resizeY).radius(3).hide()
-			rightResize.size(resizeWidth, resizeHeight).move(x + width - resizeWidth, resizeY).radius(3).hide()
+			const resizeBorderRadius = 3
+			leftResize.size(resizeWidth, resizeHeight).move(x, resizeY).radius(resizeBorderRadius).hide()
+			rightResize.size(resizeWidth, resizeHeight).move(x + width - resizeWidth, resizeY).radius(resizeBorderRadius).hide()
 
 			leftResize.addTo(this.g)
 			rightResize.addTo(this.g)
@@ -112,6 +113,11 @@ export abstract class EventItemRender extends EventBindingThis {
 				moveRect.on('mousedown', this.onBodyMouseDown)
 				moveRect.on('mouseenter', this.onBodyMouseEnter)
 				moveRect.on('mouseleave', this.onBodyMouseLeave)
+
+				leftResize.on('mouseenter', this.onBodyMouseEnter)
+				leftResize.on('mouseleave', this.onBodyMouseLeave)
+				rightResize.on('mouseenter', this.onBodyMouseEnter)
+				rightResize.on('mouseleave', this.onBodyMouseLeave)
 			}
 		}
 		if (!this.isRendered) {
