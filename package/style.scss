@@ -86,6 +86,7 @@
 			}
 			.event-text {
 				color: var(--gantt-event-item-style-rect-text-color);
+				user-select: none;
 			}
 
 			.style-rect {

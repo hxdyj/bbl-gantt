@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react"
 import { OperateGroup } from "../components/OperateGroup"
 import Gantt, { GanttItem, TimeMetric } from "#/index"
 import './Base.scss'
-import { ganttData } from "../data/ganttData"
+import { ganttData } from "../data/ganttData-full"
 import { getUID, walkData } from "#/utils/data"
 
 walkData(ganttData as unknown as GanttItem[], ({ item }) => {

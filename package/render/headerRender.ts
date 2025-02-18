@@ -8,19 +8,22 @@ import { CssNameKey } from "../const/const";
 export class HeaderRender extends PartRender {
 	constructor(public gantt: Gantt, public renderer: Render) {
 		super(gantt, renderer)
-		this.bindEventThis(['onScroll', 'onBodyClick'])
+		this.bindEventThis(['onScroll', 'onBodyMouseDown', 'onBodyMouseUp'])
 		this.bindEvent()
 	}
 
 	bindEvent(): void {
 		this.gantt.container.addEventListener('scroll', this.onScroll)
-		this.gantt.body.addEventListener('click', this.onBodyClick)
+		this.gantt.body.addEventListener('mousedown', this.onBodyMouseDown)
+		this.gantt.body.addEventListener('mouseup', this.onBodyMouseUp)
 
 	}
 
 	unbindEvent(): void {
 		this.gantt.container.removeEventListener('scroll', this.onScroll)
-		this.gantt.body.removeEventListener('click', this.onBodyClick)
+		this.gantt.body.removeEventListener('mousedown', this.onBodyMouseDown)
+		this.gantt.body.removeEventListener('mouseup', this.onBodyMouseUp)
+
 	}
 
 	getCurrentTime() {
@@ -44,11 +47,21 @@ export class HeaderRender extends PartRender {
 		this.render()
 	}
 
-	private onBodyClick(e: MouseEvent) {
-		const { x } = this.gantt.stage.point(e.clientX, e.clientY)
-		this.renderCureentTime(x)
+	private mouseDownTime: number = 0
+
+	private onBodyMouseDown(e: MouseEvent) {
+		this.mouseDownTime = e.timeStamp
 	}
 
+	private onBodyMouseUp(e: MouseEvent) {
+		if (this.mouseDownTime && e.timeStamp - this.mouseDownTime < 150) {
+			if (!this.gantt.status.eventMoving) {
+				const { x } = this.gantt.stage.point(e.clientX, e.clientY)
+				this.renderCureentTime(x)
+			}
+		}
+		this.mouseDownTime = 0
+	}
 
 	private renderCureentTime(x: number) {
 		const g = this.gantt.stage.find(`.${CssNameKey.current_time}`)[0] || new G().addClass(CssNameKey.current_time)

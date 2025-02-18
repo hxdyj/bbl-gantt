@@ -134,6 +134,13 @@ export class Gantt extends EventBindingThis {
 	eventBus = new EventEmitter()
 	private destroyed = false
 	createTime: number
+
+	status: {
+		eventMoving: boolean
+	} = {
+			eventMoving: false
+		}
+
 	options: DeepRequired<GanttOptions>
 	containerRectInfo: ReturnType<typeof getContainerInfo>
 	view: View

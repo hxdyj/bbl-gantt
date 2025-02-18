@@ -3,7 +3,7 @@ import { Circle, G, Rect, SVG } from "@svgdotjs/svg.js";
 import { EventItemRender } from "./eventItemRender";
 
 export class EventItemRectStyle extends EventItemRender {
-	render(): void {
+	renderItem(): void {
 		const { event, index } = this.options
 		const rect = (this.g.find(`.${CssNameKey.event_body}`)[0] || new Rect().addClass(CssNameKey.event_body)) as Rect
 		const width = this.renderer.getWidthByTwoTime(event.start, event.end)

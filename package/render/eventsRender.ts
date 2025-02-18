@@ -6,6 +6,8 @@ import { CssNameKey } from "../const/const";
 import { EventItemRender } from "./eventItem/eventItemRender";
 import { EventItemLineStyle } from "./eventItem/eventItemLineStyle";
 import { EventItemRectStyle } from "./eventItem/eventItemRectStyle";
+import { cloneDeep } from "lodash-es";
+import { EventBusEventName } from "#/event/const";
 export enum EventShapeType {
 	rect = 'rect',
 	line = 'line'
@@ -26,6 +28,8 @@ export type RenderItemOptions = {
 export class EventsRender extends PartRender {
 	constructor(public gantt: Gantt, public renderer: Render) {
 		super(gantt, renderer)
+		this.bindEventThis(['onEventItemBodyMouseDown', 'onContainerMouseMove', 'onContainerMouseUp'])
+		this.bindEvent()
 	}
 
 	map: WeakMap<_GanttEventItem, EventItemRender> = new WeakMap()
@@ -58,6 +62,78 @@ export class EventsRender extends PartRender {
 		}
 	}
 
+
+	bindEvent() {
+		this.gantt.on(EventBusEventName.event_item_body_mouse_down, this.onEventItemBodyMouseDown)
+		this.gantt.container.addEventListener('mousemove', this.onContainerMouseMove)
+		this.gantt.container.addEventListener('mouseup', this.onContainerMouseUp)
+	}
+
+	unbindEvent() {
+		this.gantt.off(EventBusEventName.event_item_body_mouse_down, this.onEventItemBodyMouseDown)
+		this.gantt.container.removeEventListener('mousemove', this.onContainerMouseMove)
+		this.gantt.container.removeEventListener('mouseup', this.onContainerMouseUp)
+	}
+
+
+
+	private startEvent: MouseEvent | null = null
+	private itemRender: EventItemRender | null = null
+
+	private tmpItem: EventItemRender | null = null
+
+	onEventItemBodyMouseDown(args: {
+		event: MouseEvent,
+		itemRender: EventItemRender
+	}) {
+		const { event, itemRender } = args
+		this.startEvent = event
+		this.itemRender = itemRender
+	}
+
+	onContainerMouseMove(event: MouseEvent) {
+		if (!this.startEvent || !this.itemRender) return
+		this.itemRender.g.hide()
+
+		const { x: eventX } = this.gantt.stage.point(event.clientX, event.clientY)
+		const { x: startEventX } = this.gantt.stage.point(this.startEvent.clientX, this.startEvent.clientY)
+
+		const newX = (eventX - startEventX)
+		if (!this.tmpItem) {
+			//@ts-ignore
+			const cls = this.itemRender.__proto__.constructor
+			const options = cloneDeep(this.itemRender.options)
+			options.event.id = `tmp-${options.event.id}`
+			this.tmpItem = new cls(this.gantt, this.renderer, options)
+		}
+
+		this.tmpItem?.g.transform({
+			translate: [newX, 0]
+		})
+		this.gantt.status.eventMoving = true
+	}
+
+	onContainerMouseUp(event: MouseEvent) {
+		if (!this.startEvent || !this.itemRender || !this.tmpItem) return
+		const { translateX = 0 } = this.tmpItem.g.transform()
+		const anchor = this.itemRender.g.find(`.${CssNameKey.event_anchor}`)[0]
+		const oldX = parseFloat(anchor.x().toString())
+		const newX = oldX + translateX
+		const newTime = this.gantt.time.x2time(newX)
+
+		const { start, end } = this.itemRender.options.event
+		const diffTime = end.valueOf() - start.valueOf()
+		this.itemRender.options.event.start = newTime
+		this.itemRender.options.event.end = newTime.add(diffTime, 'millisecond')
+		this.startEvent = null
+		this.tmpItem?.destroy()
+		this.tmpItem = null
+		this.itemRender.g.show()
+		this.itemRender.render()
+		this.itemRender = null
+		this.gantt.status.eventMoving = false
+	}
+
 	render() {
 		const g = (this.gantt.stage.find(`.${CssNameKey.events}`)[0] || new G().addClass(CssNameKey.events)) as G
 		const rows = this.gantt.list
@@ -78,5 +154,6 @@ export class EventsRender extends PartRender {
 				this.map.delete(event)
 			})
 		})
+		this.unbindEvent()
 	}
 }

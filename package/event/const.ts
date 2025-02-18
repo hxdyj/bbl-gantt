@@ -16,4 +16,7 @@ export class EventBusEventName {
 
 	static selection_select_list_change = 'selection_select_list_change'
 	static selection_action_click = 'selection_action_click'
+
+
+	static event_item_body_mouse_down = 'event_item_body_mouse_down'
 }

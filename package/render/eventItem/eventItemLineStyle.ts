@@ -3,7 +3,7 @@ import { Circle, Rect, SVG } from "@svgdotjs/svg.js";
 import { EventItemRender } from "./eventItemRender";
 
 export class EventItemLineStyle extends EventItemRender {
-	render(): void {
+	renderItem(): void {
 		const { event, index } = this.options
 		const rect = (this.g.find(`.${CssNameKey.event_body}`)[0] || new Rect().addClass(CssNameKey.event_body)) as Rect
 		const width = this.renderer.getWidthByTwoTime(event.start, event.end)
@@ -23,7 +23,6 @@ export class EventItemLineStyle extends EventItemRender {
 		circleRight.cx(circleLeft.cx() + parseFloat(rect.width() + '')).cy(circleLeft.cy()).radius(r)
 		circleLeft.addTo(this.g)
 		circleRight.addTo(this.g)
-
 		if (event.color) {
 			rect.fill(event.color)
 			circleLeft.fill(event.color)
