@@ -137,8 +137,10 @@ export class Gantt extends EventBindingThis {
 
 	status: {
 		eventMoving: boolean
+		eventResizing: boolean
 	} = {
-			eventMoving: false
+			eventMoving: false,
+			eventResizing: false
 		}
 
 	options: DeepRequired<GanttOptions>

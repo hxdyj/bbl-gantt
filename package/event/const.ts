@@ -19,4 +19,6 @@ export class EventBusEventName {
 
 
 	static event_item_body_mouse_down = 'event_item_body_mouse_down'
+	static event_item_left_resize_mouse_down = 'event_item_left_resize_mouse_down'
+	static event_item_right_resize_mouse_down = 'event_item_right_resize_mouse_down'
 }

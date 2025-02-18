@@ -16,7 +16,7 @@ export abstract class EventItemRender extends EventBindingThis {
 		const { event, addTo } = options
 		this.uid = `event-item-` + uid(6)
 		this.g = (addTo.find(`#${event.id}`)[0] || new G().id(event.id)).addClass(CssNameKey.event_item) as G
-		this.bindEventThis(['onBodyMouseDown', 'onBodyMouseEnter', 'onBodyMouseLeave'])
+		this.bindEventThis(['onBodyMouseDown', 'onBodyMouseEnter', 'onBodyMouseLeave', 'onLeftResizeMouseDown', 'onRightResizeMouseDown'])
 		this.render()
 		const { bindEvent = true } = options || {}
 		if (bindEvent) {
@@ -28,6 +28,26 @@ export abstract class EventItemRender extends EventBindingThis {
 	}
 
 	unbindEvent() {
+	}
+
+	onLeftResizeMouseDown(event: Event) {
+		const evt = event as MouseEvent
+		if (evt.button === 0) {
+			this.gantt.eventBus.emit(EventBusEventName.event_item_left_resize_mouse_down, {
+				event,
+				itemRender: this
+			})
+		}
+	}
+
+	onRightResizeMouseDown(event: Event) {
+		const evt = event as MouseEvent
+		if (evt.button === 0) {
+			this.gantt.eventBus.emit(EventBusEventName.event_item_right_resize_mouse_down, {
+				event,
+				itemRender: this
+			})
+		}
 	}
 
 	onBodyMouseDown(event: Event) {
@@ -114,8 +134,11 @@ export abstract class EventItemRender extends EventBindingThis {
 				moveRect.on('mouseenter', this.onBodyMouseEnter)
 				moveRect.on('mouseleave', this.onBodyMouseLeave)
 
+				leftResize.on('mousedown', this.onLeftResizeMouseDown)
 				leftResize.on('mouseenter', this.onBodyMouseEnter)
 				leftResize.on('mouseleave', this.onBodyMouseLeave)
+
+				rightResize.on('mousedown', this.onRightResizeMouseDown)
 				rightResize.on('mouseenter', this.onBodyMouseEnter)
 				rightResize.on('mouseleave', this.onBodyMouseLeave)
 			}
