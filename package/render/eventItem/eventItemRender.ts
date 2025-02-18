@@ -15,11 +15,13 @@ export abstract class EventItemRender extends EventBindingThis {
 		super()
 		const { event, addTo } = options
 		this.uid = `event-item-` + uid(6)
-		this.bindEventThis(['onBodyMouseDown'])
-
 		this.g = (addTo.find(`#${event.id}`)[0] || new G().id(event.id)).addClass(CssNameKey.event_item) as G
+		this.bindEventThis(['onBodyMouseDown'])
 		this.render()
-		this.bindEvent()
+		const { bindEvent = true } = options || {}
+		if (bindEvent) {
+			this.bindEvent()
+		}
 	}
 
 	bindEvent() {
@@ -56,8 +58,17 @@ export abstract class EventItemRender extends EventBindingThis {
 				body.addClass(bodyClassName)
 			}
 
+			const width = this.renderer.getWidthByTwoTime(event.start, event.end)
+			const height = this.gantt.options.row.height
+			const x = this.renderer.getXbyTime(event.start)
+			const y = this.renderer.getYbyIndex(index)
+
 			const moveRect = (this.g.find(`.${CssNameKey.event_move_rect}`)[0] || new Rect().addClass(CssNameKey.event_move_rect)) as Rect
-			moveRect.size(this.renderer.getWidthByTwoTime(event.start, event.end), this.gantt.options.row.height).move(this.renderer.getXbyTime(event.start), this.renderer.getYbyIndex(index)).fill('transparent').addTo(this.g)
+			moveRect.size(width, height).move(x, y).fill('transparent').addTo(this.g)
+
+			const leftResize = (this.g.find(`.${CssNameKey.event_left_reisze}`)[0] || new Rect().addClass(CssNameKey.event_move_rect)) as Rect
+			const rightResize = (this.g.find(`.${CssNameKey.event_right_reisze}`)[0] || new Rect().addClass(CssNameKey.event_move_rect)) as Rect
+
 			if (!this.isRendered) {
 				moveRect.on('mousedown', this.onBodyMouseDown)
 			}

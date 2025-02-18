@@ -21,6 +21,7 @@ export type RenderItemOptions = {
 	addTo: G,
 	gClassName?: string
 	bodyClassName?: string
+	bindEvent?: boolean
 }
 
 
@@ -28,7 +29,7 @@ export type RenderItemOptions = {
 export class EventsRender extends PartRender {
 	constructor(public gantt: Gantt, public renderer: Render) {
 		super(gantt, renderer)
-		this.bindEventThis(['onEventItemBodyMouseDown', 'onContainerMouseMove', 'onContainerMouseUp'])
+		this.bindEventThis(['onEventItemBodyMouseDown', 'onContainerMouseMove', 'onContainerMouseUp', 'onContainerMouseLeave'])
 		this.bindEvent()
 	}
 
@@ -67,12 +68,15 @@ export class EventsRender extends PartRender {
 		this.gantt.on(EventBusEventName.event_item_body_mouse_down, this.onEventItemBodyMouseDown)
 		this.gantt.container.addEventListener('mousemove', this.onContainerMouseMove)
 		this.gantt.container.addEventListener('mouseup', this.onContainerMouseUp)
+		this.gantt.container.addEventListener('mouseleave', this.onContainerMouseLeave)
 	}
 
 	unbindEvent() {
 		this.gantt.off(EventBusEventName.event_item_body_mouse_down, this.onEventItemBodyMouseDown)
 		this.gantt.container.removeEventListener('mousemove', this.onContainerMouseMove)
 		this.gantt.container.removeEventListener('mouseup', this.onContainerMouseUp)
+		this.gantt.container.removeEventListener('mouseleave', this.onContainerMouseLeave)
+
 	}
 
 
@@ -86,34 +90,42 @@ export class EventsRender extends PartRender {
 		event: MouseEvent,
 		itemRender: EventItemRender
 	}) {
+		if (this.gantt.status.eventMoving) {
+			this.onContainerMouseUp()
+			return
+		}
 		const { event, itemRender } = args
 		this.startEvent = event
 		this.itemRender = itemRender
 	}
 
 	onContainerMouseMove(event: MouseEvent) {
-		if (!this.startEvent || !this.itemRender) return
-		this.itemRender.g.hide()
+		if (event.button === 0) {
+			if (!this.startEvent || !this.itemRender) return
+			this.itemRender.g.hide()
 
-		const { x: eventX } = this.gantt.stage.point(event.clientX, event.clientY)
-		const { x: startEventX } = this.gantt.stage.point(this.startEvent.clientX, this.startEvent.clientY)
+			const { x: eventX } = this.gantt.stage.point(event.clientX, event.clientY)
+			const { x: startEventX } = this.gantt.stage.point(this.startEvent.clientX, this.startEvent.clientY)
 
-		const newX = (eventX - startEventX)
-		if (!this.tmpItem) {
-			//@ts-ignore
-			const cls = this.itemRender.__proto__.constructor
-			const options = cloneDeep(this.itemRender.options)
-			options.event.id = `tmp-${options.event.id}`
-			this.tmpItem = new cls(this.gantt, this.renderer, options)
+			const newX = (eventX - startEventX)
+			if (!this.tmpItem) {
+				//@ts-ignore
+				const cls = this.itemRender.__proto__.constructor
+				const options = cloneDeep(this.itemRender.options)
+				options.event.id = `tmp-${options.event.id}`
+				options.bindEvent = false
+				this.tmpItem = new cls(this.gantt, this.renderer, options)
+			}
+
+			this.tmpItem?.g.transform({
+				translate: [newX, 0]
+			})
+			this.gantt.status.eventMoving = true
 		}
-
-		this.tmpItem?.g.transform({
-			translate: [newX, 0]
-		})
-		this.gantt.status.eventMoving = true
 	}
 
-	onContainerMouseUp(event: MouseEvent) {
+	onContainerMouseUp() {
+
 		if (!this.startEvent || !this.itemRender || !this.tmpItem) return
 		const { translateX = 0 } = this.tmpItem.g.transform()
 		const anchor = this.itemRender.g.find(`.${CssNameKey.event_anchor}`)[0]
@@ -132,6 +144,10 @@ export class EventsRender extends PartRender {
 		this.itemRender.render()
 		this.itemRender = null
 		this.gantt.status.eventMoving = false
+	}
+
+	onContainerMouseLeave() {
+		this.onContainerMouseUp()
 	}
 
 	render() {

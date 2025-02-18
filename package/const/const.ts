@@ -23,6 +23,8 @@ export class CssNameKey {
 	static events = 'events'
 	static event_anchor = 'event-anchor'
 	static event_body = 'event_body'
+	static event_left_reisze = 'event_left_reisze'
+	static event_right_reisze = 'event_right_reisze'
 	static event_move_rect = 'event_move_rect'
 	static event_style_rect = 'style-rect'
 	static event_style_rect_bar = 'event-style-rect-bar'
