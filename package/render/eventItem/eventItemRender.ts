@@ -16,7 +16,7 @@ export abstract class EventItemRender extends EventBindingThis {
 		const { event, addTo } = options
 		this.uid = `event-item-` + uid(6)
 		this.g = (addTo.find(`#${event.id}`)[0] || new G().id(event.id)).addClass(CssNameKey.event_item) as G
-		this.bindEventThis(['onBodyMouseDown'])
+		this.bindEventThis(['onBodyMouseDown', 'onBodyMouseEnter', 'onBodyMouseLeave'])
 		this.render()
 		const { bindEvent = true } = options || {}
 		if (bindEvent) {
@@ -40,11 +40,37 @@ export abstract class EventItemRender extends EventBindingThis {
 		}
 	}
 
+	onBodyMouseEnter(event: Event) {
+		const evt = event as MouseEvent
+		const { leftResize, rightResize } = this.svgjsInstance
+		leftResize?.show()
+		rightResize?.show()
+	}
 
+	onBodyMouseLeave(event: Event) {
+		const evt = event as MouseEvent
+		const { leftResize, rightResize } = this.svgjsInstance
+		leftResize?.hide()
+		rightResize?.hide()
+	}
+
+
+	svgjsInstance: {
+		anchor: Rect | null
+		moveRect: Rect | null
+		leftResize: Rect | null
+		rightResize: Rect | null
+	} = {
+			anchor: null,
+			moveRect: null,
+			leftResize: null,
+			rightResize: null
+		}
 	renderViewAnchor(parent: Element, event: _GanttEventItem, index: number) {
-		const anchor = (parent.find(`.${CssNameKey.event_anchor}`)[0] || new Rect().addClass(CssNameKey.event_anchor)) as Element
+		const anchor = (parent.find(`.${CssNameKey.event_anchor}`)[0] || new Rect().addClass(CssNameKey.event_anchor)) as Rect
 		anchor.size(1, this.gantt.options.row.height).move(this.renderer.getXbyTime(event.start), this.renderer.getYbyIndex(index)).opacity(0)
 		anchor.addTo(parent)
+		this.svgjsInstance.anchor = anchor
 	}
 
 	render() {
@@ -66,11 +92,26 @@ export abstract class EventItemRender extends EventBindingThis {
 			const moveRect = (this.g.find(`.${CssNameKey.event_move_rect}`)[0] || new Rect().addClass(CssNameKey.event_move_rect)) as Rect
 			moveRect.size(width, height).move(x, y).fill('transparent').addTo(this.g)
 
-			const leftResize = (this.g.find(`.${CssNameKey.event_left_reisze}`)[0] || new Rect().addClass(CssNameKey.event_move_rect)) as Rect
-			const rightResize = (this.g.find(`.${CssNameKey.event_right_reisze}`)[0] || new Rect().addClass(CssNameKey.event_move_rect)) as Rect
+			const leftResize = (this.g.find(`.${CssNameKey.event_left_reisze}`)[0] || new Rect().addClass(CssNameKey.event_left_reisze).addClass(CssNameKey.event_reisze)) as Rect
+			const rightResize = (this.g.find(`.${CssNameKey.event_right_reisze}`)[0] || new Rect().addClass(CssNameKey.event_right_reisze).addClass(CssNameKey.event_reisze)) as Rect
+
+			const resizeWidth = 6
+			const resizeHeight = height / 4
+			const resizeY = y + (height - resizeHeight) / 2
+			leftResize.size(resizeWidth, resizeHeight).move(x, resizeY).radius(3).hide()
+			rightResize.size(resizeWidth, resizeHeight).move(x + width - resizeWidth, resizeY).radius(3).hide()
+
+			leftResize.addTo(this.g)
+			rightResize.addTo(this.g)
+
+			this.svgjsInstance.moveRect = moveRect
+			this.svgjsInstance.leftResize = leftResize
+			this.svgjsInstance.rightResize = rightResize
 
 			if (!this.isRendered) {
 				moveRect.on('mousedown', this.onBodyMouseDown)
+				moveRect.on('mouseenter', this.onBodyMouseEnter)
+				moveRect.on('mouseleave', this.onBodyMouseLeave)
 			}
 		}
 		if (!this.isRendered) {

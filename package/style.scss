@@ -19,6 +19,26 @@
 	--gantt-event-item-style-rect-color: #165dff;
 	--gantt-event-item-style-line-color: var(--gantt-event-item-style-rect-color);
 
+	--gantt-event-item-resize-color: white;
+	--gantt-event-item-resize-stroke-width: 1;
+
+	--gantt-event-item-left-resize-stroke-width: var(
+		--gantt-event-item-resize-stroke-width
+	);
+	--gantt-event-item-right-resize-stroke-width: var(
+		--gantt-event-item-resize-stroke-width
+	);
+
+	--gantt-event-item-resize-stroke-color: var(
+		--gantt-event-item-style-rect-color
+	);
+	--gantt-event-item-left-resize-stroke-color: var(
+		--gantt-event-item-resize-stroke-color
+	);
+	--gantt-event-item-right-resize-stroke-color: var(
+		--gantt-event-item-resize-stroke-color
+	);
+
 	--gantt-scrollbar-thumb-bg-color: rgb(201, 205, 212);
 }
 
@@ -83,6 +103,13 @@
 			.event-item {
 				fill: var(--gantt-event-item-style-rect-color);
 				cursor: move;
+
+				.event_reisze {
+					fill: var(--gantt-event-item-resize-color);
+					stroke: var(--gantt-event-item-resize-stroke-color);
+					stroke-width: var(--gantt-event-item-resize-stroke-width);
+					cursor: ew-resize;
+				}
 			}
 			.event-text {
 				color: var(--gantt-event-item-style-rect-text-color);
