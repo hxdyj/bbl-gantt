@@ -138,11 +138,11 @@ export class EventsRender extends PartRender {
 		}
 
 		if (this.operateType === 'left-resize') {
-			this.onTypeLeftResizeMouseMove(event)
+			this.onTypeResizeMouseMove(event, true)
 		}
 
 		if (this.operateType === 'right-resize') {
-			this.onTypeRightResizeMouseMove(event)
+			this.onTypeResizeMouseMove(event)
 		}
 	}
 
@@ -152,11 +152,11 @@ export class EventsRender extends PartRender {
 		}
 
 		if (this.operateType === 'left-resize') {
-			this.onTypeLeftResizeMouseUp()
+			this.onTypeResizeMouseUp()
 		}
 
 		if (this.operateType === 'right-resize') {
-			this.onTypeRightResizeMouseUp()
+			this.onTypeResizeMouseUp()
 		}
 		this.operateType = null
 	}
@@ -201,21 +201,50 @@ export class EventsRender extends PartRender {
 		}
 	}
 
+	onTypeResizeMouseMove(event: MouseEvent, start = false) {
+		if (!this.startEvent || !this.itemRender) return
+		const { x: eventX } = this.gantt.stage.point(event.clientX, event.clientY)
+		const { x: startEventX } = this.gantt.stage.point(this.startEvent.clientX, this.startEvent.clientY)
+		const diffX = (eventX - startEventX)
+		this.itemRender.g.hide()
 
-	onTypeLeftResizeMouseMove(event: MouseEvent) {
+		this.createTmpItem()
 
+		if (!this.tmpItem) return
+		if (start) {
+			this.tmpItem.options.event.start = this.itemRender.options.event.start.add(this.gantt.time.x2milliseconds(diffX), 'millisecond')
+		} else {
+			this.tmpItem.options.event.end = this.itemRender.options.event.end.add(this.gantt.time.x2milliseconds(diffX), 'millisecond')
+		}
+		this.tmpItem.render()
+		this.tmpItem.svgjsInstance.rightResize?.show()
+		this.tmpItem.svgjsInstance.leftResize?.show()
+		this.gantt.status.eventResizing = true
+		document.body.style.cursor = 'ew-resize'
 	}
 
-	onTypeLeftResizeMouseUp() {
+	onTypeResizeMouseUp() {
+		if (!this.startEvent || !this.itemRender || !this.tmpItem) return
 
-	}
+		const newEventData = cloneDeep(this.tmpItem.options.event)
 
-	onTypeRightResizeMouseMove(event: MouseEvent) {
+		if (newEventData.start.isAfter(newEventData.end)) {
+			const end = newEventData.end
+			newEventData.end = newEventData.start
+			newEventData.start = end
+		}
 
-	}
+		this.itemRender.options.event.start = newEventData.start
+		this.itemRender.options.event.end = newEventData.end
 
-	onTypeRightResizeMouseUp() {
-
+		this.startEvent = null
+		this.tmpItem?.destroy()
+		this.tmpItem = null
+		this.itemRender.g.show()
+		this.itemRender.render()
+		this.itemRender = null
+		this.gantt.status.eventResizing = false
+		document.body.style.cursor = 'auto'
 	}
 
 

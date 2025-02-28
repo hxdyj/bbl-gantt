@@ -87,8 +87,9 @@ export abstract class EventItemRender extends EventBindingThis {
 			rightResize: null
 		}
 	renderViewAnchor(parent: Element, event: _GanttEventItem, index: number) {
+		const { start, end } = getStartAndEndTime(event)
 		const anchor = (parent.find(`.${CssNameKey.event_anchor}`)[0] || new Rect().addClass(CssNameKey.event_anchor)) as Rect
-		anchor.size(1, this.gantt.options.row.height).move(this.renderer.getXbyTime(event.start), this.renderer.getYbyIndex(index)).opacity(0)
+		anchor.size(1, this.gantt.options.row.height).move(this.renderer.getXbyTime(start), this.renderer.getYbyIndex(index)).opacity(0)
 		anchor.addTo(parent)
 		this.svgjsInstance.anchor = anchor
 	}
@@ -103,10 +104,11 @@ export abstract class EventItemRender extends EventBindingThis {
 			if (bodyClassName) {
 				body.addClass(bodyClassName)
 			}
+			const { start, end } = getStartAndEndTime(event)
 
-			const width = this.renderer.getWidthByTwoTime(event.start, event.end)
+			const width = this.renderer.getWidthByTwoTime(start, end)
 			const height = this.gantt.options.row.height
-			const x = this.renderer.getXbyTime(event.start)
+			const x = this.renderer.getXbyTime(start)
 			const y = this.renderer.getYbyIndex(index)
 
 			const moveRect = (this.g.find(`.${CssNameKey.event_move_rect}`)[0] || new Rect().addClass(CssNameKey.event_move_rect)) as Rect
@@ -154,5 +156,23 @@ export abstract class EventItemRender extends EventBindingThis {
 	destroy() {
 		this.unbindEvent()
 		this.g.remove()
+	}
+}
+
+
+export function getStartAndEndTime(event: _GanttEventItem) {
+	const { start, end } = event
+	const isStartAfterEnd = start.isAfter(end)
+
+	if (isStartAfterEnd) {
+		return {
+			start: end.clone(),
+			end: start.clone()
+		}
+	} else {
+		return {
+			start: start.clone(),
+			end: end.clone()
+		}
 	}
 }

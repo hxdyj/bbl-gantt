@@ -137,6 +137,13 @@ export function Base() {
 							setTickWidth(val)
 						}} />
 					</OperateGroup>
+					<OperateGroup desc="data">
+						<Button.Group>
+							<Button onClick={() => {
+								console.log(gantt.current?.list)
+							}}>Console List</Button>
+						</Button.Group>
+					</OperateGroup>
 				</Space>
 			</div>
 			<div className="h-[60vh] w-full" ref={containerRef}>

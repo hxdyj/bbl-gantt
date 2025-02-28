@@ -42,6 +42,10 @@ export class Time {
 		return _startTime.add((x / this.gantt.options.column.width) * this.stepTime, 'millisecond')
 	}
 
+	x2milliseconds(x: number): number {
+		return (x / this.gantt.options.column.width) * this.stepTime
+	}
+
 	caculateTicks(minTime: Dayjs, maxTime: Dayjs) {
 		let startTime = dayjs(minTime)
 		let endTime = dayjs(maxTime)

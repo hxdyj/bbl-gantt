@@ -1,13 +1,15 @@
 import { CssNameKey } from "#/const/const";
 import { Circle, G, Rect, SVG } from "@svgdotjs/svg.js";
-import { EventItemRender } from "./eventItemRender";
+import { EventItemRender, getStartAndEndTime } from "./eventItemRender";
 
 export class EventItemRectStyle extends EventItemRender {
 	renderItem(): void {
 		const { event, index } = this.options
+		const { start, end } = getStartAndEndTime(event)
+
 		const rect = (this.g.find(`.${CssNameKey.event_body}`)[0] || new Rect().addClass(CssNameKey.event_body)) as Rect
-		const width = this.renderer.getWidthByTwoTime(event.start, event.end)
-		const x = this.renderer.getXbyTime(event.start)
+		const width = this.renderer.getWidthByTwoTime(start, end)
+		const x = this.renderer.getXbyTime(start)
 		const y = this.renderer.getYbyIndex(index) + (this.gantt.options.row.height / 4)
 
 		const height = this.gantt.options.row.height / 2
