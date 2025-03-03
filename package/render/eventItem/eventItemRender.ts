@@ -61,6 +61,7 @@ export abstract class EventItemRender extends EventBindingThis {
 	}
 
 	onBodyMouseEnter(event: Event) {
+		if (this.gantt.status.eventResizing) return
 		const evt = event as MouseEvent
 		const { leftResize, rightResize } = this.svgjsInstance
 		leftResize?.show()
@@ -68,6 +69,7 @@ export abstract class EventItemRender extends EventBindingThis {
 	}
 
 	onBodyMouseLeave(event: Event) {
+		if (this.gantt.status.eventResizing) return
 		const evt = event as MouseEvent
 		const { leftResize, rightResize } = this.svgjsInstance
 		leftResize?.hide()
