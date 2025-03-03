@@ -18,8 +18,9 @@ export class EventItemLineStyle extends EventItemRender {
 		const r = 4
 		const circleLeft = (this.g.find(`.${CssNameKey.event_style_line_circle_left}`)[0] || new Circle().addClass(CssNameKey.event_style_line_circle_left)) as Circle
 		const circleRight = (this.g.find(`.${CssNameKey.event_style_line_circle_right}`)[0] || new Circle().addClass(CssNameKey.event_style_line_circle_right)) as Circle
-
-		rect.size(width - 2 * r, height)
+		let rectWidth = width - 2 * r
+		if (rectWidth < 0) rectWidth = 0
+		rect.size(rectWidth, height)
 			.move(x + r, y)
 		rect.addTo(this.g)
 
