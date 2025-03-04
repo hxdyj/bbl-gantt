@@ -51,7 +51,6 @@ export class Render extends EventBindingThis {
 			ganttBox = this.caculateGanttBox()
 		}
 
-
 		this.gantt.body.style.width = `${width}px`
 		this.gantt.body.style.height = `${height}px`
 

@@ -1,4 +1,6 @@
 :root {
+	--gantt-scroll-bar-width: 12px;
+	--gantt-scroll-bar-height: var(--gantt-scroll-bar-width);
 	--gantt-bg-color: #e5e6eb;
 	--gantt-tick-color: #86909c;
 	--gantt-header-tick-color: var(--gantt-tick-color);
@@ -44,6 +46,9 @@
 }
 
 .bbl-gantt-container {
+	overflow: auto;
+	max-width: 100%;
+	height: 100%;
 	&:hover {
 		&::-webkit-scrollbar-thumb {
 			background-color: var(--gantt-scrollbar-thumb-bg-color);
@@ -57,8 +62,8 @@
 	}
 
 	&::-webkit-scrollbar {
-		width: 12px;
-		height: 12px;
+		width: var(--gantt-scroll-bar-width);
+		height: var(--gantt-scroll-bar-height);
 	}
 
 	.row-bg {

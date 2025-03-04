@@ -70,7 +70,7 @@ export const routes: IRoute[] = [
 								path: '/demo/duration',
 								element: <Duration />,
 								meta: {
-									title: 'base',
+									title: 'duration',
 									menuShow: true,
 									noLogin: false,
 									icon: <IconFont type="icon-demo" style={{ fontSize: '18px' }} />,

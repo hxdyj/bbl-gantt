@@ -46,8 +46,20 @@ export type Column = {
 	}
 }
 
+export enum GanttMode {
+	Normal = 'normal',
+	Duration = 'duration'
+}
+
 export type ContainerType = string | HTMLElement
-export type GanttOptions = {
+
+
+export type DurationModeOptions = {
+	duration: number //总时长 以秒为单位，小数后三位为毫秒 如：56.321
+}
+
+
+export type _GanttOptions = {
 	el: ContainerType
 	column?: DeepPartial<Column>
 	row?: {
@@ -59,9 +71,20 @@ export type GanttOptions = {
 	data: GanttItem[]
 }
 
+export type GanttOptions =
+	(_GanttOptions & {
+		mode?: GanttMode.Normal
+	})
+	|
+	(_GanttOptions & {
+		mode: GanttMode.Duration,
+		durationModeOptions: DurationModeOptions
+	})
+
 
 export const defaultGanttOptions: DeepPartial<GanttOptions> = {
 	data: [],
+	mode: GanttMode.Normal,
 	column: {
 		width: 80,
 		timeMetric: TimeMetric.HOUR,
@@ -128,6 +151,7 @@ export class Gantt extends EventBindingThis {
 	id: string;
 	data: GanttItem[] = []
 	list: _GanttItem[] = []
+	parentContainer: HTMLElement;
 	container: HTMLElement;
 	body: HTMLElement;
 	stage: Svg;
@@ -144,6 +168,7 @@ export class Gantt extends EventBindingThis {
 		}
 
 	options: DeepRequired<GanttOptions>
+	parentContainerRectInfo: ReturnType<typeof getContainerInfo>
 	containerRectInfo: ReturnType<typeof getContainerInfo>
 	view: View
 	time: Time
@@ -152,12 +177,21 @@ export class Gantt extends EventBindingThis {
 		super()
 		this.id = uid(6)
 		options.data = cloneDeep(options.data || [])
-		this.options = defaultsDeep(options, defaultGanttOptions)
+
+		this.options = defaultsDeep({}, options, defaultGanttOptions)
+
+		if (options.mode == GanttMode.Duration) {
+			if (!options.column?.padding) {
+				this.options.column.padding.left = 0
+				this.options.column.padding.right = 0
+			}
+		}
+
 		if (!this.options.el) {
 			throw new Error('Container must be provided')
 		}
-		this.container = getElement(this.options.el as ContainerType)
-
+		this.parentContainer = getElement(this.options.el as ContainerType)
+		this.container = createOrGetEle(CssNameKey.container, this.parentContainer)
 		this.body = createOrGetEle(CssNameKey.body, this.container)
 		ganttManager.addNewInstance(this)
 
@@ -167,13 +201,11 @@ export class Gantt extends EventBindingThis {
 			throw new Error('Container not found')
 		}
 
-		this.container.classList.add(CssNameKey.container)
-
+		this.parentContainerRectInfo = getContainerInfo(this.parentContainer)
 		this.containerRectInfo = getContainerInfo(this.container)
-		this.container.style.maxWidth = `100%`
-		this.container.style.height = `${this.containerRectInfo.height}px`
-		this.container.style.overflow = 'auto'
-		console.log('init containerRectInfo', this.id, this.containerRectInfo)
+		this.caculateContainerInfo()
+
+		console.log('init containerRectInfo', this.id)
 		this.stage = SVG()
 		this.bindEventThis([])
 		this.init()
@@ -198,11 +230,64 @@ export class Gantt extends EventBindingThis {
 	}
 
 	bindEvent() {
-		this.containerResizeObserver.observe(this.container)
+		this.parentContainerResizeObserver.observe(this.parentContainer)
 	}
 
 	unbindEvent() {
-		this.containerResizeObserver.disconnect()
+		this.parentContainerResizeObserver.disconnect()
+	}
+
+
+	caculateContainerInfo() {
+		const contentHeight = this.list.length * this.options.row.height + this.options.header.height
+		console.log('contentHeight', this.list.length, contentHeight)
+		if (!this.parentContainerRectInfo.height) {
+			this.parentContainer.style.height = `${contentHeight}px`
+		}
+
+		this.parentContainerRectInfo = getContainerInfo(this.parentContainer)
+		this.containerRectInfo = getContainerInfo(this.container)
+
+
+		let finalHeight = this.list.length ? contentHeight : this.parentContainerRectInfo.height
+
+		const documentBodyComputedStyle = getComputedStyle(document.body)
+
+		// const scrollBarWidth = parseInt(documentBodyComputedStyle.getPropertyValue('--gantt-scroll-bar-width'));
+		const scrollBarHeight = parseInt(documentBodyComputedStyle.getPropertyValue('--gantt-scroll-bar-height'));
+
+		const containerReduceScrollBarHeight = this.containerRectInfo.height - scrollBarHeight
+
+		if (this.list.length && containerReduceScrollBarHeight > contentHeight) {
+			finalHeight = contentHeight
+			console.log(111)
+
+		}
+
+		if (
+			(this.containerRectInfo.height
+				&& this.parentContainerRectInfo.height
+				&& containerReduceScrollBarHeight > this.parentContainerRectInfo.height)
+			||
+			(finalHeight > this.parentContainerRectInfo.height)
+		) {
+			finalHeight = this.parentContainerRectInfo.height
+			console.log(222)
+		}
+
+
+		this.containerRectInfo.height = finalHeight
+
+		// const containerWidth = `${this.parentContainerRectInfo.width}px`
+		// const containerHeight = `${this.containerRectInfo.height}px`
+
+		const containerWidth = `calc(${this.parentContainerRectInfo.width}px + var(--gantt-scroll-bar-width))`
+		const containerHeight = `calc(${this.containerRectInfo.height}px + var(--gantt-scroll-bar-height))`
+		this.container.style.height = containerHeight
+		this.container.style.maxHeight = containerHeight
+		this.container.style.width = containerWidth
+		this.container.style.maxWidth = containerWidth
+		this.container.style.overflow = `auto`
 	}
 
 
@@ -214,19 +299,20 @@ export class Gantt extends EventBindingThis {
 		Object.assign(this, omit(new constructor(_options), 'uid'))
 	}
 
-	protected containerResizeObserverCallback: ResizeObserverCallback = (entries: any) => {
-		if (entries[0]?.target === this.container) {
-			this.containerRectInfo = getContainerInfo(this.container)
+	protected parentContainerResizeObserverCallback: ResizeObserverCallback = (entries: any) => {
+		if (entries[0]?.target === this.parentContainer) {
+			this.parentContainerRectInfo = getContainerInfo(this.parentContainer)
+			this.caculateContainerInfo()
 			if (Date.now() - this.createTime < 300) {
 				console.log('inital resize')
 				this.time.init()
 			}
 			this.render.render()
-			console.log('containerResizeObserverCallback', this.containerRectInfo, Date())
+			console.log('parentContainerResizeObserverCallback', this.parentContainerRectInfo, Date())
 		}
 	}
 
-	protected containerResizeObserver = new ResizeObserver(this.containerResizeObserverCallback)
+	protected parentContainerResizeObserver = new ResizeObserver(this.parentContainerResizeObserverCallback)
 
 
 	destroy() {

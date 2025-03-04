@@ -1,4 +1,4 @@
-import { CssNameKey } from "#/const/const";
+import { CssNameKey } from "../../const/const";
 import { Circle, Rect, SVG } from "@svgdotjs/svg.js";
 import { EventItemRender, getStartAndEndTime } from "./eventItemRender";
 

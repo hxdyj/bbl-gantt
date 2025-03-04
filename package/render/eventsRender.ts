@@ -7,7 +7,7 @@ import { EventItemRender } from "./eventItem/eventItemRender";
 import { EventItemLineStyle } from "./eventItem/eventItemLineStyle";
 import { EventItemRectStyle } from "./eventItem/eventItemRectStyle";
 import { cloneDeep } from "lodash-es";
-import { EventBusEventName } from "#/event/const";
+import { EventBusEventName } from "../event/const";
 export enum EventShapeType {
 	rect = 'rect',
 	line = 'line'

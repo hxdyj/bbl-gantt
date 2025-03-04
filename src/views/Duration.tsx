@@ -1,8 +1,8 @@
 import { Button, Input, InputNumber, Select, Space } from "@arco-design/web-react"
 import { useEffect, useRef, useState } from "react"
 import { OperateGroup } from "../components/OperateGroup"
-import Gantt, { GanttItem, TimeMetric } from "#/index"
-import { ganttData } from "../data/ganttData-full"
+import Gantt, { GanttItem, GanttMode, TimeMetric } from "#/index"
+import { ganttData } from "../data/ganttData-duration"
 import { getUID, walkData } from "#/utils/data"
 
 walkData(ganttData as unknown as GanttItem[], ({ item }) => {
@@ -20,6 +20,10 @@ export function Duration() {
 		if (!containerRef.current) throw new Error("containerRef is null")
 		gantt.current = new Gantt({
 			el: containerRef.current,
+			mode: GanttMode.Duration,
+			durationModeOptions: {
+				duration: 50.236
+			},
 			data,
 			column: {
 				width: 30,

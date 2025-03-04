@@ -1,11 +1,11 @@
-import { CssNameKey } from "#/const/const";
-import { EventBindingThis } from "#/event";
+import { CssNameKey } from "../../const/const";
+import { EventBindingThis } from "../../event";
 import { Rect, Element, G } from "@svgdotjs/svg.js";
 import Gantt, { _GanttEventItem } from "../..";
 import { RenderItemOptions } from "../eventsRender";
 import { Render } from "#/render";
 import { uid } from 'uid';
-import { EventBusEventName } from "#/event/const";
+import { EventBusEventName } from "../../event/const";
 
 export abstract class EventItemRender extends EventBindingThis {
 	uid: string
