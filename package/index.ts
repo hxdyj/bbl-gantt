@@ -260,8 +260,6 @@ export class Gantt extends EventBindingThis {
 
 		if (this.list.length && containerReduceScrollBarHeight > contentHeight) {
 			finalHeight = contentHeight
-			console.log(111)
-
 		}
 
 		if (
@@ -272,7 +270,6 @@ export class Gantt extends EventBindingThis {
 			(finalHeight > this.parentContainerRectInfo.height)
 		) {
 			finalHeight = this.parentContainerRectInfo.height
-			console.log(222)
 		}
 
 
