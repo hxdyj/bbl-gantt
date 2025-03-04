@@ -1,6 +1,7 @@
 import dayjs, { Dayjs, ManipulateType, OpUnitType } from "dayjs";
 import Gantt, { TimeMetric, TimeScale } from "./index";
 import { last } from "lodash-es";
+import { FORMAT_FULL_TIME } from "./utils/time";
 export type Tick = {
 	time: Dayjs
 }
@@ -88,7 +89,7 @@ export class Time {
 			}
 		}
 		this.fixUnit = fixUnit
-		console.log(`startTime,endTime`, startTime.format(), endTime.format())
+		console.log(`startTime,endTime`, startTime.format(FORMAT_FULL_TIME), endTime.format(FORMAT_FULL_TIME))
 		console.log(`fixUnit`, fixUnit)
 		{
 			this.ticks = []

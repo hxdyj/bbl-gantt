@@ -1,6 +1,8 @@
 import dayjs from "dayjs";
-import { _GanttItem, GanttItem } from "..";
+import { _GanttItem, GanttItem, GanttMode, GanttOptions } from "../index";
 import { uid } from "uid";
+import { DeepRequired } from "utility-types";
+import { getDurationStartTime } from "./time";
 export function getUID() {
 	return `gantt-uid-${uid(6)}`
 }
@@ -30,10 +32,13 @@ export function walkData(
 1. 获取最大时间和最小时间
 2. 将嵌套的数组展开成一维数组
 */
-export function initDealData(data: GanttItem[]) {
+export function initDealData(data: GanttItem[], options: DeepRequired<GanttOptions>) {
 	let maxTime = -Infinity
 	let minTime = Infinity
 	let list: _GanttItem[] = []
+
+	const isDuration = options.mode == GanttMode.Duration
+
 	walkData(data, ({ item, level, parent }) => {
 		item.level = level
 		if (parent) {
@@ -44,8 +49,8 @@ export function initDealData(data: GanttItem[]) {
 		let maxEnd = -Infinity
 
 		item.events.forEach(ev => {
-			ev.start = dayjs(ev.start)
-			ev.end = dayjs(ev.end)
+			ev.start = isDuration ? getDurationStartTime(ev.start as number) : dayjs(ev.start)
+			ev.end = isDuration ? getDurationStartTime(ev.end as number) : dayjs(ev.end)
 			if (ev.start.valueOf() < minStart.valueOf()) {
 				minStart = ev.start.valueOf()
 			}

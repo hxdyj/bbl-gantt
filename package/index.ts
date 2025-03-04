@@ -22,6 +22,7 @@ import { Time } from "./time";
 import { Render } from "./render";
 import './style.scss'
 import { EventShapeType } from './render/eventsRender';
+import { FORMAT_FULL_TIME, getDurationStartTime } from "./utils/time";
 export enum TimeMetric {
 	MINUTE = 'MINUTE',
 	QUARTER_HOUR = 'QUARTER_HOUR',
@@ -221,9 +222,16 @@ export class Gantt extends EventBindingThis {
 
 	protected init() {
 		if (this.destroyed) return
-		const { minTime, maxTime, list } = initDealData(this.options.data)
+		const { minTime, maxTime, list } = initDealData(this.options.data, this.options)
 		this.minTime = minTime
 		this.maxTime = maxTime
+
+		if (this.options.mode == GanttMode.Duration) {
+			this.minTime = getDurationStartTime()
+			this.maxTime = getDurationStartTime(this.options.durationModeOptions.duration)
+			console.log('Duration min max time', this.minTime.format(FORMAT_FULL_TIME), this.maxTime.format(FORMAT_FULL_TIME))
+		}
+
 		this.list = list
 		console.log(`init deal data`, minTime, maxTime, cloneDeep(list))
 		// this.eventBus.emit(EventBusEventName.init, this)

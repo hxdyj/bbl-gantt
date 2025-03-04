@@ -79,7 +79,14 @@ export class HeaderRender extends PartRender {
 			weight: 'bold'
 		})
 		const textBox = text.bbox()
-		text.move(x - textBox.width / 2, 4 + this.gantt.container.scrollTop)
+		let textX = x - textBox.width / 2
+		let textPad = 10
+
+		if (textX < 0) textX = textPad
+		if ((textX + textBox.width) > this.gantt.body.clientWidth) {
+			textX = this.gantt.body.clientWidth - textBox.width - textPad
+		}
+		text.move(textX, 4 + this.gantt.container.scrollTop)
 		text.attr({
 			style: 'user-select:none;'
 		})
