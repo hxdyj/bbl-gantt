@@ -5,6 +5,7 @@ import App from '../App'
 import { AppError } from '../views/Error/Error'
 import { IconFont } from '../components/Iconfont'
 import { Base } from '../views/Base'
+import { Duration } from '../views/Duration'
 
 interface CustomRouteFields {
 	meta?: {
@@ -58,6 +59,16 @@ export const routes: IRoute[] = [
 								childIndexRoute: true,
 								path: '/demo/base',
 								element: <Base />,
+								meta: {
+									title: 'base',
+									menuShow: true,
+									noLogin: false,
+									icon: <IconFont type="icon-demo" style={{ fontSize: '18px' }} />,
+								},
+							},
+							{
+								path: '/demo/duration',
+								element: <Duration />,
 								meta: {
 									title: 'base',
 									menuShow: true,

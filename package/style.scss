@@ -5,6 +5,7 @@
 	--gantt-header-text-color: #4e5969;
 
 	--gantt-row-line-color: var(--gantt-tick-color);
+	--gantt-row-bg-color: transparent;
 
 	--gantt-current-time-line-stroke-width: 1;
 	--gantt-current-time-line-stroke-color: #ff7d00;
@@ -58,6 +59,10 @@
 	&::-webkit-scrollbar {
 		width: 12px;
 		height: 12px;
+	}
+
+	.row-bg {
+		fill: var(--gantt-row-bg-color);
 	}
 
 	.bbl-gantt-body {

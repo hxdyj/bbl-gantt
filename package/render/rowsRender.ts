@@ -17,7 +17,7 @@ export class RowsRender extends PartRender {
 
 			if (row.bg) {
 				const bgClassName = `row-bg-${row.id}`
-				const bgRect = g.find(`.${bgClassName}`)[0] || new Rect().addClass(bgClassName).addClass(row.bg)
+				const bgRect = g.find(`.${bgClassName}`)[0] || new Rect().addClass('row-bg').addClass(bgClassName).addClass(row.bg)
 				bgRect.size(this.gantt.stage.width(), this.gantt.options.row.height).move(0, this.renderer.getYbyIndex(index)).opacity(0.5)
 				bgRect.addTo(g)
 			}
