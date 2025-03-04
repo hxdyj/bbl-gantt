@@ -1,6 +1,4 @@
 :root {
-	--gantt-scroll-bar-width: 12px;
-	--gantt-scroll-bar-height: var(--gantt-scroll-bar-width);
 	--gantt-bg-color: #e5e6eb;
 	--gantt-tick-color: #86909c;
 	--gantt-header-tick-color: var(--gantt-tick-color);
@@ -42,7 +40,13 @@
 		--gantt-event-item-resize-stroke-color
 	);
 
-	--gantt-scrollbar-thumb-bg-color: rgb(201, 205, 212);
+	--gantt-scrollbar-width: 12px;
+	--gantt-scrollbar-height: var(--gantt-scrollbar-width);
+	--gantt-scrollbar-thumb-bg-clip: padding-box;
+	--gantt-scrollbar-thumb-bg-color: transparent;
+	--gantt-scrollbar-thumb-bg-hover-color: rgb(201, 205, 212);
+	--gantt-scrollbar-thumb-border: 4px solid transparent;
+	--gantt-scrollbar-thumb-border-radius: 7px;
 }
 
 .bbl-gantt-container {
@@ -51,19 +55,19 @@
 	height: 100%;
 	&:hover {
 		&::-webkit-scrollbar-thumb {
-			background-color: var(--gantt-scrollbar-thumb-bg-color);
+			background-color: var(--gantt-scrollbar-thumb-bg-hover-color);
 		}
 	}
 	&::-webkit-scrollbar-thumb {
-		border: 4px solid transparent;
-		background-clip: padding-box;
-		border-radius: 7px;
-		background-color: transparent;
+		border: var(--gantt-scrollbar-thumb-border);
+		background-clip: var(--gantt-scrollbar-thumb-bg-clip);
+		border-radius: var(--gantt-scrollbar-thumb-border-radius);
+		background-color: var(--gantt-scrollbar-thumb-bg-color);
 	}
 
 	&::-webkit-scrollbar {
-		width: var(--gantt-scroll-bar-width);
-		height: var(--gantt-scroll-bar-height);
+		width: var(--gantt-scrollbar-width);
+		height: var(--gantt-scrollbar-height);
 	}
 
 	.row-bg {

@@ -253,8 +253,8 @@ export class Gantt extends EventBindingThis {
 
 		const documentBodyComputedStyle = getComputedStyle(document.body)
 
-		// const scrollBarWidth = parseInt(documentBodyComputedStyle.getPropertyValue('--gantt-scroll-bar-width'));
-		const scrollBarHeight = parseInt(documentBodyComputedStyle.getPropertyValue('--gantt-scroll-bar-height'));
+		// const scrollBarWidth = parseInt(documentBodyComputedStyle.getPropertyValue('--gantt-scrollbar-width'));
+		const scrollBarHeight = parseInt(documentBodyComputedStyle.getPropertyValue('--gantt-scrollbar-height'));
 
 		const containerReduceScrollBarHeight = this.containerRectInfo.height - scrollBarHeight
 
@@ -281,8 +281,8 @@ export class Gantt extends EventBindingThis {
 		// const containerWidth = `${this.parentContainerRectInfo.width}px`
 		// const containerHeight = `${this.containerRectInfo.height}px`
 
-		const containerWidth = `calc(${this.parentContainerRectInfo.width}px + var(--gantt-scroll-bar-width))`
-		const containerHeight = `calc(${this.containerRectInfo.height}px + var(--gantt-scroll-bar-height))`
+		const containerWidth = `calc(${this.parentContainerRectInfo.width}px + var(--gantt-scrollbar-width))`
+		const containerHeight = `calc(${this.containerRectInfo.height}px + var(--gantt-scrollbar-height))`
 		this.container.style.height = containerHeight
 		this.container.style.maxHeight = containerHeight
 		this.container.style.width = containerWidth
