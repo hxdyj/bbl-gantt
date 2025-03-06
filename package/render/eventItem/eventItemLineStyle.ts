@@ -44,7 +44,7 @@ export class EventItemLineStyle extends EventItemRender {
 			style: 'overflow:visible;'
 		})
 		foreignObject.clear()
-		foreignObject.add(SVG(`<div class="h-full flex items-center w-full" style="padding:0 6px;overflow:visible;white-space:nowrap;font-size:12px;font-weight:600;${textColor}">${event.name}</div>`, true))
+		foreignObject.add(SVG(`<div class="h-full flex items-center w-full" style="padding:0 6px;overflow:visible;white-space:nowrap;${textColor}">${event.name}</div>`, true))
 		foreignObject.move(x + 3, y - 12)
 	}
 }

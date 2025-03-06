@@ -1,6 +1,7 @@
 
 export class CssNameKey {
 	static container = 'bbl-gantt-container'
+	static duration_mode = 'duration-mode'
 
 	static body = 'bbl-gantt-body'
 

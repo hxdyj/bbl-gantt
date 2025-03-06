@@ -1,5 +1,5 @@
 import dayjs, { Dayjs, ManipulateType, OpUnitType } from "dayjs";
-import Gantt, { TimeMetric, TimeScale } from "./index";
+import Gantt, { GanttMode, TimeMetric, TimeScale } from "./index";
 import { FORMAT_FULL_TIME } from "./utils/time";
 export type Tick = {
 	time: Dayjs
@@ -57,7 +57,7 @@ export class Time {
 		let that = this
 		function* iterator() {
 			let index = 0
-			while (index < that.ticks) {
+			while (index < that.timeTicks) {
 				yield {
 					tickTime: that.getTimeTickByIndex(index),
 					index
@@ -100,6 +100,14 @@ export class Time {
 		return dayjs().startOf(this.fixUnit!)
 	}
 
+	time2x(time: Dayjs, startTime?: Dayjs): number {
+		let _startTime = startTime || this.getTickByIndex(0)
+		if (!_startTime) {
+			_startTime = this.getNoneEventStartTime()
+		}
+		return ((time.valueOf() - _startTime.valueOf()) / this.stepTime) * this.gantt.options.column.width
+	}
+
 	x2time(x: number, startTime?: Dayjs): Dayjs {
 		let _startTime = startTime || this.getTickByIndex(0)
 		if (!_startTime) {
@@ -127,6 +135,9 @@ export class Time {
 		let fixUnit: OpUnitType | null = null
 		{
 
+			if (fixTimeMetric == TimeMetric.SECOND) {
+				fixUnit = 'second'
+			}
 			if (fixTimeMetric == TimeMetric.MINUTE) {
 				fixUnit = 'minute'
 			}
@@ -148,8 +159,10 @@ export class Time {
 
 			if (fixUnit) {
 				startTime = startTime.startOf(fixUnit)
-				if (!endTime.startOf(fixUnit).isSame(endTime)) {
-					endTime = endTime.add(1, fixUnit).startOf(fixUnit)
+				if (this.gantt.options.mode != GanttMode.Duration) {
+					if (!endTime.startOf(fixUnit).isSame(endTime)) {
+						endTime = endTime.add(1, fixUnit).startOf(fixUnit)
+					}
 				}
 			}
 		}
@@ -158,6 +171,7 @@ export class Time {
 		console.log(`fixUnit`, fixUnit)
 
 		{
+			console.group('caculateTicks')
 			this.ticks = 0
 			const { params } = timeMetricToDayjsAddParams(timeMetric)
 			//@ts-ignore
@@ -168,12 +182,20 @@ export class Time {
 				step: params,
 				callback: (time) => {
 					this.ticks++
+					console.log(time.format(FORMAT_FULL_TIME))
 				}
 			})
+			console.groupEnd()
+
 		}
 
 		{
 			this.timeTicks = 0
+			// if (this.gantt.options.mode == GanttMode.Duration) {
+
+			// } else {
+
+			// }
 
 			stepTime({
 				startTime,
@@ -183,7 +205,6 @@ export class Time {
 					this.timeTicks++
 				}
 			})
-
 		}
 
 		return {
@@ -192,6 +213,7 @@ export class Time {
 	}
 
 	caculateTicksByEndTime(endTime: Dayjs) {
+		if (this.gantt.options.mode == GanttMode.Duration) return
 		if (!endTime.startOf(this.fixUnit!).isSame(endTime)) {
 			//@ts-ignore
 			endTime = endTime.add(1, this.fixUnit!).startOf(this.fixUnit!)
@@ -237,7 +259,12 @@ export function timeMetricToDayjsAddParams(timeMetric: TimeMetric | number, num 
 } {
 	if (typeof timeMetric === "number") {
 		let fixTimeMetric: TimeScale | null = null
-		if (timeMetric < 15 * MINUTE) {
+
+		if (timeMetric < 0.5 * MINUTE) {
+			fixTimeMetric = TimeMetric.SECOND
+		}
+
+		if (timeMetric >= 0.5 * MINUTE && timeMetric < 15 * MINUTE) {
 			fixTimeMetric = TimeMetric.MINUTE
 		}
 		if (timeMetric >= 15 * MINUTE && timeMetric < 6 * HOUR) {
@@ -257,6 +284,9 @@ export function timeMetricToDayjsAddParams(timeMetric: TimeMetric | number, num 
 		}
 		return { params: [num * timeMetric, "millisecond"], fixTimeMetric }
 	} else {
+		if (timeMetric === TimeMetric.SECOND) {
+			return { params: [num, 'second'], fixTimeMetric: TimeMetric.SECOND }
+		}
 		if (timeMetric === TimeMetric.MINUTE) {
 			return { params: [num, 'minute'], fixTimeMetric: TimeMetric.MINUTE }
 		}

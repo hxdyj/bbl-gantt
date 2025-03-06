@@ -3,18 +3,23 @@
 	--gantt-tick-color: #86909c;
 	--gantt-header-tick-color: var(--gantt-tick-color);
 	--gantt-header-text-color: #4e5969;
+	--gantt-header-text-font-size: 14px;
 
 	--gantt-row-line-color: var(--gantt-tick-color);
 	--gantt-row-bg-color: transparent;
 
 	--gantt-current-time-line-stroke-width: 1;
 	--gantt-current-time-line-stroke-color: #ff7d00;
+	--gantt-current-time-line-font-size: 13px;
+	--gantt-current-time-line-font-weight: bold;
 	--gantt-current-time-line-stroke-dasharray: 0, 5, 10;
 
 	--gantt-current-time-line-text-color: var(
 		--gantt-current-time-line-stroke-color
 	);
 
+	--gantt-event-item-font-size: 12px;
+	--gantt-event-item-font-weight: 600;
 	--gantt-event-item-style-rect-text-color: white;
 	--gantt-event-item-style-line-text-color: #165dff;
 	--gantt-event-item-style-rect-color: #165dff;
@@ -53,6 +58,7 @@
 	overflow: auto;
 	max-width: 100%;
 	height: 100%;
+
 	&:hover {
 		&::-webkit-scrollbar-thumb {
 			background-color: var(--gantt-scrollbar-thumb-bg-hover-color);
@@ -86,6 +92,7 @@
 
 			.time-tick-text {
 				fill: var(--gantt-header-text-color);
+				font-size: var(--gantt-header-text-font-size);
 			}
 		}
 
@@ -98,6 +105,8 @@
 
 			.current-time-text {
 				fill: var(--gantt-current-time-line-text-color);
+				font-size: var(--gantt-current-time-line-font-size);
+				font-weight: var(--gantt-current-time-line-font-weight);
 			}
 		}
 
@@ -128,6 +137,8 @@
 			.event-text {
 				color: var(--gantt-event-item-style-rect-text-color);
 				user-select: none;
+				font-size: var(--gantt-event-item-font-size);
+				font-weight: var(--gantt-event-item-font-weight);
 			}
 
 			.style-rect {

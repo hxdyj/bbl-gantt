@@ -1,5 +1,5 @@
 import { ForeignObject, G, Rect, SVG, Text } from "@svgdotjs/svg.js";
-import Gantt, { _GanttEventItem } from ".";
+import Gantt, { _GanttEventItem, GanttMode } from "./index";
 import dayjs, { Dayjs, UnitType } from "dayjs";
 import { EventBindingThis } from "./event";
 import { HeaderRender } from "./render/headerRender";
@@ -43,8 +43,12 @@ export class Render extends EventBindingThis {
 	render() {
 		let ganttBox = this.caculateGanttBox()
 
-		const width = Math.max(ganttBox.width, this.gantt.containerRectInfo.width)
-		const height = Math.max(ganttBox.height, this.gantt.containerRectInfo.height)
+		let width = Math.max(ganttBox.width, this.gantt.containerRectInfo.width)
+		let height = Math.max(ganttBox.height, this.gantt.containerRectInfo.height)
+
+		if (this.gantt.options.mode === GanttMode.Duration) {
+			width = ganttBox.width
+		}
 
 		if (ganttBox.width < this.gantt.containerRectInfo.width) {
 			this.gantt.time.caculateTicksByX(this.gantt.containerRectInfo.width)
@@ -68,8 +72,12 @@ export class Render extends EventBindingThis {
 
 	caculateGanttBox() {
 		let count = this.gantt.time.ticks - 1 //-1是因为最前边的刻度在起始位置
+		if (this.gantt.options.mode === GanttMode.Duration) {
+			count = (this.gantt.options.durationModeOptions.duration * 1000) / this.gantt.time.stepTime
+		}
+
 		if (count < 0) count = 0
-		const width = this.gantt.options.column.width * (count)
+		const width = this.gantt.options.column.width * count
 		const height = this.gantt.list.length * this.gantt.options.row.height + this.gantt.options.header.height
 		return {
 			width,

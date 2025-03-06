@@ -22,12 +22,12 @@ export function Duration() {
 			el: containerRef.current,
 			mode: GanttMode.Duration,
 			durationModeOptions: {
-				duration: 50.236
+				duration: 50.436
 			},
 			data,
 			column: {
 				width: 30,
-				timeMetric: 1000
+				timeMetric: 550
 			}
 		})
 		return () => {

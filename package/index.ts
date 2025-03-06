@@ -24,6 +24,7 @@ import './style.scss'
 import { EventShapeType } from './render/eventsRender';
 import { FORMAT_FULL_TIME, getDurationStartTime } from "./utils/time";
 export enum TimeMetric {
+	SECOND = 'SECOND',
 	MINUTE = 'MINUTE',
 	QUARTER_HOUR = 'QUARTER_HOUR',
 	HALF_HOUR = 'HALF_HOUR',
@@ -36,7 +37,7 @@ export enum TimeMetric {
 	YEAR = 'YEAR',
 }
 
-export type TimeScale = keyof Pick<typeof TimeMetric, 'MINUTE' | 'HOUR' | 'DAY' | 'WEEK' | 'MONTH' | 'YEAR'>
+export type TimeScale = keyof Pick<typeof TimeMetric, 'SECOND' | 'MINUTE' | 'HOUR' | 'DAY' | 'WEEK' | 'MONTH' | 'YEAR'>
 
 export type Column = {
 	width: number   //每列的宽度
@@ -159,7 +160,6 @@ export class Gantt extends EventBindingThis {
 	eventBus = new EventEmitter()
 	private destroyed = false
 	createTime: number
-
 	status: {
 		eventMoving: boolean
 		eventResizing: boolean
@@ -182,12 +182,6 @@ export class Gantt extends EventBindingThis {
 
 		this.options = defaultsDeep({}, options, defaultGanttOptions)
 
-		if (options.mode == GanttMode.Duration) {
-			if (!options.column?.padding) {
-				this.options.column.padding.left = 0
-				this.options.column.padding.right = 0
-			}
-		}
 
 		if (!this.options.el) {
 			throw new Error('Container must be provided')
@@ -201,6 +195,16 @@ export class Gantt extends EventBindingThis {
 
 		if (!this.container) {
 			throw new Error('Container not found')
+		}
+
+
+		if (options.mode == GanttMode.Duration) {
+			if (!options.column?.padding) {
+				this.options.column.padding.left = 0
+				this.options.column.padding.right = 0
+			}
+
+			this.container.classList.add(CssNameKey.duration_mode)
 		}
 
 		this.parentContainerRectInfo = getContainerInfo(this.parentContainer)

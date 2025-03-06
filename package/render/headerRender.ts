@@ -1,9 +1,10 @@
 import { G, Rect, Text } from "@svgdotjs/svg.js";
-import Gantt from "..";
-import { UnitType } from "dayjs";
+import Gantt, { GanttMode } from "../index";
+import dayjs, { UnitType } from "dayjs";
 import { PartRender } from "./index";
 import { Render } from "../render";
 import { CssNameKey } from "../const/const";
+import { formatDuration } from "#/utils/time";
 
 export class HeaderRender extends PartRender {
 	constructor(public gantt: Gantt, public renderer: Render) {
@@ -73,11 +74,8 @@ export class HeaderRender extends PartRender {
 
 		const text = (g.find(`.${CssNameKey.current_time_text}`)[0] || new Text().addClass(CssNameKey.current_time_text)) as Text
 
-		const timeFormat = this.gantt.time.x2time(x).format('YYYY-MM-DD HH:mm:ss')
-		text.text(timeFormat).font({
-			size: 13,
-			weight: 'bold'
-		})
+		const timeFormat = this.gantt.options.mode === GanttMode.Duration ? formatDuration(dayjs.duration(this.gantt.time.x2time(x).diff(this.gantt.time.startTime, 'ms'), 'ms').format('H:m:s.SSS')) : this.gantt.time.x2time(x).format('YYYY-MM-DD HH:mm:ss')
+		text.text(timeFormat)
 		const textBox = text.bbox()
 		let textX = x - textBox.width / 2
 		let textPad = 10
@@ -97,14 +95,19 @@ export class HeaderRender extends PartRender {
 
 	render() {
 		const g = this.gantt.stage.find(`.${CssNameKey.header}`)[0] || new G().addClass(CssNameKey.header)
+
+
 		const bgRect = g.find(`.${CssNameKey.header_bg}`)[0] || new Rect().addClass(CssNameKey.header_bg)
 		bgRect.size(this.gantt.stage.width(), this.gantt.options.header.height).move(0, 0)
 
 		g.add(bgRect)
 
 		const ticksIterator = this.gantt.time.getTimeTicksIterator()
-
+		let preTickId = ''
 		for (const tickItem of ticksIterator) {
+			const isDurationMode = this.gantt.options.mode === GanttMode.Duration
+
+			//durtion 渲染的时候算和上一个是否重合，重合就不渲染
 			const { tickTime, index } = tickItem
 			const x = this.renderer.getXbyTime(tickTime)
 			const height = 20
@@ -113,7 +116,6 @@ export class HeaderRender extends PartRender {
 			const rect = g.find(`.${idClassName}.${CssNameKey.header_time_tick_item}`)[0] || new Rect().addClass(CssNameKey.header_time_tick_item).addClass(idClassName)
 
 			rect.size(0.2, height).move(x, this.gantt.options.header.height - height)
-			rect.addTo(g)
 
 			const text = (g.find(`.${idClassName}.${CssNameKey.header_time_tick_text}`)[0] || new Text().addClass(CssNameKey.header_time_tick_text).addClass(idClassName)) as Text
 
@@ -129,16 +131,37 @@ export class HeaderRender extends PartRender {
 			if (getMetric == 'month') {
 				showTimeStr = parseInt(showTimeStr) + 1 + ''
 			}
-			text.text(showTimeStr).font({
-				size: 14
-			})
+
+			if (isDurationMode) {
+				showTimeStr = dayjs.duration(tickTime.diff(this.gantt.time.startTime, 'ms'), 'ms').format('HH:mm:ss')
+			}
+
+			text.text(showTimeStr)
 			const textBox = text.bbox()
-			text.move(x - textBox.width / 2, 26)
+			text.move(isDurationMode ? x : x - textBox.width / 2, 26)
+
+			if (isDurationMode) {
+				if (preTickId) {
+					const preText = g.find(`.${preTickId}.${CssNameKey.header_time_tick_text}`)[0]
+					if (preText) {
+						const preBox = preText.bbox()
+						const textBox = text.bbox()
+						if (textBox.x < preBox.x2 + preBox.width) {
+							continue
+						}
+					}
+				}
+			}
+
+
 			text.attr({
 				style: 'user-select:none;'
 			})
 
+			rect.addTo(g)
 			text.addTo(g)
+			this.renderer.ticks.renderTickItem(tickTime, index)
+			preTickId = idClassName
 		}
 
 		g.transform({
