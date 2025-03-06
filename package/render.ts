@@ -67,8 +67,9 @@ export class Render extends EventBindingThis {
 	}
 
 	caculateGanttBox() {
-		const ticks = this.gantt.time.ticks
-		const width = this.gantt.options.column.width * (ticks.length - 2) //减去2的时候，因为最前边和最后边的刻度都不需要显示
+		let count = this.gantt.time.ticks - 1 //-1是因为最前边的刻度在起始位置
+		if (count < 0) count = 0
+		const width = this.gantt.options.column.width * (count)
 		const height = this.gantt.list.length * this.gantt.options.row.height + this.gantt.options.header.height
 		return {
 			width,
@@ -77,7 +78,7 @@ export class Render extends EventBindingThis {
 	}
 
 	getXbyTime(time: Dayjs) {
-		return (dayjs.duration(time.diff(this.gantt.time.ticks[0].time)).asMilliseconds() / this.gantt.time.stepTime) * this.gantt.options.column.width
+		return (dayjs.duration(time.diff(this.gantt.time.getTickByIndex(0))).asMilliseconds() / this.gantt.time.stepTime) * this.gantt.options.column.width
 	}
 
 	getYbyIndex(index: number) {

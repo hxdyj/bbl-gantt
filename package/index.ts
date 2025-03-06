@@ -176,6 +176,7 @@ export class Gantt extends EventBindingThis {
 	render: Render
 	constructor(options: GanttOptions) {
 		super()
+		console.group('New Gantt')
 		this.id = uid(6)
 		options.data = cloneDeep(options.data || [])
 
@@ -214,6 +215,8 @@ export class Gantt extends EventBindingThis {
 		this.view = new View(this)
 		this.render = new Render(this)
 		this.bindEvent()
+		console.groupEnd()
+
 	}
 
 

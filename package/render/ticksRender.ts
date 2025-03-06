@@ -11,20 +11,23 @@ export class TicksRender extends PartRender {
 
 	render() {
 		const g = this.gantt.stage.find(`.${CssNameKey.ticks}`)[0] || new G().addClass(CssNameKey.ticks)
-		const ticks = this.gantt.time.ticks
-		ticks.forEach((tick, index) => {
+		const ticksIterator = this.gantt.time.getTicksIterator()
+
+		for (const tickItem of ticksIterator) {
+			const { tickTime, index } = tickItem
 			const x = index * this.gantt.options.column.width
 			const y = this.gantt.options.header.height
-			const idClassName = `tick-id-${index}-${tick.time.valueOf()}`
-
+			const idClassName = `tick-id-${index}-${tickTime.valueOf()}`
 			const rect = g.find(`.${idClassName}.${CssNameKey.tick_item}`)[0] || new Rect().addClass(CssNameKey.tick_item).addClass(idClassName)
 
 			rect.size(0.2, this.gantt.stage.height()).move(x, y)
-			if (index === 0 || index === ticks.length - 1) {
+			if (index === 0 || index === this.gantt.time.ticks - 1) {
 				rect.opacity(0)
 			}
 			rect.addTo(g)
-		})
+		}
+
+
 		g.addTo(this.gantt.stage)
 	}
 

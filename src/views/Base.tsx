@@ -17,7 +17,7 @@ export function Base() {
 	let gantt = useRef<Gantt | null>(null)
 	const containerRef = useRef<HTMLDivElement>(null)
 	const data: GanttItem[] = ganttData as unknown as GanttItem[]
-	const [timeMetric, setTimeMetric] = useState(TimeMetric.MINUTE)
+	const [timeMetric, setTimeMetric] = useState(30000)
 	const [tickWidth, setTickWidth] = useState(30)
 	useEffect(() => {
 		if (!containerRef.current) throw new Error("containerRef is null")

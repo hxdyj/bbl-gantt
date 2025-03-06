@@ -13,7 +13,7 @@ export declare class Time {
     init(): void;
     getNoneEventStartTime(): dayjs.Dayjs;
     x2time(x: number, startTime?: Dayjs): Dayjs;
-    x2milliseconds(x: number): number;
+    length2milliseconds(x: number): number;
     caculateTicks(minTime: Dayjs, maxTime: Dayjs): void;
     caculateTicksByEndTime(endTime: Dayjs): void;
     caculateTicksByX(x: number): void;

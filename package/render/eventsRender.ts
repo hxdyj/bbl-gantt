@@ -212,9 +212,9 @@ export class EventsRender extends PartRender {
 
 		if (!this.tmpItem) return
 		if (start) {
-			this.tmpItem.options.event.start = this.itemRender.options.event.start.add(this.gantt.time.x2milliseconds(diffX), 'millisecond')
+			this.tmpItem.options.event.start = this.itemRender.options.event.start.add(this.gantt.time.length2milliseconds(diffX), 'millisecond')
 		} else {
-			this.tmpItem.options.event.end = this.itemRender.options.event.end.add(this.gantt.time.x2milliseconds(diffX), 'millisecond')
+			this.tmpItem.options.event.end = this.itemRender.options.event.end.add(this.gantt.time.length2milliseconds(diffX), 'millisecond')
 		}
 		this.tmpItem.render()
 		this.tmpItem.svgjsInstance.rightResize?.show()

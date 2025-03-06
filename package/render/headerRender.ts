@@ -101,10 +101,14 @@ export class HeaderRender extends PartRender {
 		bgRect.size(this.gantt.stage.width(), this.gantt.options.header.height).move(0, 0)
 
 		g.add(bgRect)
-		this.gantt.time.timeTicks.forEach((tick, index) => {
-			const x = this.renderer.getXbyTime(tick.time)
+
+		const ticksIterator = this.gantt.time.getTimeTicksIterator()
+
+		for (const tickItem of ticksIterator) {
+			const { tickTime, index } = tickItem
+			const x = this.renderer.getXbyTime(tickTime)
 			const height = 20
-			const idClassName = `tick-id-${index}-${tick.time.valueOf()}`
+			const idClassName = `tick-id-${index}-${tickTime.valueOf()}`
 
 			const rect = g.find(`.${idClassName}.${CssNameKey.header_time_tick_item}`)[0] || new Rect().addClass(CssNameKey.header_time_tick_item).addClass(idClassName)
 
@@ -119,8 +123,8 @@ export class HeaderRender extends PartRender {
 
 			let showTimeStr =
 				//@ts-ignore
-				getMetric === 'week' ? tick.time.week() + ''
-					: tick.time.get(getMetric).toString()
+				getMetric === 'week' ? tickTime.week() + ''
+					: tickTime.get(getMetric).toString()
 
 			if (getMetric == 'month') {
 				showTimeStr = parseInt(showTimeStr) + 1 + ''
@@ -135,7 +139,7 @@ export class HeaderRender extends PartRender {
 			})
 
 			text.addTo(g)
-		})
+		}
 
 		g.transform({
 			translate: [0, this.gantt.container.scrollTop]

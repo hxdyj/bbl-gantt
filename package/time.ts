@@ -1,6 +1,5 @@
 import dayjs, { Dayjs, ManipulateType, OpUnitType } from "dayjs";
 import Gantt, { TimeMetric, TimeScale } from "./index";
-import { last } from "lodash-es";
 import { FORMAT_FULL_TIME } from "./utils/time";
 export type Tick = {
 	time: Dayjs
@@ -14,20 +13,86 @@ const MONTH = 30 * DAY
 
 
 export class Time {
-	ticks: Tick[] = [] // 用户划分的column算出的ticks
-	timeTicks: Tick[] = [] // 按照时间度量的ticks
+	// ticks: Tick[] = [] // 用户划分的column算出的ticks
+	// timeTicks: Tick[] = [] // 按照时间度量的ticks
+	ticks = 0 // 用户划分的column算出的ticks
+	timeTicks = 0 // 按照时间度量的ticks
 	stepTime: number = 0
 	fixUnit: OpUnitType | null = null
+	startTime: Dayjs
+	endTime: Dayjs
 	constructor(public gantt: Gantt) {
-		this.init()
+		console.group('New Time Class')
+		const { startTime, endTime } = this.init()
+		this.startTime = startTime
+		this.endTime = endTime
 		console.log(`ticks: `, this.ticks)
 		console.log(`timeTicks: `, this.timeTicks)
 		console.log(`stepTime: `, this.stepTime)
+		console.log(`startTime: `, this.startTime.format(FORMAT_FULL_TIME))
+		console.log(`endTime: `, this.endTime.format(FORMAT_FULL_TIME))
+		console.groupEnd()
 	}
 
 	init() {
 		const startTime = this.gantt.minTime || dayjs()
-		this.caculateTicks(startTime, this.gantt.maxTime || this.x2time(this.gantt.containerRectInfo.width))
+		return this.caculateTicks(startTime, this.gantt.maxTime || this.x2time(this.gantt.containerRectInfo.width))
+	}
+
+
+	getTimeTickByIndex(index: number) {
+		if (index < 0 || (this.ticks && index > (this.ticks - 1))) {
+			throw new Error('tick index outof range')
+		}
+		const startTime = this.getTickByIndex(0)
+		//@ts-ignore
+		return startTime.add(index, this.fixUnit)
+	}
+
+	lastTimeTick() {
+		return this.getTimeTickByIndex(this.timeTicks - 1)
+	}
+
+	getTimeTicksIterator() {
+		let that = this
+		function* iterator() {
+			let index = 0
+			while (index < that.ticks) {
+				yield {
+					tickTime: that.getTimeTickByIndex(index),
+					index
+				}
+				index++
+			}
+		}
+		return iterator()
+	}
+
+
+	getTickByIndex(index: number) {
+		if (index < 0 || (this.ticks && index > (this.ticks - 1))) {
+			throw new Error('tick index outof range')
+		}
+		return this.startTime.add(index * this.stepTime, 'millisecond')
+	}
+
+	lastTick() {
+		return this.getTickByIndex(this.ticks - 1)
+	}
+
+	getTicksIterator() {
+		let that = this
+		function* iterator() {
+			let index = 0
+			while (index < that.ticks) {
+				yield {
+					tickTime: that.getTickByIndex(index),
+					index
+				}
+				index++
+			}
+		}
+		return iterator()
 	}
 
 
@@ -36,15 +101,15 @@ export class Time {
 	}
 
 	x2time(x: number, startTime?: Dayjs): Dayjs {
-		let _startTime = startTime || this.ticks[0]?.time
+		let _startTime = startTime || this.getTickByIndex(0)
 		if (!_startTime) {
 			_startTime = this.getNoneEventStartTime()
 		}
 		return _startTime.add((x / this.gantt.options.column.width) * this.stepTime, 'millisecond')
 	}
 
-	x2milliseconds(x: number): number {
-		return (x / this.gantt.options.column.width) * this.stepTime
+	length2milliseconds(length: number): number {
+		return (length / this.gantt.options.column.width) * this.stepTime
 	}
 
 	caculateTicks(minTime: Dayjs, maxTime: Dayjs) {
@@ -91,8 +156,9 @@ export class Time {
 		this.fixUnit = fixUnit
 		console.log(`startTime,endTime`, startTime.format(FORMAT_FULL_TIME), endTime.format(FORMAT_FULL_TIME))
 		console.log(`fixUnit`, fixUnit)
+
 		{
-			this.ticks = []
+			this.ticks = 0
 			const { params } = timeMetricToDayjsAddParams(timeMetric)
 			//@ts-ignore
 			this.stepTime = dayjs.duration(params[0], params[1] + 's').asMilliseconds()
@@ -101,24 +167,27 @@ export class Time {
 				endTime,
 				step: params,
 				callback: (time) => {
-					this.ticks.push({ time })
+					this.ticks++
 				}
 			})
-
 		}
 
 		{
-			this.timeTicks = []
+			this.timeTicks = 0
 
 			stepTime({
 				startTime,
 				endTime,
 				step: [1, fixUnit!],
 				callback: (time) => {
-					this.timeTicks.push({ time })
+					this.timeTicks++
 				}
 			})
 
+		}
+
+		return {
+			startTime, endTime
 		}
 	}
 
@@ -128,29 +197,29 @@ export class Time {
 			endTime = endTime.add(1, this.fixUnit!).startOf(this.fixUnit!)
 		}
 
-		const lastTick = last(this.ticks)
-		if (!lastTick || lastTick.time.valueOf() < endTime.valueOf()) {
+		const lastTick = this.lastTick()
+
+		if (!lastTick || lastTick.valueOf() < endTime.valueOf()) {
 			stepTime({
-				startTime: last(this.ticks)?.time || this.getNoneEventStartTime(),
+				startTime: this.lastTick() || this.getNoneEventStartTime(),
 				endTime,
 				step: [this.stepTime, 'millisecond'],
 				callback: (time) => {
-					if (time.isSame(last(this.ticks).time)) return
-					this.ticks.push({ time })
+					if (time.isSame(this.lastTick())) return
+					this.ticks++
 				},
 			})
 
 			stepTime({
-				startTime: last(this.timeTicks)?.time || this.getNoneEventStartTime(),
+				startTime: this.lastTimeTick() || this.getNoneEventStartTime(),
 				endTime,
 				///@ts-ignore
 				step: [1, this.fixUnit!],
 				callback: (time) => {
-					if (time.isSame(last(this.timeTicks).time)) return
-					this.timeTicks.push({ time })
+					if (time.isSame(this.lastTimeTick())) return
+					this.timeTicks++
 				}
 			})
-
 		}
 	}
 
@@ -221,7 +290,6 @@ export function timeMetricToDayjsAddParams(timeMetric: TimeMetric | number, num 
 	}
 	throw new Error("Invalid time metric")
 }
-
 
 
 function stepTime(params: {
