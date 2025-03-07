@@ -8,3 +8,5 @@
 - [x] change option
 - [x] padding add none option to fill container
 - [x] event none deal with
+- [x] header text callback function to customize
+- [ ] event item resize or move time mark to header

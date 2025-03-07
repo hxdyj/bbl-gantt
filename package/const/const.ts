@@ -5,6 +5,10 @@ export class CssNameKey {
 
 	static body = 'bbl-gantt-body'
 
+	static time_range = 'time-range'
+	static time_range_text = 'time-range-text'
+	static time_range_line = 'time-range-line'
+
 	static current_time = 'current-time'
 	static current_time_line = 'current-time-line'
 	static current_time_text = 'current-time-text'
@@ -13,12 +17,14 @@ export class CssNameKey {
 	static header_bg = 'header-bg'
 	static header_time_tick_item = 'time-tick-item'
 	static header_time_tick_text = 'time-tick-text'
+	static header_tick_text = 'tick-text'
 
 
 	static rows = 'rows'
 	static row_line = 'row-line'
 
 	static ticks = 'ticks'
+	static ticks_text_group = 'ticks-text-group'
 	static tick_item = 'tick-item'
 
 	static events = 'events'

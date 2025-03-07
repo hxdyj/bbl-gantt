@@ -41,7 +41,7 @@ export class Time {
 
 
 	getTimeTickByIndex(index: number) {
-		if (index < 0 || (this.ticks && index > (this.ticks - 1))) {
+		if (index < 0 || (this.timeTicks && index > (this.timeTicks - 1))) {
 			throw new Error('tick index outof range')
 		}
 		const startTime = this.getTickByIndex(0)
@@ -260,11 +260,11 @@ export function timeMetricToDayjsAddParams(timeMetric: TimeMetric | number, num 
 	if (typeof timeMetric === "number") {
 		let fixTimeMetric: TimeScale | null = null
 
-		if (timeMetric < 0.5 * MINUTE) {
+		if (timeMetric < 3000) {
 			fixTimeMetric = TimeMetric.SECOND
 		}
 
-		if (timeMetric >= 0.5 * MINUTE && timeMetric < 15 * MINUTE) {
+		if (timeMetric >= 3000 && timeMetric < 15 * MINUTE) {
 			fixTimeMetric = TimeMetric.MINUTE
 		}
 		if (timeMetric >= 15 * MINUTE && timeMetric < 6 * HOUR) {

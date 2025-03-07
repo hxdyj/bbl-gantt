@@ -3,7 +3,7 @@ import Gantt, { _GanttEventItem } from "..";
 import { PartRender } from "./index";
 import { Render } from "../render";
 import { CssNameKey } from "../const/const";
-import { EventItemRender } from "./eventItem/eventItemRender";
+import { EventItemRender, getStartAndEndTime } from "./eventItem/eventItemRender";
 import { EventItemLineStyle } from "./eventItem/eventItemLineStyle";
 import { EventItemRectStyle } from "./eventItem/eventItemRectStyle";
 import { cloneDeep } from "lodash-es";
@@ -130,9 +130,15 @@ export class EventsRender extends PartRender {
 	}
 
 
-
-
 	onContainerMouseMove(event: MouseEvent) {
+		if (!this.startEvent) return
+		if (Math.abs(event.offsetX - this.startEvent.offsetX) > 10) {
+			this.renderer.header.hideCurrentTime()
+			this.renderer.header.renderEventTimeRange(
+				event,
+				this.tmpItem
+			)
+		}
 		if (this.operateType === 'body-move') {
 			this.onTypeBodyMoveMouseMove(event)
 		}
@@ -159,6 +165,8 @@ export class EventsRender extends PartRender {
 			this.onTypeResizeMouseUp()
 		}
 		this.operateType = null
+		this.renderer.header.showCurrentTime()
+		this.renderer.header.removeEventTimeRange()
 	}
 
 	onContainerMouseLeave() {

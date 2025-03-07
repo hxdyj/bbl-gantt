@@ -24,6 +24,11 @@ export function Duration() {
 			durationModeOptions: {
 				duration: 50.436
 			},
+			view: {
+				overrideHeaderTitle: false,
+				showTimeTicks: true,
+				showTicks: false
+			},
 			data,
 			column: {
 				width: 30,

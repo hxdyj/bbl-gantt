@@ -5,7 +5,7 @@ import { EventBusEventName } from "./event/const";
 import duration from "dayjs/plugin/duration"
 import minMax from "dayjs/plugin/minMax"
 import weekOfYear from "dayjs/plugin/weekOfYear"
-import dayjs from "dayjs";
+import dayjs, { UnitType } from "dayjs";
 dayjs.extend(duration)
 dayjs.extend(minMax)
 dayjs.extend(weekOfYear)
@@ -60,6 +60,12 @@ export type DurationModeOptions = {
 	duration: number //总时长 以秒为单位，小数后三位为毫秒 如：56.321
 }
 
+export type HeaderTimeFormatArgs = {
+	gantt: Gantt,
+	time: Dayjs,
+	unit: UnitType
+}
+
 
 export type _GanttOptions = {
 	el: ContainerType
@@ -69,6 +75,14 @@ export type _GanttOptions = {
 	}
 	header?: {
 		height: number
+	}
+	view?: {
+		headerTimeFormat?: (args: HeaderTimeFormatArgs) => string
+		showTicks?: boolean
+		showTickText?: boolean
+		showTimeTicks?: boolean
+		showTimeTickText?: boolean
+		overrideHeaderTitle?: boolean
 	}
 	data: GanttItem[]
 }
@@ -100,6 +114,52 @@ export const defaultGanttOptions: DeepPartial<GanttOptions> = {
 	},
 	header: {
 		height: 70
+	},
+	view: {
+		showTicks: true,
+		showTickText: false,
+		showTimeTicks: false,
+		showTimeTickText: true,
+		overrideHeaderTitle: true,
+		headerTimeFormat({ gantt, time, unit }: HeaderTimeFormatArgs) {
+			if (unit === 'day') unit = 'date'
+			let showTimeStr = ''
+
+			if (gantt.options.mode === GanttMode.Normal) {
+				//@ts-ignore
+				if (unit === 'week') {
+					showTimeStr = `${time.format('YYYY')}-${time.week()}周`
+				} else {
+					// showTimeStr = time.get(unit).toString()
+					if (unit == 'month') {
+						showTimeStr = time.format('YYYY-MM')
+					}
+
+					if (unit == 'date') {
+						showTimeStr = time.format('YYYY-MM-DD')
+					}
+
+					if (unit == 'hour') {
+						showTimeStr = time.format('MM-DD/HH')
+					}
+
+					if (unit == 'minute') {
+						showTimeStr = time.format('DD/HH:mm')
+					}
+
+					if (unit == 'second') {
+						showTimeStr = time.format('HH:mm:ss')
+					}
+				}
+			}
+
+			if (gantt.options.mode === GanttMode.Duration) {
+				let formatStr = 'HH:mm:ss'
+				const durationObj = dayjs.duration(time.diff(gantt.time.startTime, 'ms'), 'ms')
+				showTimeStr = durationObj.format(formatStr)
+			}
+			return showTimeStr
+		}
 	}
 }
 export class GanttManager {

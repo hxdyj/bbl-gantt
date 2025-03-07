@@ -24,6 +24,12 @@ export function Base() {
 		gantt.current = new Gantt({
 			el: containerRef.current,
 			data,
+			view: {
+				showTicks: true,
+				showTickText: true,
+				showTimeTickText: false,
+				overrideHeaderTitle: false
+			},
 			column: {
 				width: 30,
 				timeMetric: 30000

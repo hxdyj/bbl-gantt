@@ -1,4 +1,5 @@
 :root {
+	--gantt-main-color: #165dff;
 	--gantt-bg-color: #e5e6eb;
 	--gantt-tick-color: #86909c;
 	--gantt-header-tick-color: var(--gantt-tick-color);
@@ -7,6 +8,10 @@
 
 	--gantt-row-line-color: var(--gantt-tick-color);
 	--gantt-row-bg-color: transparent;
+
+	--gantt-time-range-text-color: var(--gantt-main-color);
+	--gantt-time-range-stroke-width: 1;
+	--gantt-time-range-stroke-color: var(--gantt-main-color);
 
 	--gantt-current-time-line-stroke-width: 1;
 	--gantt-current-time-line-stroke-color: #ff7d00;
@@ -21,8 +26,8 @@
 	--gantt-event-item-font-size: 12px;
 	--gantt-event-item-font-weight: 600;
 	--gantt-event-item-style-rect-text-color: white;
-	--gantt-event-item-style-line-text-color: #165dff;
-	--gantt-event-item-style-rect-color: #165dff;
+	--gantt-event-item-style-line-text-color: var(--gantt-main-color);
+	--gantt-event-item-style-rect-color: var(--gantt-main-color);
 	--gantt-event-item-style-line-color: var(--gantt-event-item-style-rect-color);
 
 	--gantt-event-item-resize-color: white;
@@ -93,6 +98,17 @@
 			.time-tick-text {
 				fill: var(--gantt-header-text-color);
 				font-size: var(--gantt-header-text-font-size);
+			}
+		}
+		.time-range {
+			.time-range-text {
+				fill: var(--gantt-time-range-text-color);
+				font-weight: 600;
+			}
+
+			.time-range-line {
+				stroke-width: var(--gantt-time-range-stroke-width);
+				stroke: var(--gantt-time-range-stroke-color);
 			}
 		}
 
