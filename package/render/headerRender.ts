@@ -82,7 +82,7 @@ export class HeaderRender extends PartRender {
 		const g = (this.gantt.stage.find(`.${CssNameKey.time_range}`)[0] || new G().addClass(CssNameKey.time_range)) as G
 		this.timeRange = g
 		const { translateX = 0 } = tmpItem?.g?.transform() || {}
-		const bbox = tmpItem?.g.find(`.${CssNameKey.event_body}`)[0]?.bbox()
+		const bbox = tmpItem?.svgjsInstance.moveRect?.bbox()!
 		const gBbox = tmpItem?.g?.bbox()
 		const startX = bbox.x
 		const endX = startX + bbox.width
@@ -110,7 +110,8 @@ export class HeaderRender extends PartRender {
 		text.text(`${startTimeFormat} - ${endTimeFormat}`)
 
 		const textBox = text.bbox()
-		let textX = this.gantt.stage.point(event.clientX, event.clientY).x
+		const stagePoint = this.gantt.stage.point(event.clientX, event.clientY)
+		let textX = stagePoint.x
 		// let textX = x - textBox.width / 2
 		let textPad = 10
 
@@ -128,7 +129,7 @@ export class HeaderRender extends PartRender {
 		const rect = g.find(`.${CssNameKey.time_range_line}`)[0] || new Rect().addClass(CssNameKey.time_range_line)
 		const height = Math.abs(gBbox.y - textBox.y)
 		const pad = 8
-		rect.size(0.01, height - pad).move(textX, this.gantt.container.scrollTop + textBox.height + pad)
+		rect.size(0.01, height - pad).move(stagePoint.x, this.gantt.container.scrollTop + textBox.height + pad)
 			.fill('transparent')
 		rect.addTo(g)
 

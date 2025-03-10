@@ -171,7 +171,7 @@ export class Time {
 		console.log(`fixUnit`, fixUnit)
 
 		{
-			console.group('caculateTicks')
+			// console.group('caculateTicks')
 			this.ticks = 0
 			const { params } = timeMetricToDayjsAddParams(timeMetric)
 			//@ts-ignore
@@ -182,10 +182,9 @@ export class Time {
 				step: params,
 				callback: (time) => {
 					this.ticks++
-					console.log(time.format(FORMAT_FULL_TIME))
 				}
 			})
-			console.groupEnd()
+			// console.groupEnd()
 
 		}
 

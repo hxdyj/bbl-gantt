@@ -84,6 +84,9 @@ export type _GanttOptions = {
 		showTimeTicks?: boolean
 		showTimeTickText?: boolean
 		overrideHeaderTitle?: boolean
+	},
+	action?: {
+		enableMoveOrResizeOutOfEdge?: boolean
 	}
 	data: GanttItem[]
 }
@@ -165,11 +168,17 @@ export const defaultGanttOptions: DeepPartial<GanttOptions> = {
 
 			if (gantt.options.mode === GanttMode.Duration) {
 				let formatStr = 'HH:mm:ss'
+				if (type == 'timeRange') {
+					formatStr = 'HH:mm:ss.SSS'
+				}
 				const durationObj = dayjs.duration(time.diff(gantt.time.startTime, 'ms'), 'ms')
 				showTimeStr = durationObj.format(formatStr)
 			}
 			return showTimeStr
 		}
+	},
+	action: {
+		enableMoveOrResizeOutOfEdge: true
 	}
 }
 export class GanttManager {

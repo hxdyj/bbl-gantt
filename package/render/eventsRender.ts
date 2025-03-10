@@ -132,7 +132,7 @@ export class EventsRender extends PartRender {
 
 	onContainerMouseMove(event: MouseEvent) {
 		if (!this.startEvent) return
-		if (Math.abs(event.offsetX - this.startEvent.offsetX) > 10) {
+		if (Math.abs(event.offsetX - this.startEvent.offsetX) > 1) {
 			this.renderer.header.hideCurrentTime()
 			this.renderer.header.renderEventTimeRange(
 				event,
@@ -260,8 +260,21 @@ export class EventsRender extends PartRender {
 		if (!this.startEvent || !this.itemRender) return
 		const { x: eventX } = this.gantt.stage.point(event.clientX, event.clientY)
 		const { x: startEventX } = this.gantt.stage.point(this.startEvent.clientX, this.startEvent.clientY)
+		let newX = (eventX - startEventX)
 
-		const newX = (eventX - startEventX)
+		if (!this.gantt.options.action.enableMoveOrResizeOutOfEdge) {
+			const bbox = this.tmpItem?.svgjsInstance?.moveRect?.bbox()
+			const { x: bboxX = 0, width: bboxWidth = 0 } = bbox || {}
+			if (bbox) {
+				if (newX + bboxX < 0) {
+					newX = -bboxX
+				}
+				const stageWidth = parseFloat(this.gantt.stage.width().valueOf() + '')
+				if ((newX + bboxX + bboxWidth) > stageWidth) {
+					newX = stageWidth - bboxWidth - bboxX
+				}
+			}
+		}
 		// if (Math.abs(newX) < 5) {
 		// 	return console.warn('move too small, less than 5px')
 		// }
@@ -280,7 +293,7 @@ export class EventsRender extends PartRender {
 	onTypeBodyMoveMouseUp() {
 		if (!this.startEvent || !this.itemRender) return
 		const { translateX = 0 } = this.tmpItem?.g.transform() || {}
-		const anchor = this.itemRender.g.find(`.${CssNameKey.event_anchor}`)[0]
+		const anchor = this.itemRender.svgjsInstance.anchor!
 		const oldX = parseFloat(anchor.x().toString())
 		const newX = oldX + translateX
 		const newTime = this.gantt.time.x2time(newX)

@@ -29,6 +29,9 @@ export function Duration() {
 				showTimeTicks: true,
 				showTicks: false
 			},
+			action: {
+				enableMoveOrResizeOutOfEdge: false
+			},
 			data,
 			column: {
 				width: 30,
