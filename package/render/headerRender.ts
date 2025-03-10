@@ -83,6 +83,7 @@ export class HeaderRender extends PartRender {
 		this.timeRange = g
 		const { translateX = 0 } = tmpItem?.g?.transform() || {}
 		const bbox = tmpItem?.g.find(`.${CssNameKey.event_body}`)[0]?.bbox()
+		const gBbox = tmpItem?.g?.bbox()
 		const startX = bbox.x
 		const endX = startX + bbox.width
 		if (!bbox) return
@@ -92,9 +93,22 @@ export class HeaderRender extends PartRender {
 		const startTime = this.gantt.time.x2time(startX + translateX)
 		const endTime = this.gantt.time.x2time(endX + translateX)
 
-		const formatStr = 'YYYY-MM-DD HH:mm:ss'
-		let textContent = `${startTime.format(formatStr)} - ${endTime.format(formatStr)}`
-		text.text(textContent)
+		const startTimeFormat = this.gantt.options.view.headerTimeFormat({
+			gantt: this.gantt,
+			time: startTime,
+			unit: this.gantt.time.fixUnit as UnitType,
+			type: 'timeRange'
+		})
+
+		const endTimeFormat = this.gantt.options.view.headerTimeFormat({
+			gantt: this.gantt,
+			time: endTime,
+			unit: this.gantt.time.fixUnit as UnitType,
+			type: 'timeRange'
+		})
+
+		text.text(`${startTimeFormat} - ${endTimeFormat}`)
+
 		const textBox = text.bbox()
 		let textX = this.gantt.stage.point(event.clientX, event.clientY).x
 		// let textX = x - textBox.width / 2
@@ -112,7 +126,7 @@ export class HeaderRender extends PartRender {
 
 
 		const rect = g.find(`.${CssNameKey.time_range_line}`)[0] || new Rect().addClass(CssNameKey.time_range_line)
-		const height = Math.abs(bbox.y - textBox.y)
+		const height = Math.abs(gBbox.y - textBox.y)
 		const pad = 8
 		rect.size(0.01, height - pad).move(textX, this.gantt.container.scrollTop + textBox.height + pad)
 			.fill('transparent')
@@ -135,8 +149,15 @@ export class HeaderRender extends PartRender {
 		rect.addTo(g)
 
 		const text = (g.find(`.${CssNameKey.current_time_text}`)[0] || new Text().addClass(CssNameKey.current_time_text)) as Text
+		const startTime = this.gantt.time.x2time(x)
 
-		const timeFormat = this.gantt.options.mode === GanttMode.Duration ? formatDuration(dayjs.duration(this.gantt.time.x2time(x).diff(this.gantt.time.startTime, 'ms'), 'ms').format('H:m:s.SSS')) : this.gantt.time.x2time(x).format('YYYY-MM-DD HH:mm:ss')
+		const timeFormat = this.gantt.options.view.headerTimeFormat({
+			gantt: this.gantt,
+			time: startTime,
+			unit: this.gantt.time.fixUnit as UnitType,
+			type: 'currentTime'
+		})
+
 		text.text(timeFormat)
 		const textBox = text.bbox()
 		let textX = x - textBox.width / 2
@@ -165,7 +186,8 @@ export class HeaderRender extends PartRender {
 		text.text(this.gantt.options.view.headerTimeFormat({
 			gantt: this.gantt,
 			time: tickTime,
-			unit: this.gantt.time.fixUnit as UnitType
+			unit: this.gantt.time.fixUnit as UnitType,
+			type: 'tick'
 		}))
 
 		const textBox = text.bbox()

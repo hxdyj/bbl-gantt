@@ -22,7 +22,7 @@ import { Time } from "./time";
 import { Render } from "./render";
 import './style.scss'
 import { EventShapeType } from './render/eventsRender';
-import { FORMAT_FULL_TIME, getDurationStartTime } from "./utils/time";
+import { FORMAT_FULL_TIME, formatDuration, getDurationStartTime } from "./utils/time";
 export enum TimeMetric {
 	SECOND = 'SECOND',
 	MINUTE = 'MINUTE',
@@ -63,7 +63,8 @@ export type DurationModeOptions = {
 export type HeaderTimeFormatArgs = {
 	gantt: Gantt,
 	time: Dayjs,
-	unit: UnitType
+	unit: UnitType,
+	type: 'currentTime' | 'timeRange' | 'tick'
 }
 
 
@@ -121,9 +122,18 @@ export const defaultGanttOptions: DeepPartial<GanttOptions> = {
 		showTimeTicks: false,
 		showTimeTickText: true,
 		overrideHeaderTitle: true,
-		headerTimeFormat({ gantt, time, unit }: HeaderTimeFormatArgs) {
+		headerTimeFormat({ gantt, time, unit, type }: HeaderTimeFormatArgs) {
+
+
+			if (type === 'currentTime') {
+				return gantt.options.mode === GanttMode.Duration ? formatDuration(dayjs.duration(time.diff(gantt.time.startTime, 'ms'), 'ms').format('H:m:s.SSS')) : time.format('YYYY-MM-DD HH:mm:ss')
+			}
+
+
 			if (unit === 'day') unit = 'date'
 			let showTimeStr = ''
+
+
 
 			if (gantt.options.mode === GanttMode.Normal) {
 				//@ts-ignore
