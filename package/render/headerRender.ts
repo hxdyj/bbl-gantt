@@ -81,19 +81,16 @@ export class HeaderRender extends PartRender {
 		if (!tmpItem) return
 		const g = (this.gantt.stage.find(`.${CssNameKey.time_range}`)[0] || new G().addClass(CssNameKey.time_range)) as G
 		this.timeRange = g
-
-		const bbox = tmpItem?.g.bbox()
+		const { translateX = 0 } = tmpItem?.g?.transform() || {}
+		const bbox = tmpItem?.g.find(`.${CssNameKey.event_body}`)[0]?.bbox()
 		const startX = bbox.x
 		const endX = startX + bbox.width
 		if (!bbox) return
 
 		const text = (g.find(`.${CssNameKey.time_range_text}`)[0] || new Text().addClass(CssNameKey.time_range_text)) as Text
 
-
-		//TODO(songle): 需要考虑transform x
-		//TODO BUT  resize range有时候也不更新
-		const startTime = this.gantt.time.x2time(startX)
-		const endTime = this.gantt.time.x2time(endX)
+		const startTime = this.gantt.time.x2time(startX + translateX)
+		const endTime = this.gantt.time.x2time(endX + translateX)
 
 		const formatStr = 'YYYY-MM-DD HH:mm:ss'
 		let textContent = `${startTime.format(formatStr)} - ${endTime.format(formatStr)}`

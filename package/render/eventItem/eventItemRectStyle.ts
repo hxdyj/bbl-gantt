@@ -21,6 +21,9 @@ export class EventItemRectStyle extends EventItemRender {
 		}
 		const textG = (this.g.find(`.${CssNameKey.event_text_g}`)[0] || new G().addClass(CssNameKey.event_text_g)) as G
 		const foreignObject = textG.find(`.${CssNameKey.event_text}`)[0] || textG.foreignObject(width, height).addClass(CssNameKey.event_text)
+
+		foreignObject.width(width)
+		foreignObject.height(height)
 		foreignObject.attr({
 			style: 'overflow:visible;'
 		})

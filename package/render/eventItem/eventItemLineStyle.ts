@@ -40,6 +40,8 @@ export class EventItemLineStyle extends EventItemRender {
 		}
 
 		const foreignObject = this.g.find(`.${CssNameKey.event_text}`)[0] || this.g.foreignObject(width, height).addClass(CssNameKey.event_text)
+		foreignObject.width(width)
+		foreignObject.height(height)
 		foreignObject.attr({
 			style: 'overflow:visible;'
 		})

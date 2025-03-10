@@ -269,7 +269,8 @@ export class EventsRender extends PartRender {
 		this.itemRender.g.hide()
 
 		this.createTmpItem()
-
+		this.tmpItem?.svgjsInstance.rightResize?.show()
+		this.tmpItem?.svgjsInstance.leftResize?.show()
 		this.tmpItem?.g.transform({
 			translate: [newX, 0]
 		})
