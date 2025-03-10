@@ -6,16 +6,7 @@ export class EventBusEventName {
 	static resize = 'resize'
 	static scale = 'scale'
 
-	static container_drag_enter = 'container_drag_enter'
-	static container_drag_over = 'container_drag_over'
-	static container_drag_leave = 'container_drag_leave'
-	static container_drop = 'container_drop'
-
-	static shape_delete = 'shape_delete'
-	static shape_add = 'shape_add'
-
-	static selection_select_list_change = 'selection_select_list_change'
-	static selection_action_click = 'selection_action_click'
+	static header_wheel = 'header_wheel'
 
 
 	static event_item_body_mouse_down = 'event_item_body_mouse_down'

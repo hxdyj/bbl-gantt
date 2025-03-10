@@ -4,13 +4,13 @@ import dayjs, { Dayjs, UnitType } from "dayjs";
 import { PartRender } from "./index";
 import { Render } from "../render";
 import { CssNameKey } from "../const/const";
-import { FORMAT_FULL_TIME, formatDuration } from "#/utils/time";
 import { EventItemRender } from "./eventItem/eventItemRender";
+import { EventBusEventName } from "#/event/const";
 
 export class HeaderRender extends PartRender {
 	constructor(public gantt: Gantt, public renderer: Render) {
 		super(gantt, renderer)
-		this.bindEventThis(['onScroll', 'onBodyMouseDown', 'onBodyMouseUp'])
+		this.bindEventThis(['onScroll', 'onBodyMouseDown', 'onBodyMouseUp', 'onHeaderWheel'])
 		this.bindEvent()
 	}
 
@@ -212,6 +212,18 @@ export class HeaderRender extends PartRender {
 		return text
 	}
 
+	onHeaderWheel(evt: Event) {
+		this.gantt.eventBus.emit(EventBusEventName.header_wheel, this.gantt, evt)
+		if (this.gantt.options.mode === GanttMode.Duration) {
+			evt.stopPropagation()
+			evt.preventDefault()
+			//TODO(songle): 实现缩放功能
+			// this.gantt.updateOptions({
+
+			// })
+		}
+	}
+
 	render() {
 		const g = (this.gantt.stage.find(`.${CssNameKey.header}`)[0] || new G().addClass(CssNameKey.header)) as G
 		const bgRect = g.find(`.${CssNameKey.header_bg}`)[0] || new Rect().addClass(CssNameKey.header_bg)
@@ -254,7 +266,8 @@ export class HeaderRender extends PartRender {
 			translate: [0, this.gantt.container.scrollTop]
 		}, false)
 		g.addTo(this.gantt.stage)
-
+		g.off('wheel', this.onHeaderWheel)
+		g.on('wheel', this.onHeaderWheel)
 		this.onCurrentTimeExistRender()
 	}
 
