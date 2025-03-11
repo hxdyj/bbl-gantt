@@ -46,7 +46,9 @@ export class HeaderRender extends PartRender {
 	}
 
 	onScroll(event: Event) {
-		this.render()
+		this.g?.transform({
+			translate: [0, this.gantt.container.scrollTop]
+		}, false)
 	}
 
 	private mouseDownTime: number = 0
@@ -224,8 +226,11 @@ export class HeaderRender extends PartRender {
 		}
 	}
 
+	g: G | null = null
+
 	render() {
 		const g = (this.gantt.stage.find(`.${CssNameKey.header}`)[0] || new G().addClass(CssNameKey.header)) as G
+		this.g = g
 		const bgRect = g.find(`.${CssNameKey.header_bg}`)[0] || new Rect().addClass(CssNameKey.header_bg)
 		bgRect.size(this.gantt.stage.width(), this.gantt.options.header.height).move(0, 0)
 
@@ -262,9 +267,7 @@ export class HeaderRender extends PartRender {
 
 		this.renderer.ticks.gText?.addTo(g)
 
-		g.transform({
-			translate: [0, this.gantt.container.scrollTop]
-		}, false)
+
 		g.addTo(this.gantt.stage)
 		g.off('wheel', this.onHeaderWheel)
 		g.on('wheel', this.onHeaderWheel)

@@ -22,7 +22,7 @@ export function Duration() {
 			el: containerRef.current,
 			mode: GanttMode.Duration,
 			durationModeOptions: {
-				duration: 50.436
+				duration: 10 * 60 * 60 // 10 hours
 			},
 			view: {
 				overrideHeaderTitle: false,
@@ -35,7 +35,7 @@ export function Duration() {
 			data,
 			column: {
 				width: 30,
-				timeMetric: 550
+				timeMetric: 60000
 			}
 		})
 		return () => {
