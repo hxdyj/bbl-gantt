@@ -10,5 +10,6 @@
 - [x] event none deal with
 - [x] header text callback function to customize
 - [x] event item resize or move time mark to header
-- [ ] event item dependence
 - [x] just render viewBox items
+- [ ] duration mode on scroll header to resize timeMetric
+- [ ] event item dependence
