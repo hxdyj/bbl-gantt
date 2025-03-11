@@ -1,6 +1,9 @@
-import dayjs, { Dayjs, ManipulateType, OpUnitType } from "dayjs";
+import dayjs, { Dayjs, ManipulateType, OpUnitType, UnitTypeLongPlural, UnitTypeShort } from "dayjs";
 import Gantt, { GanttMode, TimeMetric, TimeScale } from "./index";
 import { FORMAT_FULL_TIME } from "./utils/time";
+import { EventBindingThis } from "./event";
+import duration, { DurationUnitType } from 'dayjs/plugin/duration';
+import { throttle } from "lodash-es";
 export type Tick = {
 	time: Dayjs
 }
@@ -12,7 +15,7 @@ const WEEK = 7 * DAY
 const MONTH = 30 * DAY
 
 
-export class Time {
+export class Time extends EventBindingThis {
 	// ticks: Tick[] = [] // 用户划分的column算出的ticks
 	// timeTicks: Tick[] = [] // 按照时间度量的ticks
 	ticks = 0 // 用户划分的column算出的ticks
@@ -21,7 +24,14 @@ export class Time {
 	fixUnit: OpUnitType | null = null
 	startTime: Dayjs
 	endTime: Dayjs
+	private preInViewBoxTickIndexRange: [number, number] | null = null
+	private inViewBoxTickIndexRange: [number, number] = [-Infinity, Infinity]
+
+	private preInViewBoxTimeTickIndexRange: [number, number] | null = null
+	private inViewBoxTimeTickIndexRange: [number, number] = [-Infinity, Infinity]
+
 	constructor(public gantt: Gantt) {
+		super()
 		console.group('New Time Class')
 		const { startTime, endTime } = this.init()
 		this.startTime = startTime
@@ -32,6 +42,12 @@ export class Time {
 		console.log(`startTime: `, this.startTime.format(FORMAT_FULL_TIME))
 		console.log(`endTime: `, this.endTime.format(FORMAT_FULL_TIME))
 		console.groupEnd()
+
+		this.bindEventThis(['onScroll'])
+		this.bindEvent()
+		this.caculateInViewBoxTickIndexRange()
+		this.caculateInViewBoxTimeTickIndexRange()
+
 	}
 
 	init() {
@@ -39,6 +55,72 @@ export class Time {
 		return this.caculateTicks(startTime, this.gantt.maxTime || this.x2time(this.gantt.containerRectInfo.width))
 	}
 
+	bindEvent(): void {
+		this.gantt.container.addEventListener('scroll', this.onScroll)
+	}
+
+	unbindEvent(): void {
+		this.gantt.container.removeEventListener('scroll', this.onScroll)
+	}
+
+	destroy() {
+		this.unbindEvent()
+	}
+
+	caculateInViewBoxTickIndexRange() {
+		const left = this.gantt.container.scrollLeft
+		const right = left + this.gantt.parentContainerRectInfo.width
+
+		const startTickIndex = Math.max(0, Math.floor(this.x2time(left).diff(this.startTime).valueOf() / this.stepTime))
+		const endTickIndex = Math.min(Math.ceil(this.x2time(right).diff(this.startTime).valueOf() / this.stepTime), this.ticks)
+		this.preInViewBoxTickIndexRange = this.inViewBoxTickIndexRange
+		this.inViewBoxTickIndexRange = [startTickIndex, endTickIndex]
+		// console.log('inViewBoxTickIndexRange', this.inViewBoxTickIndexRange)
+	}
+
+	caculateInViewBoxTimeTickIndexRange() {
+		const left = this.gantt.container.scrollLeft
+		const right = left + this.gantt.parentContainerRectInfo.width
+		const opUnit2DurationUnit: {
+			[key in OpUnitType]?: DurationUnitType
+		} = {
+			'week': 'weeks',
+			'date': 'days',
+			'day': 'days',
+			'minute': 'minutes',
+			'hour': 'hours',
+			'second': 'seconds',
+			'year': 'years',
+			'millisecond': 'milliseconds',
+		}
+		const stepTime = dayjs.duration(1, opUnit2DurationUnit[this.fixUnit!]).asMilliseconds()
+
+		const startTickIndex = Math.max(0, Math.floor(this.x2time(left).diff(this.startTime).valueOf() / stepTime))
+		const endTickIndex = Math.min(Math.ceil(this.x2time(right).diff(this.startTime).valueOf() / stepTime), this.timeTicks)
+		this.preInViewBoxTimeTickIndexRange = this.inViewBoxTimeTickIndexRange
+		this.inViewBoxTimeTickIndexRange = [startTickIndex, endTickIndex]
+		// console.log('inViewBoxTimeTickIndexRange', this.inViewBoxTimeTickIndexRange)
+	}
+
+
+
+
+	private onScroll = throttle((event: Event) => {
+		this.caculateInViewBoxTickIndexRange()
+		this.caculateInViewBoxTimeTickIndexRange()
+		if (this.preInViewBoxTickIndexRange && this.preInViewBoxTickIndexRange[0] !== this.inViewBoxTickIndexRange[0] || this.preInViewBoxTickIndexRange && this.preInViewBoxTickIndexRange[1] !== this.inViewBoxTickIndexRange[1]) {
+			this.gantt.render.ticks?.clear()
+			this.gantt.render.ticks?.render()
+		}
+
+		if (this.preInViewBoxTimeTickIndexRange && this.preInViewBoxTimeTickIndexRange[0] !== this.inViewBoxTimeTickIndexRange[0] || this.preInViewBoxTimeTickIndexRange && this.preInViewBoxTimeTickIndexRange[1] !== this.inViewBoxTimeTickIndexRange[1]) {
+			this.gantt.render.header?.clear()
+			this.gantt.render.header?.render()
+		}
+	}, 200, {
+		leading: true,
+		trailing: true
+	})
 
 	getTimeTickByIndex(index: number) {
 		if (index < 0 || (this.timeTicks && index > (this.timeTicks - 1))) {
@@ -56,8 +138,8 @@ export class Time {
 	getTimeTicksIterator() {
 		let that = this
 		function* iterator() {
-			let index = 0
-			while (index < that.timeTicks) {
+			let index = that.inViewBoxTimeTickIndexRange[0]
+			while (index < that.inViewBoxTimeTickIndexRange[1]) {
 				yield {
 					tickTime: that.getTimeTickByIndex(index),
 					index
@@ -83,8 +165,8 @@ export class Time {
 	getTicksIterator() {
 		let that = this
 		function* iterator() {
-			let index = 0
-			while (index < that.ticks) {
+			let index = that.inViewBoxTickIndexRange[0]
+			while (index <= that.inViewBoxTickIndexRange[1]) {
 				yield {
 					tickTime: that.getTickByIndex(index),
 					index
@@ -94,7 +176,6 @@ export class Time {
 		}
 		return iterator()
 	}
-
 
 	getNoneEventStartTime() {
 		return dayjs().startOf(this.fixUnit!)

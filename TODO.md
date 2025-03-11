@@ -9,4 +9,6 @@
 - [x] padding add none option to fill container
 - [x] event none deal with
 - [x] header text callback function to customize
-- [ ] event item resize or move time mark to header
+- [x] event item resize or move time mark to header
+- [ ] event item dependence
+- [x] just render viewBox items

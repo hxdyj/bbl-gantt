@@ -35,7 +35,7 @@ export function Duration() {
 			data,
 			column: {
 				width: 30,
-				timeMetric: 60000
+				timeMetric: 600
 			}
 		})
 		return () => {

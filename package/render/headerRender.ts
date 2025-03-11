@@ -242,8 +242,7 @@ export class HeaderRender extends PartRender {
 			const { tickTime, index } = tickItem
 			const x = this.renderer.getXbyTime(tickTime)
 			const height = 20
-			const idClassName = `tick-id-${index}-${tickTime.valueOf()}`
-
+			const idClassName = `tick-time-id-${index}`
 			const rect = g.find(`.${idClassName}.${CssNameKey.header_time_tick_item}`)[0] || new Rect().addClass(CssNameKey.header_time_tick_item).addClass(idClassName)
 			rect.size(0.2, height).move(x, this.gantt.options.header.height - height)
 
@@ -272,6 +271,11 @@ export class HeaderRender extends PartRender {
 		g.off('wheel', this.onHeaderWheel)
 		g.on('wheel', this.onHeaderWheel)
 		this.onCurrentTimeExistRender()
+	}
+
+
+	clear() {
+		this.g?.clear()
 	}
 
 	destroy(): void {

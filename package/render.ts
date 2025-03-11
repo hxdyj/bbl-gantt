@@ -18,6 +18,8 @@ export class Render extends EventBindingThis {
 		this.rows = new RowsRender(this.gantt, this)
 		this.events = new EventsRender(this.gantt, this)
 		this.render()
+
+
 		this.gantt.view.scrollToEarliestItem({
 			behavior: 'instant',
 		})

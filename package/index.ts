@@ -410,6 +410,7 @@ export class Gantt extends EventBindingThis {
 		this.destroyed = true
 		this.unbindEvent()
 		this.eventBus.removeAllListeners()
+		this.time.destroy()
 		this.render.destroy()
 		this.stage.remove()
 		ganttManager.removeInstance(this)
