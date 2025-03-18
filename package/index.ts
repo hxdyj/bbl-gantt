@@ -86,6 +86,7 @@ export type _GanttOptions = {
 		overrideHeaderTitle?: boolean
 	},
 	action?: {
+		enableCurrentTime?: boolean
 		enableMoveOrResizeOutOfEdge?: boolean
 	}
 	data: GanttItem[]
@@ -178,7 +179,8 @@ export const defaultGanttOptions: DeepPartial<GanttOptions> = {
 		}
 	},
 	action: {
-		enableMoveOrResizeOutOfEdge: true
+		enableCurrentTime: true,
+		enableMoveOrResizeOutOfEdge: true,
 	}
 }
 export class GanttManager {

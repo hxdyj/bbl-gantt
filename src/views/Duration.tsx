@@ -2,7 +2,7 @@ import { Button, Input, InputNumber, Select, Space } from "@arco-design/web-reac
 import { useEffect, useRef, useState } from "react"
 import { OperateGroup } from "../components/OperateGroup"
 import Gantt, { GanttItem, GanttMode, TimeMetric } from "#/index"
-import { ganttData } from "../data/ganttData-duration"
+import { ganttData } from "../data/ganttData-duration-empty"
 import { getUID, walkData } from "#/utils/data"
 
 walkData(ganttData as unknown as GanttItem[], ({ item }) => {
@@ -24,12 +24,16 @@ export function Duration() {
 			durationModeOptions: {
 				duration: 10 * 60 * 60 // 10 hours
 			},
+			header: {
+				height: 30
+			},
 			view: {
 				overrideHeaderTitle: false,
 				showTimeTicks: true,
-				showTicks: false
+				showTicks: false,
 			},
 			action: {
+				enableCurrentTime: false,
 				enableMoveOrResizeOutOfEdge: false
 			},
 			data,

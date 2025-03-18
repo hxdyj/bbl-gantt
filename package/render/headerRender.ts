@@ -5,7 +5,7 @@ import { PartRender } from "./index";
 import { Render } from "../render";
 import { CssNameKey } from "../const/const";
 import { EventItemRender } from "./eventItem/eventItemRender";
-import { EventBusEventName } from "#/event/const";
+import { EventBusEventName } from "../event/const";
 
 export class HeaderRender extends PartRender {
 	constructor(public gantt: Gantt, public renderer: Render) {
@@ -143,6 +143,7 @@ export class HeaderRender extends PartRender {
 	}
 
 	private renderCureentTime(x: number) {
+		if (!this.gantt.options.action.enableCurrentTime) return
 		const g = (this.gantt.stage.find(`.${CssNameKey.current_time}`)[0] || new G().addClass(CssNameKey.current_time)) as G
 		this.currentTimeG = g
 		const rect = g.find(`.${CssNameKey.current_time_line}`)[0] || new Rect().addClass(CssNameKey.current_time_line)
@@ -194,7 +195,7 @@ export class HeaderRender extends PartRender {
 		}))
 
 		const textBox = text.bbox()
-		text.move(isDurationMode ? x : x - textBox.width / 2, 26)
+		text.move(isDurationMode ? x : x - textBox.width / 2, (this.gantt.options.header.height - textBox.height) / 2)
 		text.attr({
 			style: 'user-select:none;'
 		})
