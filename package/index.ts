@@ -20,7 +20,6 @@ import { View } from "./view";
 import { DeepRequired } from 'utility-types'
 import { Time } from "./time";
 import { Render } from "./render";
-import './style.scss'
 import { EventShapeType } from './render/eventsRender';
 import { FORMAT_FULL_TIME, formatDuration, getDurationStartTime } from "./utils/time";
 export enum TimeMetric {

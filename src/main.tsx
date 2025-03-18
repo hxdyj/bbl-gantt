@@ -5,7 +5,7 @@ import router from './router/router'
 import './index.scss'
 import { ComponentConfig } from '@arco-design/web-react/es/ConfigProvider/interface'
 import { ConfigProvider } from '@arco-design/web-react';
-
+import '#/style.scss'
 const componentConfig: ComponentConfig = {
 	Button: {
 		type: 'primary',
