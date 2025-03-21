@@ -78,6 +78,7 @@ export type __GanttOptions = {
 	}
 	view?: {
 		headerTimeFormat?: (args: HeaderTimeFormatArgs) => string
+		whileShowScrollReduceScrollBarSize?: boolean
 		showScrollBar?: boolean
 		showTicks?: boolean
 		showTickText?: boolean
@@ -131,6 +132,7 @@ export const defaultGanttOptions: DeepPartial<GanttOptions> = {
 	},
 	view: {
 		showScrollBar: true,
+		whileShowScrollReduceScrollBarSize: true,
 		showTicks: true,
 		showTickText: false,
 		showTimeTicks: false,
@@ -388,7 +390,11 @@ export class Gantt extends EventBindingThis {
 		const documentBodyComputedStyle = getComputedStyle(document.body)
 
 		// const scrollBarWidth = parseInt(documentBodyComputedStyle.getPropertyValue('--gantt-scrollbar-width'));
-		const scrollBarHeight = this.options.view.showScrollBar ? parseInt(documentBodyComputedStyle.getPropertyValue('--gantt-scrollbar-height')) : 0;
+		const scrollBarHeight = this.options.view.showScrollBar ?
+			this.options.view.whileShowScrollReduceScrollBarSize ?
+				parseInt(documentBodyComputedStyle.getPropertyValue('--gantt-scrollbar-height'))
+				: 0
+			: 0;
 
 		const containerReduceScrollBarHeight = this.containerRectInfo.height - scrollBarHeight
 
@@ -412,7 +418,7 @@ export class Gantt extends EventBindingThis {
 		let containerWidth = `${this.parentContainerRectInfo.width}px`
 		let containerHeight = `${this.containerRectInfo.height}px`
 
-		if (this.options.view.showScrollBar) {
+		if (this.options.view.showScrollBar && this.options.view.whileShowScrollReduceScrollBarSize) {
 			containerWidth = `calc(${containerWidth} - var(--gantt-scrollbar-width))`
 			containerHeight = `calc(${containerHeight} - var(--gantt-scrollbar-height))`
 		}
