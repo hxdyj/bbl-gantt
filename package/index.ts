@@ -91,7 +91,6 @@ export type __GanttOptions = {
 }
 
 export type _GanttOptions =
-	__GanttOptions |
 	(__GanttOptions & {
 		mode: GanttMode.Normal
 	})
