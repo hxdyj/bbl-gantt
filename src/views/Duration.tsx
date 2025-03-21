@@ -2,7 +2,7 @@ import { Button, Input, InputNumber, Select, Space } from "@arco-design/web-reac
 import { useEffect, useRef, useState } from "react"
 import { OperateGroup } from "../components/OperateGroup"
 import Gantt, { GanttItem, GanttMode, TimeMetric } from "#/index"
-import { ganttData } from "../data/ganttData-duration-empty"
+import { ganttData } from "../data/ganttData-duration"
 import { getUID, walkData } from "#/utils/data"
 
 walkData(ganttData as unknown as GanttItem[], ({ item }) => {

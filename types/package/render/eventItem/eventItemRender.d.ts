@@ -2,7 +2,7 @@ import { EventBindingThis } from '../../event';
 import { Rect, Element, G } from '@svgdotjs/svg.js';
 import { default as Gantt, _GanttEventItem } from '../..';
 import { RenderItemOptions } from '../eventsRender';
-import { Render } from '#/render';
+import { Render } from '../../render';
 export declare abstract class EventItemRender extends EventBindingThis {
     gantt: Gantt;
     renderer: Render;

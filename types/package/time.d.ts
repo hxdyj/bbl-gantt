@@ -1,20 +1,52 @@
 import { default as dayjs, Dayjs, ManipulateType, OpUnitType } from 'dayjs';
 import { default as Gantt, TimeMetric, TimeScale } from './index';
+import { EventBindingThis } from './event';
 export type Tick = {
     time: Dayjs;
 };
-export declare class Time {
+export declare class Time extends EventBindingThis {
     gantt: Gantt;
-    ticks: Tick[];
-    timeTicks: Tick[];
+    ticks: number;
+    timeTicks: number;
     stepTime: number;
     fixUnit: OpUnitType | null;
+    startTime: Dayjs;
+    endTime: Dayjs;
+    private preInViewBoxTickIndexRange;
+    private inViewBoxTickIndexRange;
+    private preInViewBoxTimeTickIndexRange;
+    private inViewBoxTimeTickIndexRange;
     constructor(gantt: Gantt);
-    init(): void;
+    init(): {
+        startTime: dayjs.Dayjs;
+        endTime: dayjs.Dayjs;
+    };
+    bindEvent(): void;
+    unbindEvent(): void;
+    destroy(): void;
+    caculateInViewBoxTickIndexRange(): void;
+    caculateInViewBoxTimeTickIndexRange(): void;
+    private onScroll;
+    getTimeTickByIndex(index: number): dayjs.Dayjs;
+    lastTimeTick(): dayjs.Dayjs;
+    getTimeTicksIterator(): Generator<{
+        tickTime: dayjs.Dayjs;
+        index: number;
+    }, void, unknown>;
+    getTickByIndex(index: number): dayjs.Dayjs;
+    lastTick(): dayjs.Dayjs;
+    getTicksIterator(): Generator<{
+        tickTime: dayjs.Dayjs;
+        index: number;
+    }, void, unknown>;
     getNoneEventStartTime(): dayjs.Dayjs;
+    time2x(time: Dayjs, startTime?: Dayjs): number;
     x2time(x: number, startTime?: Dayjs): Dayjs;
-    length2milliseconds(x: number): number;
-    caculateTicks(minTime: Dayjs, maxTime: Dayjs): void;
+    length2milliseconds(length: number): number;
+    caculateTicks(minTime: Dayjs, maxTime: Dayjs): {
+        startTime: dayjs.Dayjs;
+        endTime: dayjs.Dayjs;
+    };
     caculateTicksByEndTime(endTime: Dayjs): void;
     caculateTicksByX(x: number): void;
 }

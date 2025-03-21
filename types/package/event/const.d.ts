@@ -5,14 +5,7 @@ export declare class EventBusEventName {
     static draw: string;
     static resize: string;
     static scale: string;
-    static container_drag_enter: string;
-    static container_drag_over: string;
-    static container_drag_leave: string;
-    static container_drop: string;
-    static shape_delete: string;
-    static shape_add: string;
-    static selection_select_list_change: string;
-    static selection_action_click: string;
+    static header_wheel: string;
     static event_item_body_mouse_down: string;
     static event_item_left_resize_mouse_down: string;
     static event_item_right_resize_mouse_down: string;

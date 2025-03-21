@@ -1,4 +1,4 @@
-import { default as Gantt } from '.';
+import { default as Gantt } from './index';
 import { Dayjs } from 'dayjs';
 import { EventBindingThis } from './event';
 import { HeaderRender } from './render/headerRender';

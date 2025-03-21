@@ -67,8 +67,7 @@ export type HeaderTimeFormatArgs = {
 }
 
 
-export type _GanttOptions = {
-	el: ContainerType
+export type __GanttOptions = {
 	column?: DeepPartial<Column>
 	row?: {
 		height: number
@@ -91,16 +90,21 @@ export type _GanttOptions = {
 	data: GanttItem[]
 }
 
-export type GanttOptions =
-	(_GanttOptions & {
-		mode?: GanttMode.Normal
+export type _GanttOptions =
+	__GanttOptions |
+	(__GanttOptions & {
+		mode: GanttMode.Normal
 	})
 	|
-	(_GanttOptions & {
+	(__GanttOptions & {
 		mode: GanttMode.Duration,
 		durationModeOptions: DurationModeOptions
 	})
 
+
+export type GanttOptions = _GanttOptions & {
+	el: ContainerType
+}
 
 export const defaultGanttOptions: DeepPartial<GanttOptions> = {
 	data: [],

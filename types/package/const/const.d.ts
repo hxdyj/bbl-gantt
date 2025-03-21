@@ -1,6 +1,10 @@
 export declare class CssNameKey {
     static container: string;
+    static duration_mode: string;
     static body: string;
+    static time_range: string;
+    static time_range_text: string;
+    static time_range_line: string;
     static current_time: string;
     static current_time_line: string;
     static current_time_text: string;
@@ -8,9 +12,11 @@ export declare class CssNameKey {
     static header_bg: string;
     static header_time_tick_item: string;
     static header_time_tick_text: string;
+    static header_tick_text: string;
     static rows: string;
     static row_line: string;
     static ticks: string;
+    static ticks_text_group: string;
     static tick_item: string;
     static events: string;
     static event_anchor: string;

@@ -1,15 +1,16 @@
 import { Svg } from '@svgdotjs/svg.js';
 import { default as EventEmitter } from 'eventemitter3';
 import { EventBindingThis } from './event';
+import { UnitType, Dayjs } from 'dayjs';
 import { getContainerInfo } from './utils/dom';
 import { DeepPartial } from '@arco-design/web-react/es/Form/store';
-import { Dayjs } from 'dayjs';
 import { View } from './view';
 import { DeepRequired } from 'utility-types';
 import { Time } from './time';
 import { Render } from './render';
 import { EventShapeType } from './render/eventsRender';
 export declare enum TimeMetric {
+    SECOND = "SECOND",
     MINUTE = "MINUTE",
     QUARTER_HOUR = "QUARTER_HOUR",
     HALF_HOUR = "HALF_HOUR",
@@ -21,7 +22,7 @@ export declare enum TimeMetric {
     MONTH = "MONTH",
     YEAR = "YEAR"
 }
-export type TimeScale = keyof Pick<typeof TimeMetric, 'MINUTE' | 'HOUR' | 'DAY' | 'WEEK' | 'MONTH' | 'YEAR'>;
+export type TimeScale = keyof Pick<typeof TimeMetric, 'SECOND' | 'MINUTE' | 'HOUR' | 'DAY' | 'WEEK' | 'MONTH' | 'YEAR'>;
 export type Column = {
     width: number;
     timeMetric: number | TimeMetric;
@@ -36,11 +37,16 @@ export declare enum GanttMode {
 }
 export type ContainerType = string | HTMLElement;
 export type DurationModeOptions = {
-    end: number;
+    duration: number;
+};
+export type HeaderTimeFormatArgs = {
+    gantt: Gantt;
+    time: Dayjs;
+    unit: UnitType;
+    type: 'currentTime' | 'timeRange' | 'tick';
 };
 export type _GanttOptions = {
     el: ContainerType;
-    mode?: GanttMode;
     column?: DeepPartial<Column>;
     row?: {
         height: number;
@@ -48,9 +54,23 @@ export type _GanttOptions = {
     header?: {
         height: number;
     };
+    view?: {
+        headerTimeFormat?: (args: HeaderTimeFormatArgs) => string;
+        showTicks?: boolean;
+        showTickText?: boolean;
+        showTimeTicks?: boolean;
+        showTimeTickText?: boolean;
+        overrideHeaderTitle?: boolean;
+    };
+    action?: {
+        enableCurrentTime?: boolean;
+        enableMoveOrResizeOutOfEdge?: boolean;
+    };
     data: GanttItem[];
 };
-export type GanttOptions = _GanttOptions | (_GanttOptions & {
+export type GanttOptions = (_GanttOptions & {
+    mode?: GanttMode.Normal;
+}) | (_GanttOptions & {
     mode: GanttMode.Duration;
     durationModeOptions: DurationModeOptions;
 });
@@ -91,6 +111,7 @@ export declare class Gantt extends EventBindingThis {
     id: string;
     data: GanttItem[];
     list: _GanttItem[];
+    parentContainer: HTMLElement;
     container: HTMLElement;
     body: HTMLElement;
     stage: Svg;
@@ -102,6 +123,7 @@ export declare class Gantt extends EventBindingThis {
         eventResizing: boolean;
     };
     options: DeepRequired<GanttOptions>;
+    parentContainerRectInfo: ReturnType<typeof getContainerInfo>;
     containerRectInfo: ReturnType<typeof getContainerInfo>;
     view: View;
     time: Time;
@@ -112,9 +134,10 @@ export declare class Gantt extends EventBindingThis {
     protected init(): void;
     bindEvent(): void;
     unbindEvent(): void;
+    caculateContainerInfo(): void;
     updateOptions(options: Partial<Omit<GanttOptions, 'el'>>): void;
-    protected containerResizeObserverCallback: ResizeObserverCallback;
-    protected containerResizeObserver: ResizeObserver;
+    protected parentContainerResizeObserverCallback: ResizeObserverCallback;
+    protected parentContainerResizeObserver: ResizeObserver;
     destroy(): void;
     protected draw(): void;
     on(...rest: any): this;
