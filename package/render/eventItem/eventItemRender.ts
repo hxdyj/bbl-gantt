@@ -16,6 +16,12 @@ export abstract class EventItemRender extends EventBindingThis {
 		const { event, addTo } = options
 		this.uid = `event-item-` + uid(6)
 		this.g = (addTo.find(`#${event.id}`)[0] || new G().id(event.id)).addClass(CssNameKey.event_item) as G
+		if (!this.gantt.options.action.enableEventMove) {
+			this.g.addClass('no-move')
+		}
+		if (!this.gantt.options.action.enableEventResize) {
+			this.g.addClass('no-resize')
+		}
 		this.bindEventThis(['onBodyMouseDown', 'onBodyMouseEnter', 'onBodyMouseLeave', 'onLeftResizeMouseDown', 'onRightResizeMouseDown'])
 		this.render()
 		const { bindEvent = true } = options || {}
@@ -112,39 +118,45 @@ export abstract class EventItemRender extends EventBindingThis {
 			const height = this.gantt.options.row.height
 			const x = this.renderer.getXbyTime(start)
 			const y = this.renderer.getYbyIndex(index)
-
-			const moveRect = (this.g.find(`.${CssNameKey.event_move_rect}`)[0] || new Rect().addClass(CssNameKey.event_move_rect)) as Rect
+			let moveRect: Rect | null = null
+			moveRect = (this.g.find(`.${CssNameKey.event_move_rect}`)[0] || new Rect().addClass(CssNameKey.event_move_rect)) as Rect
 			moveRect.size(width, height).move(x, y).fill('transparent').addTo(this.g)
+			let leftResize: Rect | null = null
+			let rightResize: Rect | null = null
 
-			const leftResize = (this.g.find(`.${CssNameKey.event_left_reisze}`)[0] || new Rect().addClass(CssNameKey.event_left_reisze).addClass(CssNameKey.event_reisze)) as Rect
-			const rightResize = (this.g.find(`.${CssNameKey.event_right_reisze}`)[0] || new Rect().addClass(CssNameKey.event_right_reisze).addClass(CssNameKey.event_reisze)) as Rect
+			if (this.gantt.options.action.enableEventResize) {
+				leftResize = (this.g.find(`.${CssNameKey.event_left_reisze}`)[0] || new Rect().addClass(CssNameKey.event_left_reisze).addClass(CssNameKey.event_reisze)) as Rect
+				rightResize = (this.g.find(`.${CssNameKey.event_right_reisze}`)[0] || new Rect().addClass(CssNameKey.event_right_reisze).addClass(CssNameKey.event_reisze)) as Rect
+				const resizeWidth = 8
+				const resizeHeight = height / 3
+				const resizeY = y + (height - resizeHeight) / 2
+				const resizeBorderRadius = 3
+				leftResize.size(resizeWidth, resizeHeight).move(x, resizeY).radius(resizeBorderRadius).hide()
+				rightResize.size(resizeWidth, resizeHeight).move(x + width - resizeWidth, resizeY).radius(resizeBorderRadius).hide()
 
-			const resizeWidth = 8
-			const resizeHeight = height / 3
-			const resizeY = y + (height - resizeHeight) / 2
-			const resizeBorderRadius = 3
-			leftResize.size(resizeWidth, resizeHeight).move(x, resizeY).radius(resizeBorderRadius).hide()
-			rightResize.size(resizeWidth, resizeHeight).move(x + width - resizeWidth, resizeY).radius(resizeBorderRadius).hide()
+				leftResize.addTo(this.g)
+				rightResize.addTo(this.g)
+			}
 
-			leftResize.addTo(this.g)
-			rightResize.addTo(this.g)
+
 
 			this.svgjsInstance.moveRect = moveRect
 			this.svgjsInstance.leftResize = leftResize
 			this.svgjsInstance.rightResize = rightResize
 
 			if (!this.isRendered) {
-				moveRect.on('mousedown', this.onBodyMouseDown)
-				moveRect.on('mouseenter', this.onBodyMouseEnter)
-				moveRect.on('mouseleave', this.onBodyMouseLeave)
 
-				leftResize.on('mousedown', this.onLeftResizeMouseDown)
-				leftResize.on('mouseenter', this.onBodyMouseEnter)
-				leftResize.on('mouseleave', this.onBodyMouseLeave)
+				moveRect?.on('mousedown', this.onBodyMouseDown)
+				moveRect?.on('mouseenter', this.onBodyMouseEnter)
+				moveRect?.on('mouseleave', this.onBodyMouseLeave)
 
-				rightResize.on('mousedown', this.onRightResizeMouseDown)
-				rightResize.on('mouseenter', this.onBodyMouseEnter)
-				rightResize.on('mouseleave', this.onBodyMouseLeave)
+				leftResize?.on('mousedown', this.onLeftResizeMouseDown)
+				leftResize?.on('mouseenter', this.onBodyMouseEnter)
+				leftResize?.on('mouseleave', this.onBodyMouseLeave)
+
+				rightResize?.on('mousedown', this.onRightResizeMouseDown)
+				rightResize?.on('mouseenter', this.onBodyMouseEnter)
+				rightResize?.on('mouseleave', this.onBodyMouseLeave)
 			}
 		}
 		if (!this.isRendered) {

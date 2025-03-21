@@ -19,6 +19,7 @@ export function Duration() {
 	useEffect(() => {
 		if (!containerRef.current) throw new Error("containerRef is null")
 		gantt.current = new Gantt({
+			// readOnly: true,
 			el: containerRef.current,
 			mode: GanttMode.Duration,
 			durationModeOptions: {
@@ -35,11 +36,8 @@ export function Duration() {
 				showTicks: true,
 				showTickText: false,
 				showTimeTickText: false,
+				showEventTimeRange: false,
 
-			},
-			action: {
-				enableCurrentTime: false,
-				enableMoveOrResizeOutOfEdge: false,
 			},
 			data,
 			column: {

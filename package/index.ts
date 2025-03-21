@@ -68,6 +68,7 @@ export type HeaderTimeFormatArgs = {
 
 
 export type __GanttOptions = {
+	readOnly?: boolean
 	column?: DeepPartial<Column>
 	row?: {
 		height: number
@@ -81,9 +82,12 @@ export type __GanttOptions = {
 		showTickText?: boolean
 		showTimeTicks?: boolean
 		showTimeTickText?: boolean
+		showEventTimeRange?: boolean
 		overrideHeaderTitle?: boolean
 	},
 	action?: {
+		enableEventMove?: boolean
+		enableEventResize?: boolean
 		enableCurrentTime?: boolean
 		enableMoveOrResizeOutOfEdge?: boolean
 	}
@@ -106,6 +110,7 @@ export type GanttOptions = _GanttOptions & {
 }
 
 export const defaultGanttOptions: DeepPartial<GanttOptions> = {
+	readOnly: false,
 	data: [],
 	mode: GanttMode.Normal,
 	column: {
@@ -126,6 +131,7 @@ export const defaultGanttOptions: DeepPartial<GanttOptions> = {
 		showTicks: true,
 		showTickText: false,
 		showTimeTicks: false,
+		showEventTimeRange: true,
 		showTimeTickText: true,
 		overrideHeaderTitle: true,
 		headerTimeFormat({ gantt, time, unit, type }: HeaderTimeFormatArgs) {
@@ -181,6 +187,8 @@ export const defaultGanttOptions: DeepPartial<GanttOptions> = {
 		}
 	},
 	action: {
+		enableEventMove: true,
+		enableEventResize: true,
 		enableCurrentTime: true,
 		enableMoveOrResizeOutOfEdge: true,
 	}
@@ -261,6 +269,19 @@ export class Gantt extends EventBindingThis {
 		super()
 		console.group('New Gantt')
 		this.id = uid(6)
+		if (options.readOnly) {
+			const userAction = options.action
+			const readOnlyAction: __GanttOptions['action'] = {
+				enableEventMove: false,
+				enableEventResize: false,
+				enableCurrentTime: false,
+				enableMoveOrResizeOutOfEdge: false,
+			}
+			const mergedAction = defaultsDeep({}, userAction, readOnlyAction)
+			options.action = mergedAction
+		}
+
+
 		options.data = cloneDeep(options.data || [])
 
 		this.options = defaultsDeep({}, options, defaultGanttOptions)

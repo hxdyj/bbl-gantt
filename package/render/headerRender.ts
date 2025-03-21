@@ -80,6 +80,7 @@ export class HeaderRender extends PartRender {
 	timeRange: G | null = null
 
 	renderEventTimeRange(event: MouseEvent, tmpItem?: EventItemRender | null) {
+		if (!this.gantt.options.view.showEventTimeRange) return
 		if (!tmpItem) return
 		const g = (this.gantt.stage.find(`.${CssNameKey.time_range}`)[0] || new G().addClass(CssNameKey.time_range)) as G
 		this.timeRange = g

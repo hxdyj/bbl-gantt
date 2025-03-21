@@ -123,6 +123,8 @@ export class EventsRender extends PartRender {
 		event: MouseEvent,
 		itemRender: EventItemRender
 	}) {
+		if (!this.gantt.options.action.enableEventMove) return
+
 		this.operateType = 'body-move'
 		const { event, itemRender } = args
 		this.startEvent = event

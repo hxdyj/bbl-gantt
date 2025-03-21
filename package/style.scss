@@ -142,6 +142,15 @@
 			.event-item {
 				fill: var(--gantt-event-item-style-rect-color);
 				cursor: move;
+				&.no-move {
+					cursor: auto;
+				}
+
+				&.no-resize {
+					.event_reisze {
+						cursor: auto;
+					}
+				}
 
 				.event_reisze {
 					fill: var(--gantt-event-item-resize-color);
