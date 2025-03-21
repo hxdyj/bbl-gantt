@@ -2,15 +2,8 @@ import { Button, Input, InputNumber, Select, Space } from "@arco-design/web-reac
 import { useEffect, useRef, useState } from "react"
 import { OperateGroup } from "../components/OperateGroup"
 import Gantt, { GanttItem, GanttMode, TimeMetric } from "#/index"
-import { ganttData } from "../data/ganttData-duration-test"
-import { getUID, walkData } from "#/utils/data"
+import { ganttData } from "../data/ganttData-duration"
 
-walkData(ganttData as unknown as GanttItem[], ({ item }) => {
-	item.id = getUID()
-	item.events.forEach(event => {
-		event.id = getUID()
-	})
-})
 
 export function Duration() {
 	let gantt = useRef<Gantt | null>(null)
@@ -28,7 +21,7 @@ export function Duration() {
 			header: {
 				height: 0
 			},
-			readOnly: true,
+			// readOnly: true,
 			view: {
 				// overrideHeaderTitle: false,
 				// showTimeTicks: true,
@@ -38,7 +31,8 @@ export function Duration() {
 				showTickText: false,
 				showTimeTickText: false,
 				showEventTimeRange: false,
-				whileShowScrollReduceScrollBarSize: false
+				whileShowScrollReduceScrollBarSize: false,
+				// whileRowsLessContainerAutoReduceHeight: false
 				// showScrollBar: false
 			},
 			data,

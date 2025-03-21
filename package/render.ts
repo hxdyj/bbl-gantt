@@ -52,7 +52,7 @@ export class Render extends EventBindingThis {
 			width = ganttBox.width
 		}
 
-		if (ganttBox.width < this.gantt.containerRectInfo.width) {
+		if (this.gantt.options.view.whileRowsLessContainerAutoReduceHeight && ganttBox.width < this.gantt.containerRectInfo.width) {
 			this.gantt.time.caculateTicksByX(this.gantt.containerRectInfo.width)
 			ganttBox = this.caculateGanttBox()
 		}

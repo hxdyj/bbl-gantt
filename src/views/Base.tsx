@@ -1,17 +1,10 @@
 import { Button, Input, InputNumber, Select, Space } from "@arco-design/web-react"
 import { useEffect, useRef, useState } from "react"
 import { OperateGroup } from "../components/OperateGroup"
-import Gantt, { GanttItem, TimeMetric } from "#/index"
+import Gantt, { GanttItem, GanttMode, TimeMetric } from "#/index"
 import './Base.scss'
 import { ganttData } from "../data/ganttData-full"
-import { getUID, walkData } from "#/utils/data"
 
-walkData(ganttData as unknown as GanttItem[], ({ item }) => {
-	item.id = getUID()
-	item.events.forEach(event => {
-		event.id = getUID()
-	})
-})
 
 export function Base() {
 	let gantt = useRef<Gantt | null>(null)

@@ -7,6 +7,7 @@ export const ganttData = [
 				name: '',
 				start: 1,
 				end: 5,
+				color: 'red'
 			},
 			{
 				name: '',

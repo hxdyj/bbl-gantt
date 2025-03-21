@@ -67,7 +67,7 @@ export type HeaderTimeFormatArgs = {
 }
 
 
-export type __GanttOptions = {
+export type _GanttOptions = {
 	readOnly?: boolean
 	column?: DeepPartial<Column>
 	row?: {
@@ -79,6 +79,7 @@ export type __GanttOptions = {
 	view?: {
 		headerTimeFormat?: (args: HeaderTimeFormatArgs) => string
 		whileShowScrollReduceScrollBarSize?: boolean
+		whileRowsLessContainerAutoReduceHeight?: boolean
 		showScrollBar?: boolean
 		showTicks?: boolean
 		showTickText?: boolean
@@ -97,18 +98,15 @@ export type __GanttOptions = {
 	data?: GanttItem[]
 }
 
-export type _GanttOptions =
-	(__GanttOptions & {
-		mode: GanttMode.Normal
-	})
-	|
-	(__GanttOptions & {
-		mode: GanttMode.Duration,
-		durationModeOptions: DurationModeOptions
-	})
+export type NormalModeGanttOptions = _GanttOptions & {
+	mode?: GanttMode.Normal
+}
+export type DurationModeGanttOptions = _GanttOptions & {
+	mode: GanttMode.Duration,
+	durationModeOptions: DurationModeOptions
+}
 
-
-export type GanttOptions = _GanttOptions & {
+export type GanttOptions = (NormalModeGanttOptions | DurationModeGanttOptions) & {
 	el: ContainerType
 }
 
@@ -133,6 +131,7 @@ export const defaultGanttOptions: DeepPartial<GanttOptions> = {
 	view: {
 		showScrollBar: true,
 		whileShowScrollReduceScrollBarSize: true,
+		whileRowsLessContainerAutoReduceHeight: true,
 		showTicks: true,
 		showTickText: false,
 		showTimeTicks: false,
@@ -268,7 +267,9 @@ export class Gantt extends EventBindingThis {
 			eventResizing: false
 		}
 
-	options: DeepRequired<GanttOptions>
+	options: DeepRequired<GanttOptions> & {
+		mode: GanttMode
+	}
 	parentContainerRectInfo: ReturnType<typeof getContainerInfo>
 	containerRectInfo: ReturnType<typeof getContainerInfo>
 	view: View
@@ -280,7 +281,7 @@ export class Gantt extends EventBindingThis {
 		this.id = uid(6)
 		if (options.readOnly) {
 			const userAction = options.action
-			const readOnlyAction: __GanttOptions['action'] = {
+			const readOnlyAction: _GanttOptions['action'] = {
 				enableEventMove: false,
 				enableEventResize: false,
 				enableCurrentTime: false,
@@ -385,7 +386,12 @@ export class Gantt extends EventBindingThis {
 		this.containerRectInfo = getContainerInfo(this.container)
 
 
-		let finalHeight = this.list.length ? contentHeight : this.parentContainerRectInfo.height
+		let finalHeight = this.list.length ?
+			this.options.view.whileRowsLessContainerAutoReduceHeight ?
+				contentHeight :
+				this.parentContainerRectInfo.height
+			:
+			this.parentContainerRectInfo.height
 
 		const documentBodyComputedStyle = getComputedStyle(document.body)
 
