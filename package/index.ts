@@ -87,7 +87,7 @@ export type __GanttOptions = {
 		enableCurrentTime?: boolean
 		enableMoveOrResizeOutOfEdge?: boolean
 	}
-	data: GanttItem[]
+	data?: GanttItem[]
 }
 
 export type _GanttOptions =
