@@ -9,10 +9,14 @@ export class EventItemRectStyle extends EventItemRender {
 
 		const rect = (this.g.find(`.${CssNameKey.event_body}`)[0] || new Rect().addClass(CssNameKey.event_body)) as Rect
 		const width = this.renderer.getWidthByTwoTime(start, end)
-		const x = this.renderer.getXbyTime(start)
-		const y = this.renderer.getYbyIndex(index) + (this.gantt.options.row.height / 4)
 
-		const height = this.gantt.options.row.height / 2
+		const x = this.renderer.getXbyTime(start)
+
+		const eventRectStylePadY = this.gantt.options.view.eventRectStylePadY
+		const pad = eventRectStylePadY > 1 ? eventRectStylePadY : this.gantt.options.row.height * eventRectStylePadY
+		const y = this.renderer.getYbyIndex(index) + pad
+
+		const height = this.gantt.options.row.height - (2 * pad)
 		rect.size(width, height)
 			.move(x, y).radius(5)
 		rect.addTo(this.g)

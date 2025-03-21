@@ -84,6 +84,7 @@ export type __GanttOptions = {
 		showTimeTickText?: boolean
 		showEventTimeRange?: boolean
 		overrideHeaderTitle?: boolean
+		eventRectStylePadY?: number,
 	},
 	action?: {
 		enableEventMove?: boolean
@@ -134,6 +135,10 @@ export const defaultGanttOptions: DeepPartial<GanttOptions> = {
 		showEventTimeRange: true,
 		showTimeTickText: true,
 		overrideHeaderTitle: true,
+		/**
+		 * <1认为是百分比，>1认为是像素
+		 *  */
+		eventRectStylePadY: 0.25,
 		headerTimeFormat({ gantt, time, unit, type }: HeaderTimeFormatArgs) {
 
 
