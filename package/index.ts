@@ -404,7 +404,7 @@ export class Gantt extends EventBindingThis {
 
 		const containerReduceScrollBarHeight = this.containerRectInfo.height - scrollBarHeight
 
-		if (this.list.length && containerReduceScrollBarHeight > contentHeight) {
+		if (this.options.view.whileRowsLessContainerAutoReduceHeight && this.list.length && containerReduceScrollBarHeight > contentHeight) {
 			finalHeight = contentHeight
 		}
 
@@ -427,6 +427,7 @@ export class Gantt extends EventBindingThis {
 		if (this.options.view.showScrollBar && this.options.view.whileShowScrollReduceScrollBarSize) {
 			containerWidth = `calc(${containerWidth} - var(--gantt-scrollbar-width))`
 			containerHeight = `calc(${containerHeight} - var(--gantt-scrollbar-height))`
+
 		}
 
 		this.container.style.height = containerHeight

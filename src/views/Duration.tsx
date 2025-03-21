@@ -2,7 +2,7 @@ import { Button, Input, InputNumber, Select, Space } from "@arco-design/web-reac
 import { useEffect, useRef, useState } from "react"
 import { OperateGroup } from "../components/OperateGroup"
 import Gantt, { GanttItem, GanttMode, TimeMetric } from "#/index"
-import { ganttData } from "../data/ganttData-duration"
+import { ganttData } from "../data/ganttData-duration-test"
 
 
 export function Duration() {
@@ -12,33 +12,30 @@ export function Duration() {
 	useEffect(() => {
 		if (!containerRef.current) throw new Error("containerRef is null")
 		gantt.current = new Gantt({
-			// readOnly: true,
 			el: containerRef.current,
 			mode: GanttMode.Duration,
 			durationModeOptions: {
-				duration: 10 * 60 * 60 // 10 hours
+				duration: 60 * 60 // 10 hours
 			},
 			header: {
 				height: 0
 			},
-			// readOnly: true,
 			view: {
-				// overrideHeaderTitle: false,
-				// showTimeTicks: true,
-				// showTicks: false,
-				showTimeTicks: false,
-				showTicks: true,
-				showTickText: false,
-				showTimeTickText: false,
-				showEventTimeRange: false,
 				whileShowScrollReduceScrollBarSize: false,
-				// whileRowsLessContainerAutoReduceHeight: false
-				// showScrollBar: false
+				whileRowsLessContainerAutoReduceHeight: false,
+				overrideHeaderTitle: false,
+				showTimeTickText: true,
+				showTickText: true,
+				showTicks: true,
+				showTimeTicks: true,
+				showScrollBar: true,
+
 			},
 			data,
+			readOnly: true,
 			column: {
 				width: 30,
-				timeMetric: 600
+				timeMetric: TimeMetric.MINUTE
 			}
 		})
 		return () => {

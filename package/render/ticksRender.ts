@@ -34,18 +34,22 @@ export class TicksRender extends PartRender {
 		}
 
 		rect.addTo(g)
-
-		const text = !textG ? null : this.renderer.header.renderTimeTickText(
-			() => (textG.find(`.${idClassName}.${CssNameKey.header_tick_text}`)[0] || new Text().addClass(CssNameKey.header_tick_text).addClass(idClassName)) as Text,
-			tickTime,
-			textG,
-			() => textG.find(`.${preTickId}.${CssNameKey.header_tick_text}`)[0] as Text,
-			preTickId
-		)
+		let text = null
+		if (textG) {
+			const newText = this.renderer.header.renderTimeTickText(
+				() => (textG.find(`.${idClassName}.${CssNameKey.header_tick_text}`)[0] || new Text().addClass(CssNameKey.header_tick_text).addClass(idClassName)) as Text,
+				tickTime,
+				textG,
+				() => textG.find(`.${preTickId}.${CssNameKey.header_tick_text}`)[0] as Text,
+				preTickId
+			)
+			text = newText
+		}
 
 		return {
 			idClassName,
-			text
+			text,
+			rect
 		}
 	}
 
@@ -55,19 +59,25 @@ export class TicksRender extends PartRender {
 		const gText = (this.gantt.stage.find(`.${CssNameKey.ticks_text_group}`)[0] || new G().addClass(CssNameKey.ticks_text_group)) as G
 		this.gText = gText
 		this.g = g
-		if (this.gantt.options.view.showTicks) {
-			const ticksIterator = this.gantt.time.getTicksIterator()
-			let preTickId = ''
-			for (const tickItem of ticksIterator) {
-				const { tickTime, index } = tickItem
-				if (this.gantt.options.view.showTickText) {
-					const { idClassName, text } = this.renderTickItem(tickTime, index, preTickId, g, gText)
-					if (text) {
-						preTickId = idClassName
-						text.addTo(gText)
-					}
-				}
+		const ticksIterator = this.gantt.time.getTicksIterator()
+		let preTickId = ''
+		for (const tickItem of ticksIterator) {
+			const { tickTime, index } = tickItem
+
+			const { idClassName, text, rect } = this.renderTickItem(tickTime, index, preTickId, g, gText)
+			if (!this.gantt.options.view.showTicks) {
+				rect?.hide()
 			}
+
+			if (!this.gantt.options.view.showTickText) {
+				text?.hide()
+			}
+
+			if (text) {
+				preTickId = idClassName
+				text.addTo(gText)
+			}
+
 		}
 		if (!this.gantt.stage.has(g)) g.addTo(this.gantt.stage)
 	}

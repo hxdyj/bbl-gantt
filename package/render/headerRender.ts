@@ -248,20 +248,28 @@ export class HeaderRender extends PartRender {
 			const rect = g.find(`.${idClassName}.${CssNameKey.header_time_tick_item}`)[0] || new Rect().addClass(CssNameKey.header_time_tick_item).addClass(idClassName)
 			rect.size(0.2, height).move(x, this.gantt.options.header.height - height)
 
-			const text = this.gantt.options.view.showTimeTickText ?
+			const text =
 				this.renderTimeTickText(
 					() => (g.find(`.${idClassName}.${CssNameKey.header_time_tick_text}`)[0] || new Text().addClass(CssNameKey.header_time_tick_text).addClass(idClassName)) as Text,
 					tickTime,
 					g,
 					() => g.find(`.${preTickId}.${CssNameKey.header_time_tick_text}`)[0] as Text,
 					preTickId)
-				: null
+
+			if (!this.gantt.options.view.showTimeTickText) {
+				text?.hide()
+			}
 			if (!text) continue
 
 			rect.addTo(g)
 			text.addTo(g)
-			if (this.gantt.options.view.showTimeTicks) {
-				this.renderer.ticks.renderTickItem(tickTime, index)
+			const { rect: tickRect, text: tickText } = this.renderer.ticks.renderTickItem(tickTime, index)
+			if (!this.gantt.options.view.showTimeTicks) {
+				tickRect?.hide()
+			}
+
+			if (!this.gantt.options.view.showTickText) {
+				tickText?.hide()
 			}
 			preTickId = idClassName
 		}
