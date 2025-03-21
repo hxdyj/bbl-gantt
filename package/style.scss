@@ -64,6 +64,10 @@
 	max-width: 100%;
 	height: 100%;
 
+	&.no-scroll-bar {
+		overflow: hidden;
+	}
+
 	&:hover {
 		&::-webkit-scrollbar-thumb {
 			background-color: var(--gantt-scrollbar-thumb-bg-hover-color);
@@ -79,6 +83,10 @@
 	&::-webkit-scrollbar {
 		width: var(--gantt-scrollbar-width);
 		height: var(--gantt-scrollbar-height);
+	}
+
+	&::-webkit-scrollbar-corner {
+		background-color: transparent;
 	}
 
 	.row-bg {

@@ -37,7 +37,7 @@ export function Duration() {
 				showTickText: false,
 				showTimeTickText: false,
 				showEventTimeRange: false,
-
+				// showScrollBar: false
 			},
 			data,
 			column: {

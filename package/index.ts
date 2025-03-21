@@ -71,13 +71,14 @@ export type __GanttOptions = {
 	readOnly?: boolean
 	column?: DeepPartial<Column>
 	row?: {
-		height: number
+		height?: number
 	}
 	header?: {
-		height: number
+		height?: number
 	}
 	view?: {
 		headerTimeFormat?: (args: HeaderTimeFormatArgs) => string
+		showScrollBar?: boolean
 		showTicks?: boolean
 		showTickText?: boolean
 		showTimeTicks?: boolean
@@ -129,6 +130,7 @@ export const defaultGanttOptions: DeepPartial<GanttOptions> = {
 		height: 70
 	},
 	view: {
+		showScrollBar: true,
 		showTicks: true,
 		showTickText: false,
 		showTimeTicks: false,
@@ -296,7 +298,15 @@ export class Gantt extends EventBindingThis {
 			throw new Error('Container must be provided')
 		}
 		this.parentContainer = getElement(this.options.el as ContainerType)
+
+
+
 		this.container = createOrGetEle(CssNameKey.container, this.parentContainer)
+
+		if (!this.options.view.showScrollBar) {
+			this.container.classList.add('no-scroll-bar')
+		}
+
 		this.body = createOrGetEle(CssNameKey.body, this.container)
 		ganttManager.addNewInstance(this)
 
@@ -378,7 +388,7 @@ export class Gantt extends EventBindingThis {
 		const documentBodyComputedStyle = getComputedStyle(document.body)
 
 		// const scrollBarWidth = parseInt(documentBodyComputedStyle.getPropertyValue('--gantt-scrollbar-width'));
-		const scrollBarHeight = parseInt(documentBodyComputedStyle.getPropertyValue('--gantt-scrollbar-height'));
+		const scrollBarHeight = this.options.view.showScrollBar ? parseInt(documentBodyComputedStyle.getPropertyValue('--gantt-scrollbar-height')) : 0;
 
 		const containerReduceScrollBarHeight = this.containerRectInfo.height - scrollBarHeight
 
@@ -402,13 +412,12 @@ export class Gantt extends EventBindingThis {
 		// const containerWidth = `${this.parentContainerRectInfo.width}px`
 		// const containerHeight = `${this.containerRectInfo.height}px`
 
-		const containerWidth = `calc(${this.parentContainerRectInfo.width}px + var(--gantt-scrollbar-width))`
-		const containerHeight = `calc(${this.containerRectInfo.height}px + var(--gantt-scrollbar-height))`
+		const containerWidth = `calc(${this.parentContainerRectInfo.width}px${this.options.view.showScrollBar ? ` + var(--gantt-scrollbar-width)` : ''})`
+		const containerHeight = `calc(${this.containerRectInfo.height}px${this.options.view.showScrollBar ? ` + var(--gantt-scrollbar-height)` : ''})`
 		this.container.style.height = containerHeight
 		this.container.style.maxHeight = containerHeight
 		this.container.style.width = containerWidth
 		this.container.style.maxWidth = containerWidth
-		this.container.style.overflow = `auto`
 	}
 
 
