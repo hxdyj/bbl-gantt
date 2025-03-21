@@ -26,8 +26,9 @@ export function Duration() {
 				duration: 10 * 60 * 60 // 10 hours
 			},
 			header: {
-				height: 30
+				height: 0
 			},
+			readOnly: true,
 			view: {
 				// overrideHeaderTitle: false,
 				// showTimeTicks: true,
@@ -37,7 +38,7 @@ export function Duration() {
 				showTickText: false,
 				showTimeTickText: false,
 				showEventTimeRange: false,
-				// showScrollBar: false
+				showScrollBar: false
 			},
 			data,
 			column: {

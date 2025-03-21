@@ -409,11 +409,14 @@ export class Gantt extends EventBindingThis {
 
 		this.containerRectInfo.height = finalHeight
 
-		// const containerWidth = `${this.parentContainerRectInfo.width}px`
-		// const containerHeight = `${this.containerRectInfo.height}px`
+		let containerWidth = `${this.parentContainerRectInfo.width}px`
+		let containerHeight = `${this.containerRectInfo.height}px`
 
-		const containerWidth = `calc(${this.parentContainerRectInfo.width}px${this.options.view.showScrollBar ? ` + var(--gantt-scrollbar-width)` : ''})`
-		const containerHeight = `calc(${this.containerRectInfo.height}px${this.options.view.showScrollBar ? ` + var(--gantt-scrollbar-height)` : ''})`
+		if (this.options.view.showScrollBar) {
+			containerWidth = `calc(${containerWidth} - var(--gantt-scrollbar-width))`
+			containerHeight = `calc(${containerHeight} - var(--gantt-scrollbar-height))`
+		}
+
 		this.container.style.height = containerHeight
 		this.container.style.maxHeight = containerHeight
 		this.container.style.width = containerWidth
