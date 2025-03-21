@@ -40,6 +40,7 @@ export function initDealData(data: GanttItem[], options: DeepRequired<GanttOptio
 	const isDuration = options.mode == GanttMode.Duration
 
 	walkData(data, ({ item, level, parent }) => {
+		item.id = `gantt-${item.id}`
 		item.level = level
 		if (parent) {
 			item.parent = parent
@@ -49,6 +50,7 @@ export function initDealData(data: GanttItem[], options: DeepRequired<GanttOptio
 		let maxEnd = -Infinity
 
 		item.events.forEach(ev => {
+			ev.id = `gantt-${ev.id}`
 			ev.start = isDuration ? getDurationStartTime(ev.start as number) : dayjs(ev.start)
 			ev.end = isDuration ? getDurationStartTime(ev.end as number) : dayjs(ev.end)
 			if (ev.start.valueOf() < minStart.valueOf()) {
