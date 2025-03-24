@@ -275,8 +275,10 @@ export class HeaderRender extends PartRender {
 			preTickId = idClassName
 		}
 
-		this.renderer.ticks.gText?.addTo(g)
 
+		if (this.gantt.options.view.showTickText) {
+			this.renderer.ticks.gText?.addTo(g)
+		}
 
 		g.addTo(this.gantt.stage)
 		g.off('wheel', this.onHeaderWheel)

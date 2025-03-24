@@ -57,7 +57,10 @@ export function Duration() {
 					</OperateGroup>
 				</Space>
 			</div>
-			<div className="h-[60vh] w-full" ref={containerRef}>
+			<div className="flex justify-between h-[60vh]">
+				<div className="w-min-[300px] w-[300px] bg-red-500"></div>
+				<div className="h-full min-w-0" style={{ flexGrow: 1 }} ref={containerRef}>
+				</div>
 			</div>
 
 		</div>
