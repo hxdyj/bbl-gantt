@@ -65,7 +65,7 @@ export class TicksRender extends PartRender {
 			const { tickTime, index } = tickItem
 			const { idClassName, text, rect } = this.renderTickItem(tickTime, index, `tick-id-`, preTickId, g, gText)
 			if (!this.gantt.options.view.showTicks) {
-				rect?.opacity(0)
+				rect?.hide()
 			}
 
 			if (!this.gantt.options.view.showTickText) {
