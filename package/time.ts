@@ -123,9 +123,9 @@ export class Time extends EventBindingThis {
 	})
 
 	getTimeTickByIndex(index: number) {
-		if (index < 0 || (this.timeTicks && index > (this.timeTicks - 1))) {
-			throw new Error('tick index outof range')
-		}
+		// if (index < 0 || (this.timeTicks && index > (this.timeTicks - 1))) {
+		// 	throw new Error('tick time index outof range')
+		// }
 		const startTime = this.getTickByIndex(0)
 		//@ts-ignore
 		return startTime.add(index, this.fixUnit)
@@ -152,9 +152,9 @@ export class Time extends EventBindingThis {
 
 
 	getTickByIndex(index: number) {
-		if (index < 0 || (this.ticks && index > (this.ticks - 1))) {
-			throw new Error('tick index outof range')
-		}
+		// if (index < 0 || (this.ticks && index > (this.ticks - 1))) {
+		// 	throw new Error('tick index outof range')
+		// }
 		return this.startTime.add(index * this.stepTime, 'millisecond')
 	}
 

@@ -132,12 +132,12 @@ export const defaultGanttOptions: DeepPartial<GanttOptions> = {
 		showScrollBar: true,
 		whileShowScrollReduceScrollBarSize: true,
 		whileRowsLessContainerAutoReduceHeight: true,
-		showTicks: true,
+		showTicks: false,
 		showTickText: false,
-		showTimeTicks: false,
-		showEventTimeRange: true,
+		showTimeTicks: true,
 		showTimeTickText: true,
-		overrideHeaderTitle: true,
+		showEventTimeRange: true,
+		overrideHeaderTitle: false,
 		/**
 		 * <1认为是百分比，>1认为是像素
 		 *  */

@@ -13,17 +13,17 @@ export class TicksRender extends PartRender {
 	}
 
 
-	renderTickItem(tickTime: Dayjs, index: number, preTickId = '', g?: G, textG?: G) {
+	renderTickItem(tickTime: Dayjs, index: number, idPrefix = `tick-time-id-`, preTickId = '', g?: G, textG?: G) {
 		if (!g) {
-			g = this.gantt.stage.find(`.${CssNameKey.ticks}`)[0] as G
+			g = this.g!
 		}
 		if (!textG) {
-			textG = this.gantt.stage.find(`.${CssNameKey.ticks_text_group}`)[0] as G
+			textG = this.gText!
 		}
 
 		const x = this.gantt.time.time2x(tickTime)
 		const y = this.gantt.options.header.height
-		const idClassName = `tick-id-${index}`
+		const idClassName = `${idPrefix}-${index}`
 		const rect = g.find(`.${idClassName}.${CssNameKey.tick_item}`)[0] || new Rect().addClass(CssNameKey.tick_item).addClass(idClassName)
 
 		rect.size(0.2, this.gantt.stage.height()).move(x, y)
@@ -63,14 +63,13 @@ export class TicksRender extends PartRender {
 		let preTickId = ''
 		for (const tickItem of ticksIterator) {
 			const { tickTime, index } = tickItem
-
-			const { idClassName, text, rect } = this.renderTickItem(tickTime, index, preTickId, g, gText)
+			const { idClassName, text, rect } = this.renderTickItem(tickTime, index, `tick-id-`, preTickId, g, gText)
 			if (!this.gantt.options.view.showTicks) {
-				rect?.hide()
+				rect?.opacity(0)
 			}
 
 			if (!this.gantt.options.view.showTickText) {
-				text?.hide()
+				text?.opacity(0)
 			}
 
 			if (text) {
