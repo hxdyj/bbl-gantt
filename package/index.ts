@@ -13,7 +13,7 @@ import { CssNameKey } from "./const/const";
 import { uid } from 'uid'
 import { createOrGetEle, getContainerInfo, getElement } from "./utils/dom";
 import { DeepPartial } from "@arco-design/web-react/es/Form/store";
-import { cloneDeep, defaultsDeep, omit } from "lodash-es";
+import { cloneDeep, defaultsDeep, omit, throttle } from "lodash-es";
 import { initDealData } from "./utils/data";
 import { Dayjs } from "dayjs";
 import { View } from "./view";
@@ -335,7 +335,7 @@ export class Gantt extends EventBindingThis {
 
 		console.log('init containerRectInfo', this.id)
 		this.stage = SVG()
-		this.bindEventThis([])
+		this.bindEventThis(['onContainerScroll'])
 		this.init()
 		this.time = new Time(this)
 		this.view = new View(this)
@@ -363,15 +363,26 @@ export class Gantt extends EventBindingThis {
 
 		this.list = list
 		console.log(`init deal data`, minTime, maxTime, cloneDeep(list))
-		// this.eventBus.emit(EventBusEventName.init, this)
+		Promise.resolve().then(() => {
+			this.eventBus.emit(EventBusEventName.init, this.list, this)
+		})
 	}
+
+	private onContainerScroll = throttle((e: WheelEvent) => {
+		this.eventBus.emit(EventBusEventName.container_wheel, e, this)
+	}, 150, {
+		leading: true,
+		trailing: true
+	})
 
 	bindEvent() {
 		this.parentContainerResizeObserver.observe(this.parentContainer)
+		this.container.addEventListener('wheel', this.onContainerScroll)
 	}
 
 	unbindEvent() {
 		this.parentContainerResizeObserver.disconnect()
+		this.container.removeEventListener('wheel', this.onContainerScroll)
 	}
 
 
@@ -473,9 +484,6 @@ export class Gantt extends EventBindingThis {
 		ganttManager.removeInstance(this)
 	}
 
-	protected draw() {
-		this.eventBus.emit(EventBusEventName.draw, this)
-	}
 
 	on(...rest: any) {
 		this.eventBus.on.apply(this.eventBus, rest)

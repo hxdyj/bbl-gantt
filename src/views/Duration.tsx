@@ -37,6 +37,10 @@ export function Duration() {
 				width: 30,
 				timeMetric: TimeMetric.MINUTE
 			}
+		}).on('container_wheel', (e) => {
+			console.log('on container_wheel', e)
+		}).on('init', (list) => {
+			console.log('on init', list)
 		})
 		return () => {
 			gantt.current?.destroy()
