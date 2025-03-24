@@ -267,14 +267,11 @@ export class HeaderRender extends PartRender {
 
 
 
-			const { rect: tickRect, text: tickText } = this.renderer.ticks.renderTickItem(tickTime, index)
+			const { rect: tickRect } = this.renderer.ticks.renderTickItem(tickTime, index)
 			if (!this.gantt.options.view.showTimeTicks) {
 				tickRect?.opacity(0)
 			}
 
-			if (!this.gantt.options.view.showTickText) {
-				tickText?.opacity(0)
-			}
 			preTickId = idClassName
 		}
 

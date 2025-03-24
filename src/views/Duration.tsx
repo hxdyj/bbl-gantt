@@ -17,17 +17,17 @@ export function Duration() {
 			durationModeOptions: {
 				duration: 60 * 60 // 10 hours
 			},
-			// header: {
-			// 	height:
-			// },
+			header: {
+				height: 0
+			},
 			view: {
 				whileShowScrollReduceScrollBarSize: false,
 				whileRowsLessContainerAutoReduceHeight: false,
 				overrideHeaderTitle: false,
-				showTicks: true,
+				showTicks: false,
 				showTickText: false,
-				showTimeTicks: false,
-				showTimeTickText: true,
+				showTimeTickText: false,
+				showTimeTicks: true,
 				showScrollBar: true,
 
 			},
