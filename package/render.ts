@@ -43,6 +43,9 @@ export class Render extends EventBindingThis {
 
 
 	render() {
+		this.gantt.render?.header?.clear()
+		this.gantt.render?.ticks?.clear()
+
 		let ganttBox = this.caculateGanttBox()
 
 		let width = Math.max(ganttBox.width, this.gantt.containerRectInfo.width)

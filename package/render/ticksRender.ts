@@ -13,7 +13,7 @@ export class TicksRender extends PartRender {
 	}
 
 
-	renderTickItem(tickTime: Dayjs, index: number, idPrefix = `tick-time-id-`, preTickId = '', g?: G, textG?: G) {
+	renderTickItem(tickTime: Dayjs, index: number, idPrefix = `time-tick-id-`, preTickId = '', g?: G, textG?: G) {
 		if (!g) {
 			g = this.g!
 		}
@@ -87,7 +87,7 @@ export class TicksRender extends PartRender {
 	}
 
 	destroy(): void {
-		const g = this.gantt.stage.find(`.${CssNameKey.ticks}`)[0]
-		g?.remove()
+		this.clear()
+		this.g?.remove()
 	}
 }

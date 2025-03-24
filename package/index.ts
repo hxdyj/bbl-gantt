@@ -453,6 +453,8 @@ export class Gantt extends EventBindingThis {
 				console.log('inital resize')
 				this.time.init()
 			}
+			this.time.caculateInViewBoxTickIndexRange()
+			this.time.caculateInViewBoxTimeTickIndexRange()
 			this.render.render()
 			console.log('parentContainerResizeObserverCallback', this.parentContainerRectInfo, Date())
 		}
