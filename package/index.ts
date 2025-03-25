@@ -368,12 +368,9 @@ export class Gantt extends EventBindingThis {
 		})
 	}
 
-	private onContainerScroll = throttle((e: WheelEvent) => {
+	private onContainerScroll(e: WheelEvent) {
 		this.eventBus.emit(EventBusEventName.container_wheel, e, this)
-	}, 150, {
-		leading: true,
-		trailing: true
-	})
+	}
 
 	bindEvent() {
 		this.parentContainerResizeObserver.observe(this.parentContainer)
