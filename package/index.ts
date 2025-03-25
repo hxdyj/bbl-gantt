@@ -368,18 +368,18 @@ export class Gantt extends EventBindingThis {
 		})
 	}
 
-	private onContainerScroll(e: WheelEvent) {
+	private onContainerScroll(e: Event) {
 		this.eventBus.emit(EventBusEventName.container_wheel, e, this)
 	}
 
 	bindEvent() {
 		this.parentContainerResizeObserver.observe(this.parentContainer)
-		this.container.addEventListener('wheel', this.onContainerScroll)
+		this.container.addEventListener('scroll', this.onContainerScroll)
 	}
 
 	unbindEvent() {
 		this.parentContainerResizeObserver.disconnect()
-		this.container.removeEventListener('wheel', this.onContainerScroll)
+		this.container.removeEventListener('scroll', this.onContainerScroll)
 	}
 
 
