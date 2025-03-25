@@ -18,7 +18,7 @@ export class RowsRender extends PartRender {
 			if (row.bg) {
 				const bgClassName = `row-bg-${row.id}`
 				const bgRect = g.find(`.${bgClassName}`)[0] || new Rect().addClass('row-bg').addClass(bgClassName)
-				bgRect.size(this.gantt.stage.width(), this.gantt.options.row.height).move(0, this.renderer.getYbyIndex(index)).opacity(0.5)
+				bgRect.size(this.gantt.stage.width(), this.gantt.options.row.height).move(0, this.renderer.getYbyIndex(index))
 				bgRect.attr('style', `fill: ${row.bg};`)
 				bgRect.addTo(g)
 			}
