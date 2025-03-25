@@ -37,9 +37,9 @@ export function Duration() {
 				width: 30,
 				timeMetric: TimeMetric.MINUTE
 			}
-		}).on('container_wheel', (e) => {
+		}).on('container_wheel', (e: any) => {
 			console.log('on container_wheel', e)
-		}).on('init', (list) => {
+		}).on('init', (list: any) => {
 			console.log('on init', list)
 		})
 		return () => {
