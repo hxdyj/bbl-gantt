@@ -81,10 +81,15 @@ export type _GanttOptions = {
 		whileShowScrollReduceScrollBarSize?: boolean
 		whileRowsLessContainerAutoReduceHeight?: boolean
 		showScrollBar?: boolean
+
 		showTicks?: boolean
 		showTickText?: boolean
+
 		showTimeTicks?: boolean
 		showTimeTickText?: boolean
+
+		headerTickTextTickNeeded?: boolean
+
 		showEventTimeRange?: boolean
 		overrideHeaderTitle?: boolean
 		eventRectStylePadY?: number,
@@ -134,8 +139,12 @@ export const defaultGanttOptions: DeepPartial<GanttOptions> = {
 		whileRowsLessContainerAutoReduceHeight: true,
 		showTicks: false,
 		showTickText: false,
+
 		showTimeTicks: true,
 		showTimeTickText: true,
+
+		headerTickTextTickNeeded: true, // showTickText时默认展示所有tick的对应时间的header上边的刻度条，如果这个设置成true，则只展示 showTickText 展示文字部分的刻度条（也就是会隐藏那些重叠文字的对应tick的刻度条）
+
 		showEventTimeRange: true,
 		overrideHeaderTitle: false,
 		/**

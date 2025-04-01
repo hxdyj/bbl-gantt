@@ -34,6 +34,13 @@ export class TicksRender extends PartRender {
 		}
 
 		rect.addTo(g)
+
+		const height = 20
+		const rectTimeTick = textG.find(`.${idClassName}.${CssNameKey.header_time_tick_item}`)[0] || new Rect().addClass(CssNameKey.header_time_tick_item).addClass(idClassName)
+		rectTimeTick.size(0.2, height).move(x, this.gantt.options.header.height - height)
+
+		rectTimeTick.addTo(textG)
+
 		let text = null
 		if (textG) {
 			const newText = this.renderer.header.renderTimeTickText(
@@ -46,10 +53,17 @@ export class TicksRender extends PartRender {
 			text = newText
 		}
 
+		if (this.gantt.options.view.headerTickTextTickNeeded) {
+			if (!text) {
+				rectTimeTick.hide()
+			}
+		}
+
 		return {
 			idClassName,
 			text,
-			rect
+			rect,
+			rectTimeTick
 		}
 	}
 

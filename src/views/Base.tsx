@@ -21,6 +21,7 @@ export function Base() {
 				showTicks: true,
 				showTickText: true,
 				showTimeTickText: false,
+				showTimeTicks: false,
 				overrideHeaderTitle: false
 			},
 			column: {
