@@ -260,7 +260,11 @@ export class HeaderRender extends PartRender {
 				text?.opacity(0)
 				rect?.hide()
 			}
-			if (!text) continue
+
+
+			if (!text) {
+				continue
+			}
 
 			rect.addTo(g)
 			text.addTo(g)
@@ -271,10 +275,6 @@ export class HeaderRender extends PartRender {
 			if (!this.gantt.options.view.showTimeTicks) {
 				tickRect?.hide()
 			}
-			if (!this.gantt.options.view.showTickText) {
-				rectTimeTick?.hide()
-			}
-
 			preTickId = idClassName
 		}
 

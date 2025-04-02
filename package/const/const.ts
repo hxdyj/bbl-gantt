@@ -16,6 +16,8 @@ export class CssNameKey {
 	static header = 'header'
 	static header_bg = 'header-bg'
 	static header_time_tick_item = 'time-tick-item'
+	static header_tick_text_time_tick_item = 'tick_text_time-tick-item'
+
 	static header_time_tick_text = 'time-tick-text'
 	static header_tick_text = 'tick-text'
 

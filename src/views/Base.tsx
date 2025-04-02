@@ -22,6 +22,7 @@ export function Base() {
 				showTickText: true,
 				showTimeTickText: false,
 				showTimeTicks: false,
+				headerTickTextTickNeeded: true,
 				overrideHeaderTitle: false
 			},
 			column: {

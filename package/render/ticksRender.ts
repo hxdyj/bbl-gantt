@@ -13,7 +13,7 @@ export class TicksRender extends PartRender {
 	}
 
 
-	renderTickItem(tickTime: Dayjs, index: number, idPrefix = `time-tick-id-`, preTickId = '', g?: G, textG?: G) {
+	renderTickItem(tickTime: Dayjs, index: number, source: 'header' | 'ticks' = 'header', idPrefix = `time-tick-id-`, preTickId = '', g?: G, textG?: G) {
 		if (!g) {
 			g = this.g!
 		}
@@ -36,12 +36,9 @@ export class TicksRender extends PartRender {
 		rect.addTo(g)
 
 		const height = 20
-		const rectTimeTick = textG.find(`.${idClassName}.${CssNameKey.header_time_tick_item}`)[0] || new Rect().addClass(CssNameKey.header_time_tick_item).addClass(idClassName)
-		rectTimeTick.size(0.2, height).move(x, this.gantt.options.header.height - height)
-
-		rectTimeTick.addTo(textG)
 
 		let text = null
+		let rectTimeTick = null
 		if (textG) {
 			const newText = this.renderer.header.renderTimeTickText(
 				() => (textG.find(`.${idClassName}.${CssNameKey.header_tick_text}`)[0] || new Text().addClass(CssNameKey.header_tick_text).addClass(idClassName)) as Text,
@@ -51,12 +48,21 @@ export class TicksRender extends PartRender {
 				preTickId
 			)
 			text = newText
-		}
 
-		if (this.gantt.options.view.headerTickTextTickNeeded) {
-			if (!text) {
-				rectTimeTick.hide()
+			if (source == 'ticks') {
+				rectTimeTick = textG.find(`.${idClassName}.${CssNameKey.header_tick_text_time_tick_item}`)[0] || new Rect().addClass(CssNameKey.header_tick_text_time_tick_item).addClass(CssNameKey.header_time_tick_item).addClass(idClassName)
+				rectTimeTick.size(0.2, height).move(x, this.gantt.options.header.height - height)
 			}
+
+			if (this.gantt.options.view.headerTickTextTickNeeded) {
+				if (text) {
+					rectTimeTick?.addTo(textG)
+
+				}
+			} else {
+				rectTimeTick?.addTo(textG)
+			}
+
 		}
 
 		return {
@@ -77,7 +83,7 @@ export class TicksRender extends PartRender {
 		let preTickId = ''
 		for (const tickItem of ticksIterator) {
 			const { tickTime, index } = tickItem
-			const { idClassName, text, rect } = this.renderTickItem(tickTime, index, `tick-id-`, preTickId, g, gText)
+			const { idClassName, text, rect } = this.renderTickItem(tickTime, index, 'ticks', `tick-id-`, preTickId, g, gText)
 			if (!this.gantt.options.view.showTicks) {
 				rect?.hide()
 			}
@@ -93,6 +99,13 @@ export class TicksRender extends PartRender {
 
 		}
 		if (!this.gantt.stage.has(g)) g.addTo(this.gantt.stage)
+	}
+
+	clearTickTextTick() {
+		this.gText?.find(`.${CssNameKey.header_tick_text_time_tick_item}`).forEach(rect => {
+			// console.log(rect.classes())
+			rect.remove()
+		})
 	}
 
 	clear() {

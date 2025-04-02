@@ -15,28 +15,30 @@ export function Duration() {
 			el: containerRef.current,
 			mode: GanttMode.Duration,
 			durationModeOptions: {
-				duration: 60 * 60 // 10 hours
-			},
-			header: {
-				height: 0
-			},
-			view: {
-				whileShowScrollReduceScrollBarSize: false,
-				whileRowsLessContainerAutoReduceHeight: false,
-				overrideHeaderTitle: false,
-				showTicks: false,
-				showTickText: false,
-				showTimeTickText: false,
-				showTimeTicks: true,
-				showScrollBar: true,
-
+				duration: 5 * 60 * 60 // 10 hours
 			},
 			data,
-			readOnly: true,
+			// header: {
+			// 	height: 30
+			// },
 			column: {
-				width: 30,
-				timeMetric: TimeMetric.MINUTE
-			}
+				width: 30 * 5,
+				timeMetric: 1000 * 60 * 5
+			},
+			view: {
+				overrideHeaderTitle: false,
+				showTimeTicks: false,
+				showTimeTickText: false,
+				showTicks: true,
+				showTickText: true,
+				showScrollBar: true,
+				headerTickTextTickNeeded: false,
+			},
+			action: {
+				enableCurrentTime: false,
+				enableMoveOrResizeOutOfEdge: false
+			},
+
 		}).on('container_wheel', (e: any) => {
 			console.log('on container_wheel', e)
 		}).on('init', (list: any) => {

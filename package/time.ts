@@ -108,6 +108,7 @@ export class Time extends EventBindingThis {
 	private onScroll = throttle((event: Event) => {
 		this.caculateInViewBoxTickIndexRange()
 		this.caculateInViewBoxTimeTickIndexRange()
+		this.gantt.render.ticks.clearTickTextTick()
 		if (this.preInViewBoxTickIndexRange && this.preInViewBoxTickIndexRange[0] !== this.inViewBoxTickIndexRange[0] || this.preInViewBoxTickIndexRange && this.preInViewBoxTickIndexRange[1] !== this.inViewBoxTickIndexRange[1]) {
 			this.gantt.render.ticks?.clear()
 			this.gantt.render.ticks?.render()
