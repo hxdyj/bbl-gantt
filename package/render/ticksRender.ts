@@ -101,13 +101,6 @@ export class TicksRender extends PartRender {
 		if (!this.gantt.stage.has(g)) g.addTo(this.gantt.stage)
 	}
 
-	clearTickTextTick() {
-		this.gText?.find(`.${CssNameKey.header_tick_text_time_tick_item}`).forEach(rect => {
-			// console.log(rect.classes())
-			rect.remove()
-		})
-	}
-
 	clear() {
 		this.g?.clear()
 		this.gText?.clear()
