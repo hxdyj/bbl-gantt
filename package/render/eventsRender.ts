@@ -247,9 +247,15 @@ export class EventsRender extends PartRender {
 			this.tmpItem.options.event.end = this.tmpItem.options.event.end.add(startDiff, 'millisecond')
 		} else {
 			if (type === 'left-resize') {
-				this.tmpItem.options.event.start = caculateFunc(diffX, this.itemRender.options.event.start)
+				const result = caculateFunc(diffX, this.itemRender.options.event.start)
+				if (!result.isSame(this.itemRender.options.event.end)) {
+					this.tmpItem.options.event.start = result
+				}
 			} else {
-				this.tmpItem.options.event.end = caculateFunc(diffX, this.itemRender.options.event.end)
+				const result = caculateFunc(diffX, this.itemRender.options.event.end)
+				if (!result.isSame(this.itemRender.options.event.start)) {
+					this.tmpItem.options.event.end = result
+				}
 			}
 		}
 	}
