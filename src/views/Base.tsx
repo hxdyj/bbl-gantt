@@ -26,8 +26,11 @@ export function Base() {
 				overrideHeaderTitle: false
 			},
 			column: {
-				width: 30,
-				timeMetric: 30000
+				width: 60,
+				timeMetric: 18000
+			},
+			action: {
+				moveOrResizeStep: true,
 			}
 		})
 		return () => {

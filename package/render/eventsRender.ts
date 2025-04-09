@@ -8,6 +8,7 @@ import { EventItemLineStyle } from "./eventItem/eventItemLineStyle";
 import { EventItemRectStyle } from "./eventItem/eventItemRectStyle";
 import { cloneDeep } from "lodash-es";
 import { EventBusEventName } from "../event/const";
+import dayjs, { Dayjs } from "dayjs";
 export enum EventShapeType {
 	rect = 'rect',
 	line = 'line'
@@ -23,7 +24,7 @@ export type RenderItemOptions = {
 	bodyClassName?: string
 	bindEvent?: boolean
 }
-
+export type EventItemOperateType = 'left-resize' | 'right-resize' | 'body-move'
 
 
 export class EventsRender extends PartRender {
@@ -97,7 +98,7 @@ export class EventsRender extends PartRender {
 
 	private tmpItem: EventItemRender | null = null
 
-	private operateType: 'left-resize' | 'right-resize' | 'body-move' | null = null
+	private operateType: EventItemOperateType | null = null
 
 	onEventItemLeftResizeMouseDown(args: {
 		event: MouseEvent,
@@ -211,6 +212,48 @@ export class EventsRender extends PartRender {
 		}
 	}
 
+	private caculateDiffXTime(diffX: number, currentTime: Dayjs) {
+		return currentTime.add(this.gantt.time.length2milliseconds(diffX), 'millisecond')
+	}
+
+	private findNearTick(diffX: number, currentTime: Dayjs) {
+		const time = this.caculateDiffXTime(diffX, currentTime)
+		const index = (
+			(time.valueOf() - this.gantt.time.startTime.valueOf()) /
+			//@ts-ignore
+			(this.gantt.options.view.showTicks ? this.gantt.time.stepTime : dayjs.duration(1, this.gantt.time.fixUnit).asMilliseconds())
+		)
+		const finalIndex = Math.round(index)
+		const tickInfo = this.gantt.options.view.showTicks ? this.gantt.time.getTickByIndex(finalIndex) : this.gantt.time.getTimeTickByIndex(finalIndex)
+		return tickInfo
+	}
+
+	private caculateTmpItemFinalX(diffX: number, type: EventItemOperateType) {
+		if (!this.startEvent || !this.itemRender) return
+		if (!this.tmpItem) return
+		const isStep = this.gantt.options.action.moveOrResizeStep &&
+			(
+				(this.gantt.options.view.showTicks && !this.gantt.options.view.showTimeTicks) ||
+				(!this.gantt.options.view.showTicks && this.gantt.options.view.showTimeTicks)
+			)
+
+		const caculateFunc = isStep ? this.findNearTick.bind(this) : this.caculateDiffXTime.bind(this)
+
+		if (type === 'body-move') {
+			const oldStart = this.tmpItem.options.event.start
+			this.tmpItem.options.event.start = caculateFunc(diffX, this.itemRender.options.event.start)
+
+			const startDiff = this.tmpItem.options.event.start.valueOf() - oldStart.valueOf()
+			this.tmpItem.options.event.end = this.tmpItem.options.event.end.add(startDiff, 'millisecond')
+		} else {
+			if (type === 'left-resize') {
+				this.tmpItem.options.event.start = caculateFunc(diffX, this.itemRender.options.event.start)
+			} else {
+				this.tmpItem.options.event.end = caculateFunc(diffX, this.itemRender.options.event.end)
+			}
+		}
+	}
+
 	onTypeResizeMouseMove(event: MouseEvent, start = false) {
 		if (!this.startEvent || !this.itemRender) return
 		const { x: eventX } = this.gantt.stage.point(event.clientX, event.clientY)
@@ -221,11 +264,7 @@ export class EventsRender extends PartRender {
 		this.createTmpItem()
 
 		if (!this.tmpItem) return
-		if (start) {
-			this.tmpItem.options.event.start = this.itemRender.options.event.start.add(this.gantt.time.length2milliseconds(diffX), 'millisecond')
-		} else {
-			this.tmpItem.options.event.end = this.itemRender.options.event.end.add(this.gantt.time.length2milliseconds(diffX), 'millisecond')
-		}
+		this.caculateTmpItemFinalX(diffX, start ? 'left-resize' : 'right-resize')
 		this.tmpItem.render()
 		this.tmpItem.svgjsInstance.rightResize?.show()
 		this.tmpItem.svgjsInstance.leftResize?.show()
@@ -262,48 +301,53 @@ export class EventsRender extends PartRender {
 		if (!this.startEvent || !this.itemRender) return
 		const { x: eventX } = this.gantt.stage.point(event.clientX, event.clientY)
 		const { x: startEventX } = this.gantt.stage.point(this.startEvent.clientX, this.startEvent.clientY)
-		let newX = (eventX - startEventX)
+		let diffX = (eventX - startEventX)
 
-		if (!this.gantt.options.action.enableMoveOrResizeOutOfEdge) {
-			const bbox = this.tmpItem?.svgjsInstance?.moveRect?.bbox()
-			const { x: bboxX = 0, width: bboxWidth = 0 } = bbox || {}
-			if (bbox) {
-				if (newX + bboxX < 0) {
-					newX = -bboxX
-				}
-				const stageWidth = parseFloat(this.gantt.stage.width().valueOf() + '')
-				if ((newX + bboxX + bboxWidth) > stageWidth) {
-					newX = stageWidth - bboxWidth - bboxX
-				}
-			}
-		}
-		// if (Math.abs(newX) < 5) {
-		// 	return console.warn('move too small, less than 5px')
-		// }
+
 
 		this.itemRender.g.hide()
 
 		this.createTmpItem()
+		this.caculateTmpItemFinalX(diffX, 'body-move')
+
+		if (!this.gantt.options.action.enableMoveOrResizeOutOfEdge) {
+			if (!this.tmpItem) return
+			const { start, end } = this.itemRender.options.event
+			const diff = end.diff(start)
+
+			if (this.tmpItem.options.event.start.isBefore(this.gantt.time.startTime)) {
+				this.tmpItem.options.event.start = this.gantt.time.startTime.clone()
+				this.tmpItem.options.event.end = this.tmpItem.options.event.start.add(diff, 'millisecond')
+			}
+
+			const lastTime = this.gantt.time.x2time(parseFloat(this.gantt.stage.width().toString()))
+
+			if (this.tmpItem.options.event.end.isAfter(lastTime)) {
+				this.tmpItem.options.event.end = lastTime
+				this.tmpItem.options.event.start = this.tmpItem.options.event.end.subtract(diff, 'millisecond')
+			}
+		}
+
+		this.tmpItem?.render()
 		this.tmpItem?.svgjsInstance.rightResize?.show()
 		this.tmpItem?.svgjsInstance.leftResize?.show()
-		this.tmpItem?.g.transform({
-			translate: [newX, 0]
-		})
 		this.gantt.status.eventMoving = true
 	}
 
 	onTypeBodyMoveMouseUp() {
-		if (!this.startEvent || !this.itemRender) return
-		const { translateX = 0 } = this.tmpItem?.g.transform() || {}
-		const anchor = this.itemRender.svgjsInstance.anchor!
-		const oldX = parseFloat(anchor.x().toString())
-		const newX = oldX + translateX
-		const newTime = this.gantt.time.x2time(newX)
+		if (!this.startEvent || !this.itemRender || !this.tmpItem) return
 
-		const { start, end } = this.itemRender.options.event
-		const diffTime = end.valueOf() - start.valueOf()
-		this.itemRender.options.event.start = newTime
-		this.itemRender.options.event.end = newTime.add(diffTime, 'millisecond')
+		const newEventData = cloneDeep(this.tmpItem.options.event)
+
+		if (newEventData.start.isAfter(newEventData.end)) {
+			const end = newEventData.end
+			newEventData.end = newEventData.start
+			newEventData.start = end
+		}
+
+		this.itemRender.options.event.start = newEventData.start
+		this.itemRender.options.event.end = newEventData.end
+
 		this.startEvent = null
 		this.tmpItem?.destroy()
 		this.tmpItem = null

@@ -5,10 +5,12 @@ import { EventBusEventName } from "./event/const";
 import duration from "dayjs/plugin/duration"
 import minMax from "dayjs/plugin/minMax"
 import weekOfYear from "dayjs/plugin/weekOfYear"
+import isBetween from "dayjs/plugin/isBetween"
 import dayjs, { UnitType } from "dayjs";
 dayjs.extend(duration)
 dayjs.extend(minMax)
 dayjs.extend(weekOfYear)
+dayjs.extend(isBetween)
 import { CssNameKey } from "./const/const";
 import { uid } from 'uid'
 import { createOrGetEle, getContainerInfo, getElement } from "./utils/dom";
@@ -95,6 +97,7 @@ export type _GanttOptions = {
 		eventRectStylePadY?: number,
 	},
 	action?: {
+		moveOrResizeStep?: boolean
 		enableEventMove?: boolean
 		enableEventResize?: boolean
 		enableCurrentTime?: boolean
@@ -204,10 +207,11 @@ export const defaultGanttOptions: DeepPartial<GanttOptions> = {
 		}
 	},
 	action: {
+		moveOrResizeStep: false,
 		enableEventMove: true,
 		enableEventResize: true,
 		enableCurrentTime: true,
-		enableMoveOrResizeOutOfEdge: true,
+		enableMoveOrResizeOutOfEdge: false,
 	}
 }
 export class GanttManager {
