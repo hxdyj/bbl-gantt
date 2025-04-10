@@ -218,7 +218,7 @@ export class EventsRender extends PartRender {
 		return currentTime.add(this.gantt.time.length2milliseconds(diffX), 'millisecond')
 	}
 
-	private findNearTick(diffX: number, currentTime: Dayjs) {
+	findNearTick(diffX: number, currentTime: Dayjs) {
 		const time = this.caculateDiffXTime(diffX, currentTime)
 		const index = (
 			(time.valueOf() - this.gantt.time.startTime.valueOf()) /

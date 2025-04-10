@@ -32,6 +32,7 @@ export function Base() {
 			action: {
 				headerWheelTimeMetric: true,
 				moveOrResizeStep: false,
+				enableNewEventItem: false,
 			}
 		})
 		return () => {

@@ -106,6 +106,7 @@ export type _GanttOptions = {
 		enableEventResize?: boolean
 		enableCurrentTime?: boolean
 		enableMoveOrResizeOutOfEdge?: boolean
+		enableNewEventItem?: boolean
 	}
 	data?: GanttItem[]
 }
@@ -220,6 +221,7 @@ export const defaultGanttOptions: DeepPartial<GanttOptions> = {
 		enableEventResize: true,
 		enableCurrentTime: true,
 		enableMoveOrResizeOutOfEdge: false,
+		enableNewEventItem: true,
 	}
 }
 export class GanttManager {
@@ -505,12 +507,6 @@ export class Gantt extends EventBindingThis {
 		const _options = defaultsDeep(options, this.options)
 		Object.assign(this, omit(new constructor(_options), 'uid'))
 		this.time.onScroll()
-	}
-
-
-	addEventItem() {
-		if (this.status.eventMoving || this.status.eventResizing) return
-		this.status.addEventIteming = true
 	}
 
 	protected parentContainerResizeObserverCallback: ResizeObserverCallback = (entries: any) => {

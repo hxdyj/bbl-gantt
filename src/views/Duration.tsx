@@ -68,14 +68,6 @@ export function Duration() {
 
 						</Button.Group>
 					</OperateGroup>
-					<OperateGroup desc="event item">
-						<Button.Group>
-							<Button onClick={() => {
-								gantt.current?.addEventItem()
-							}}>Add Event Item</Button>
-
-						</Button.Group>
-					</OperateGroup>
 				</Space>
 			</div>
 			<div className="h-[60vh] w-full" ref={containerRef}>

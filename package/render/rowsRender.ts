@@ -14,6 +14,7 @@ export class RowsRender extends PartRender {
 			'onBgRectMouseDown',
 			'onBgRectMouseMove',
 			'onContainerMouseUp',
+			'onContainerMouseLeave'
 		])
 		this.bindEvent()
 	}
@@ -21,10 +22,12 @@ export class RowsRender extends PartRender {
 
 	bindEvent(): void {
 		this.gantt.container.addEventListener('mouseup', this.onContainerMouseUp)
+		this.gantt.container.addEventListener('mouseleave', this.onContainerMouseLeave)
 	}
 
 	unbindEvent(): void {
 		this.gantt.container.removeEventListener('mouseup', this.onContainerMouseUp)
+		this.gantt.container.removeEventListener('mouseleave', this.onContainerMouseLeave)
 	}
 
 	render() {
@@ -69,14 +72,20 @@ export class RowsRender extends PartRender {
 		const rowIndex = this.gantt.list.findIndex(row => row.id === rowId)
 		const row = this.gantt.list[rowIndex]
 
-		if (this.gantt.status.addEventIteming) {
+
+		if (this.gantt.options.action.enableNewEventItem) {
 			this.bgRectMouseDownEvent = event
 			const { x: eventX } = this.gantt.stage.point(event.clientX, event.clientY)
+
 			const xTime = this.gantt.time.x2time(eventX)
+			const time = this.gantt.options.action.moveOrResizeStep ?
+				this.renderer.events.findNearTick(0, xTime)
+				: xTime
+
 			const newEventData: _GanttEventItem = {
 				id: getUID(),
-				start: xTime.clone(),
-				end: xTime.clone(),
+				start: time.clone(),
+				end: time.clone(),
 				rowId: row.id,
 				name: 'new'
 			}
@@ -86,7 +95,7 @@ export class RowsRender extends PartRender {
 				event,
 				itemRender: this.addEventItem
 			})
-
+			this.gantt.status.addEventIteming = true
 		}
 	}
 	onBgRectMouseMove(evt: Event) {
@@ -132,6 +141,10 @@ export class RowsRender extends PartRender {
 			this.addEventItem = null
 			this.gantt.status.addEventIteming = false
 		}
+	}
+
+	onContainerMouseLeave(evt: Event) {
+		this.onContainerMouseUp(evt)
 	}
 
 	destroy(): void {
