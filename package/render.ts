@@ -71,8 +71,12 @@ export class Render extends EventBindingThis {
 		this.rows.render()
 		this.events.render()
 		this.header.render()
-		this.gantt.stage.addTo(this.gantt.body)
 
+		const svg = this.gantt.body.querySelector('svg')
+		if (svg !== this.gantt.stage.node) {
+			this.gantt.body.innerHTML = ''
+		}
+		this.gantt.stage.addTo(this.gantt.body)
 	}
 
 	caculateGanttBox() {

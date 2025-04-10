@@ -30,7 +30,8 @@ export function Base() {
 				timeMetric: 18000
 			},
 			action: {
-				moveOrResizeStep: true,
+				headerWheelTimeMetric: true,
+				moveOrResizeStep: false,
 			}
 		})
 		return () => {

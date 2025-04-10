@@ -38,15 +38,15 @@ export class EventItemLineStyle extends EventItemRender {
 		if (event.textColor) {
 			textColor = `color:${event.textColor};`
 		}
-
-		const foreignObject = this.g.find(`.${CssNameKey.event_text}`)[0] || this.g.foreignObject(width, height).addClass(CssNameKey.event_text)
+		const foreignObjectHeight = 10
+		const foreignObject = this.g.find(`.${CssNameKey.event_text}`)[0] || this.g.foreignObject(width, foreignObjectHeight).addClass(CssNameKey.event_text)
 		foreignObject.width(width)
-		foreignObject.height(height)
+		foreignObject.height(foreignObjectHeight)
 		foreignObject.attr({
 			style: 'overflow:visible;'
 		})
 		foreignObject.clear()
-		foreignObject.add(SVG(`<div class="h-full flex items-center w-full" style="padding:0 6px;overflow:visible;white-space:nowrap;${textColor}">${event.name}</div>`, true))
-		foreignObject.move(x + 3, y - 12)
+		foreignObject.add(SVG(`<div class="h-full flex items-center w-full" style="padding:0 6px;overflow:hidden;white-space:nowrap;${textColor}">${event.name}</div>`, true))
+		foreignObject.move(x + 3, y - foreignObjectHeight - 6)
 	}
 }

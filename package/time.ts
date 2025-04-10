@@ -22,6 +22,7 @@ export class Time extends EventBindingThis {
 	timeTicks = 0 // 按照时间度量的ticks
 	stepTime: number = 0
 	fixUnit: OpUnitType | null = null
+	fixUnitStepTime: number = 0
 	startTime: Dayjs
 	endTime: Dayjs
 	private preInViewBoxTickIndexRange: [number, number] | null = null
@@ -105,7 +106,7 @@ export class Time extends EventBindingThis {
 
 
 
-	private onScroll = throttle((event: Event) => {
+	onScroll = throttle((event: Event) => {
 		this.caculateInViewBoxTickIndexRange()
 		this.caculateInViewBoxTimeTickIndexRange()
 		if (this.preInViewBoxTickIndexRange && this.preInViewBoxTickIndexRange[0] !== this.inViewBoxTickIndexRange[0] || this.preInViewBoxTickIndexRange && this.preInViewBoxTickIndexRange[1] !== this.inViewBoxTickIndexRange[1]) {
@@ -197,6 +198,14 @@ export class Time extends EventBindingThis {
 		return _startTime.add((x / this.gantt.options.column.width) * this.stepTime, 'millisecond')
 	}
 
+	containerScrollLeftTime() {
+		return this.x2time(this.gantt.container.scrollLeft)
+	}
+
+	stageWidthTime() {
+		return this.x2time(parseFloat(this.gantt.stage.width().toString()))
+	}
+
 	length2milliseconds(length: number): number {
 		return (length / this.gantt.options.column.width) * this.stepTime
 	}
@@ -248,6 +257,8 @@ export class Time extends EventBindingThis {
 			}
 		}
 		this.fixUnit = fixUnit
+		//@ts-ignore
+		this.fixUnitStepTime = dayjs.duration(1, fixUnit).asMilliseconds()
 		console.log(`startTime,endTime`, startTime.format(FORMAT_FULL_TIME), endTime.format(FORMAT_FULL_TIME))
 		console.log(`fixUnit`, fixUnit)
 

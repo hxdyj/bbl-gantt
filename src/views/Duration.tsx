@@ -35,6 +35,7 @@ export function Duration() {
 				headerTickTextTickNeeded: false,
 			},
 			action: {
+				headerWheelTimeMetric: true,
 				moveOrResizeStep: true,
 				enableCurrentTime: false,
 				enableMoveOrResizeOutOfEdge: false

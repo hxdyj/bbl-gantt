@@ -12,6 +12,8 @@
 - [x] event item resize or move time mark to header
 - [x] just render viewBox items
 - [x] auto adsorb to tick
-- [ ] duration mode on scroll header to resize timeMetric
+- [ ] resize and move to edge auto scroll
+- [x] duration mode on scroll header to resize timeMetric
 - [ ] event item dependence
 - [ ] add mode to drag add new event item
+- [ ] context menu event

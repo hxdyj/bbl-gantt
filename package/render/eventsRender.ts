@@ -36,7 +36,8 @@ export class EventsRender extends PartRender {
 			'onContainerMouseUp',
 			'onContainerMouseLeave',
 			'onEventItemLeftResizeMouseDown',
-			'onEventItemRightResizeMouseDown'
+			'onEventItemRightResizeMouseDown',
+			'autoScroll',
 		])
 		this.bindEvent()
 	}
@@ -91,7 +92,7 @@ export class EventsRender extends PartRender {
 
 	}
 
-
+	private mouseDownTime: number = 0
 
 	private startEvent: MouseEvent | null = null
 	private itemRender: EventItemRender | null = null
@@ -221,7 +222,7 @@ export class EventsRender extends PartRender {
 		const index = (
 			(time.valueOf() - this.gantt.time.startTime.valueOf()) /
 			//@ts-ignore
-			(this.gantt.options.view.showTicks ? this.gantt.time.stepTime : dayjs.duration(1, this.gantt.time.fixUnit).asMilliseconds())
+			(this.gantt.options.view.showTicks ? this.gantt.time.stepTime : this.gantt.time.fixUnitStepTime)
 		)
 		const finalIndex = Math.round(index)
 		const tickInfo = this.gantt.options.view.showTicks ? this.gantt.time.getTickByIndex(finalIndex) : this.gantt.time.getTimeTickByIndex(finalIndex)
@@ -259,6 +260,7 @@ export class EventsRender extends PartRender {
 			}
 		}
 	}
+
 
 	onTypeResizeMouseMove(event: MouseEvent, start = false) {
 		if (!this.startEvent || !this.itemRender) return
@@ -309,8 +311,6 @@ export class EventsRender extends PartRender {
 		const { x: startEventX } = this.gantt.stage.point(this.startEvent.clientX, this.startEvent.clientY)
 		let diffX = (eventX - startEventX)
 
-
-
 		this.itemRender.g.hide()
 
 		this.createTmpItem()
@@ -326,7 +326,7 @@ export class EventsRender extends PartRender {
 				this.tmpItem.options.event.end = this.tmpItem.options.event.start.add(diff, 'millisecond')
 			}
 
-			const lastTime = this.gantt.time.x2time(parseFloat(this.gantt.stage.width().toString()))
+			const lastTime = this.gantt.time.stageWidthTime()
 
 			if (this.tmpItem.options.event.end.isAfter(lastTime)) {
 				this.tmpItem.options.event.end = lastTime

@@ -97,6 +97,10 @@ export type _GanttOptions = {
 		eventRectStylePadY?: number,
 	},
 	action?: {
+		headerWheelTimeMetric?: boolean | {
+			min?: number
+			max?: number
+		}
 		moveOrResizeStep?: boolean
 		enableEventMove?: boolean
 		enableEventResize?: boolean
@@ -173,6 +177,9 @@ export const defaultGanttOptions: DeepPartial<GanttOptions> = {
 					showTimeStr = `${time.format('YYYY')}-${time.week()}周`
 				} else {
 					// showTimeStr = time.get(unit).toString()
+					if (unit == 'year') {
+						showTimeStr = time.format('YYYY')
+					}
 					if (unit == 'month') {
 						showTimeStr = time.format('YYYY-MM')
 					}
@@ -207,6 +214,7 @@ export const defaultGanttOptions: DeepPartial<GanttOptions> = {
 		}
 	},
 	action: {
+		headerWheelTimeMetric: false,
 		moveOrResizeStep: false,
 		enableEventMove: true,
 		enableEventResize: true,
@@ -261,6 +269,11 @@ export type GanttItem = {
 	[key: string]: any
 }
 
+export const HEADER_WHEEL_TIME_METRIC_DEFAULT_VALUE = {
+	min: 1000,
+	max: 31536000000//一年的时间ms
+}
+
 export class Gantt extends EventBindingThis {
 	id: string;
 	data: GanttItem[] = []
@@ -304,6 +317,14 @@ export class Gantt extends EventBindingThis {
 			options.action = mergedAction
 		}
 
+		if (options.action?.headerWheelTimeMetric) {
+
+			if (options.action?.headerWheelTimeMetric === true) {
+				options.action.headerWheelTimeMetric = cloneDeep(HEADER_WHEEL_TIME_METRIC_DEFAULT_VALUE)
+			} else {
+				options.action.headerWheelTimeMetric = defaultsDeep({}, options.action.headerWheelTimeMetric, HEADER_WHEEL_TIME_METRIC_DEFAULT_VALUE)
+			}
+		}
 
 		options.data = cloneDeep(options.data || [])
 
@@ -464,6 +485,7 @@ export class Gantt extends EventBindingThis {
 		const constructor = Object.getPrototypeOf(this).constructor
 		const _options = defaultsDeep(options, this.options)
 		Object.assign(this, omit(new constructor(_options), 'uid'))
+		this.time.onScroll()
 	}
 
 	protected parentContainerResizeObserverCallback: ResizeObserverCallback = (entries: any) => {
@@ -482,7 +504,6 @@ export class Gantt extends EventBindingThis {
 	}
 
 	protected parentContainerResizeObserver = new ResizeObserver(this.parentContainerResizeObserverCallback)
-
 
 	destroy() {
 		this.destroyed = true

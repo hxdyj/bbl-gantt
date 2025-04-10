@@ -1,11 +1,13 @@
 import { G, Rect, Text } from "@svgdotjs/svg.js";
-import Gantt, { GanttMode } from "../index";
+import Gantt, { GanttMode, HEADER_WHEEL_TIME_METRIC_DEFAULT_VALUE } from "../index";
 import dayjs, { Dayjs, UnitType } from "dayjs";
 import { PartRender } from "./index";
 import { Render } from "../render";
 import { CssNameKey } from "../const/const";
 import { EventItemRender } from "./eventItem/eventItemRender";
 import { EventBusEventName } from "../event/const";
+import { throttle } from "lodash-es";
+import { HEADER_WHEEL_TIME_METRIC_DEFAULT_VALUE } from '../index';
 
 export class HeaderRender extends PartRender {
 	constructor(public gantt: Gantt, public renderer: Render) {
@@ -216,17 +218,51 @@ export class HeaderRender extends PartRender {
 		return text
 	}
 
-	onHeaderWheel(evt: Event) {
-		this.gantt.eventBus.emit(EventBusEventName.header_wheel, this.gantt, evt)
-		if (this.gantt.options.mode === GanttMode.Duration) {
-			evt.stopPropagation()
-			evt.preventDefault()
-			//TODO(songle): 实现缩放功能
-			// this.gantt.updateOptions({
-
-			// })
+	clearHeaderWheelTimer() {
+		if (this.headerWheelTimer) {
+			clearTimeout(this.headerWheelTimer)
+			this.headerWheelTimer = null
 		}
 	}
+
+	private headerWheelTimer: null | ReturnType<typeof setTimeout> = null
+	onHeaderWheel = throttle((evt: Event) => {
+		this.gantt.eventBus.emit(EventBusEventName.header_wheel, this.gantt, evt)
+		if (this.gantt.options.action.headerWheelTimeMetric) {
+			evt.stopPropagation()
+			evt.preventDefault()
+			//@ts-ignore
+			const { min = HEADER_WHEEL_TIME_METRIC_DEFAULT_VALUE.min, max = HEADER_WHEEL_TIME_METRIC_DEFAULT_VALUE.max } = this.gantt.options.action.headerWheelTimeMetric || HEADER_WHEEL_TIME_METRIC_DEFAULT_VALUE
+			const { deltaY } = evt as WheelEvent
+			const direction = deltaY < 0 ? -1 : 1
+			const zoomIntensity = 0.5
+			let zoom = Math.exp(direction * zoomIntensity)
+
+
+			let newTimeMetric = this.gantt.time.stepTime * zoom
+
+			if (direction == -1) {
+				newTimeMetric = Math.max(newTimeMetric, min)
+			} else {
+				newTimeMetric = Math.min(newTimeMetric, max)
+			}
+
+			this.gantt.updateOptions({
+				column: {
+					timeMetric: newTimeMetric
+				}
+			})
+
+			this.clearHeaderWheelTimer()
+			this.headerWheelTimer = setTimeout(() => {
+				this.gantt.time.onScroll(new Event('scroll'))
+				this.clearHeaderWheelTimer()
+			}, 0);
+		}
+	}, 200, {
+		leading: true,
+		trailing: true
+	})
 
 	g: G | null = null
 
@@ -295,6 +331,7 @@ export class HeaderRender extends PartRender {
 	}
 
 	destroy(): void {
+		this.clearHeaderWheelTimer()
 		this.unbindEvent()
 		const g = this.gantt.stage.find(`.${CssNameKey.header}`)[0]
 		g?.remove()
