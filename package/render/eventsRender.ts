@@ -177,7 +177,6 @@ export class EventsRender extends PartRender {
 		const g = (this.gantt.stage.find(`.${CssNameKey.events}`)[0] || new G().addClass(CssNameKey.events)) as G
 		const rows = this.gantt.list
 		rows.forEach((row, index) => {
-			console.log('--------------- render event', row.events)
 			row.events.forEach((event, eventIndex) => {
 				this.renderEvent(event, index, eventIndex, g)
 			})
