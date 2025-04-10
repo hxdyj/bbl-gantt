@@ -14,6 +14,6 @@
 - [x] auto adsorb to tick
 - [x] context menu event
 - [x] duration mode on scroll header to resize timeMetric
+- [x] add mode to drag add new event item
 - [ ] resize and move to edge auto scroll
 - [ ] event item dependence
-- [ ] add mode to drag add new event item

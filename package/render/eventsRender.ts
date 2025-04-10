@@ -57,7 +57,9 @@ export class EventsRender extends PartRender {
 		}
 
 		if (this.map.has(event)) {
-			this.map.get(event)?.render()
+			const renderItem = this.map.get(event)
+			renderItem?.render()
+			return renderItem || null
 		} else {
 			const options: RenderItemOptions = {
 				event,
@@ -69,6 +71,7 @@ export class EventsRender extends PartRender {
 			}
 			const eventItemRender = event.shape === EventShapeType.line ? new EventItemLineStyle(this.gantt, this.renderer, options) : new EventItemRectStyle(this.gantt, this.renderer, options)
 			this.map.set(event, eventItemRender)
+			return eventItemRender
 		}
 	}
 
@@ -173,9 +176,12 @@ export class EventsRender extends PartRender {
 		this.onContainerMouseUp()
 	}
 
+	g: G | null = null
 	render() {
 		const g = (this.gantt.stage.find(`.${CssNameKey.events}`)[0] || new G().addClass(CssNameKey.events)) as G
+		this.g = g
 		const rows = this.gantt.list
+		console.log('events render', cloneDeep(rows))
 		rows.forEach((row, index) => {
 			row.events.forEach((event, eventIndex) => {
 				this.renderEvent(event, index, eventIndex, g)

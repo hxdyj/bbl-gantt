@@ -1,12 +1,30 @@
 import { G, Rect } from "@svgdotjs/svg.js";
-import Gantt from "..";
+import Gantt, { _GanttEventItem, _GanttItem } from "..";
 import { PartRender } from "./index";
 import { Render } from "../render";
 import { CssNameKey } from "../const/const";
+import { EventItemRender } from "./eventItem/eventItemRender";
+import { getUID } from "../utils/data";
+import { EventBusEventName } from "#/event/const";
 
 export class RowsRender extends PartRender {
 	constructor(public gantt: Gantt, public renderer: Render) {
 		super(gantt, renderer)
+		this.bindEventThis([
+			'onBgRectMouseDown',
+			'onBgRectMouseMove',
+			'onContainerMouseUp',
+		])
+		this.bindEvent()
+	}
+
+
+	bindEvent(): void {
+		this.gantt.container.addEventListener('mouseup', this.onContainerMouseUp)
+	}
+
+	unbindEvent(): void {
+		this.gantt.container.removeEventListener('mouseup', this.onContainerMouseUp)
 	}
 
 	render() {
@@ -15,13 +33,18 @@ export class RowsRender extends PartRender {
 
 		rows.forEach((row, index) => {
 
-			if (row.bg) {
-				const bgClassName = `row-bg-${row.id}`
-				const bgRect = g.find(`.${bgClassName}`)[0] || new Rect().addClass('row-bg').addClass(bgClassName)
-				bgRect.size(this.gantt.stage.width(), this.gantt.options.row.height).move(0, this.renderer.getYbyIndex(index))
-				bgRect.attr('style', `fill: ${row.bg};`)
-				bgRect.addTo(g)
-			}
+			const bgClassName = `row-bg-${row.id}`
+			const bgRect = g.find(`.${bgClassName}`)[0] || new Rect().addClass('row-bg').addClass(bgClassName)
+			bgRect.size(this.gantt.stage.width(), this.gantt.options.row.height).move(0, this.renderer.getYbyIndex(index))
+			bgRect.attr('style', `fill: ${row.bg || 'transparent'};`)
+			bgRect.attr('data-row-id', row.id)
+			bgRect.addTo(g)
+
+			bgRect.off('mousedown', this.onBgRectMouseDown)
+			bgRect.off('mousemove', this.onBgRectMouseMove)
+
+			bgRect.on('mousedown', this.onBgRectMouseDown)
+			bgRect.on('mousemove', this.onBgRectMouseMove)
 
 			const y = this.renderer.getYbyIndex(index)
 
@@ -37,7 +60,82 @@ export class RowsRender extends PartRender {
 		g.addTo(this.gantt.stage)
 	}
 
+	private addEventItem: EventItemRender | null = null
+	private bgRectMouseDownEvent: Event | null = null
+	onBgRectMouseDown(evt: Event) {
+		const event = evt as MouseEvent
+		const ele = event.target as SVGRectElement
+		const rowId = ele.getAttribute('data-row-id')
+		const rowIndex = this.gantt.list.findIndex(row => row.id === rowId)
+		const row = this.gantt.list[rowIndex]
+
+		if (this.gantt.status.addEventIteming) {
+			this.bgRectMouseDownEvent = event
+			const { x: eventX } = this.gantt.stage.point(event.clientX, event.clientY)
+			const xTime = this.gantt.time.x2time(eventX)
+			const newEventData: _GanttEventItem = {
+				id: getUID(),
+				start: xTime.clone(),
+				end: xTime.clone(),
+				rowId: row.id,
+				name: 'new'
+			}
+
+			this.addEventItem = this.renderer.events.renderEvent(newEventData, rowIndex, row.events.length, this.renderer.events.g!)!
+			this.renderer.events.onEventItemRightResizeMouseDown({
+				event,
+				itemRender: this.addEventItem
+			})
+
+		}
+	}
+	onBgRectMouseMove(evt: Event) {
+		const event = evt as MouseEvent
+		const ele = event.target as SVGRectElement
+		const rowId = ele.getAttribute('data-row-id')
+		const rowIndex = this.gantt.list.findIndex(row => row.id === rowId)
+		const row = this.gantt.list[rowIndex]
+
+		if (this.gantt.status.addEventIteming) {
+			this.renderer.events.onTypeResizeMouseMove(event)
+		}
+	}
+
+	onContainerMouseUp(evt: Event) {
+		if (this.gantt.status.addEventIteming) {
+			if (!this.addEventItem || !this.bgRectMouseDownEvent) return
+
+			const event = this.bgRectMouseDownEvent as MouseEvent
+			const ele = event.target as SVGRectElement
+			const rowId = ele.getAttribute('data-row-id')
+			const rowIndex = this.gantt.list.findIndex(row => row.id === rowId)
+			const row = this.gantt.list[rowIndex]
+
+
+			this.renderer.events.onTypeResizeMouseUp()
+			const { start, end } = this.addEventItem.options.event
+			if (start.isSame(end)) {
+				this.addEventItem.destroy()
+				return
+			}
+			const eventItemData = this.addEventItem.options.event
+			row.events.push(eventItemData)
+
+			this.bgRectMouseDownEvent = null
+
+			this.gantt.eventBus.emit(EventBusEventName.event_item_add, {
+				item: this.addEventItem,
+				row,
+				rowIndex
+			}, this.gantt)
+
+			this.addEventItem = null
+			this.gantt.status.addEventIteming = false
+		}
+	}
+
 	destroy(): void {
+		this.unbindEvent()
 		const g = this.gantt.stage.find(`.${CssNameKey.rows}`)[0]
 		g?.remove()
 	}

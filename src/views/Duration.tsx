@@ -65,6 +65,15 @@ export function Duration() {
 							<Button onClick={() => {
 								console.log(gantt.current?.list)
 							}}>Console List</Button>
+
+						</Button.Group>
+					</OperateGroup>
+					<OperateGroup desc="event item">
+						<Button.Group>
+							<Button onClick={() => {
+								gantt.current?.addEventItem()
+							}}>Add Event Item</Button>
+
 						</Button.Group>
 					</OperateGroup>
 				</Space>
