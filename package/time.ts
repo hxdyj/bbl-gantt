@@ -260,7 +260,7 @@ export class Time extends EventBindingThis {
 		//@ts-ignore
 		this.fixUnitStepTime = dayjs.duration(1, fixUnit).asMilliseconds()
 		console.log(`startTime,endTime`, startTime.format(FORMAT_FULL_TIME), endTime.format(FORMAT_FULL_TIME))
-		console.log(`fixUnit`, fixUnit)
+		console.log(`fixUnit`, fixUnit, this.fixUnitStepTime)
 
 		{
 			// console.group('caculateTicks')

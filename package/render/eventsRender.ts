@@ -72,7 +72,6 @@ export class EventsRender extends PartRender {
 		}
 	}
 
-
 	bindEvent() {
 		this.gantt.on(EventBusEventName.event_item_body_mouse_down, this.onEventItemBodyMouseDown)
 		this.gantt.on(EventBusEventName.event_item_left_resize_mouse_down, this.onEventItemLeftResizeMouseDown)
@@ -91,8 +90,6 @@ export class EventsRender extends PartRender {
 		this.gantt.container.removeEventListener('mouseleave', this.onContainerMouseLeave)
 
 	}
-
-	private mouseDownTime: number = 0
 
 	private startEvent: MouseEvent | null = null
 	private itemRender: EventItemRender | null = null
@@ -132,7 +129,6 @@ export class EventsRender extends PartRender {
 		this.startEvent = event
 		this.itemRender = itemRender
 	}
-
 
 	onContainerMouseMove(event: MouseEvent) {
 		if (!this.startEvent) return
@@ -181,6 +177,7 @@ export class EventsRender extends PartRender {
 		const g = (this.gantt.stage.find(`.${CssNameKey.events}`)[0] || new G().addClass(CssNameKey.events)) as G
 		const rows = this.gantt.list
 		rows.forEach((row, index) => {
+			console.log('--------------- render event', row.events)
 			row.events.forEach((event, eventIndex) => {
 				this.renderEvent(event, index, eventIndex, g)
 			})
@@ -199,7 +196,6 @@ export class EventsRender extends PartRender {
 		})
 		this.unbindEvent()
 	}
-
 
 	private createTmpItem() {
 		if (!this.itemRender) return
@@ -239,7 +235,6 @@ export class EventsRender extends PartRender {
 			)
 
 		const caculateFunc = isStep ? this.findNearTick.bind(this) : this.caculateDiffXTime.bind(this)
-
 		if (type === 'body-move') {
 			const oldStart = this.tmpItem.options.event.start
 			this.tmpItem.options.event.start = caculateFunc(diffX, this.itemRender.options.event.start)
@@ -260,7 +255,6 @@ export class EventsRender extends PartRender {
 			}
 		}
 	}
-
 
 	onTypeResizeMouseMove(event: MouseEvent, start = false) {
 		if (!this.startEvent || !this.itemRender) return
@@ -303,7 +297,6 @@ export class EventsRender extends PartRender {
 		this.gantt.status.eventResizing = false
 		document.body.style.cursor = 'auto'
 	}
-
 
 	onTypeBodyMoveMouseMove(event: MouseEvent) {
 		if (!this.startEvent || !this.itemRender) return

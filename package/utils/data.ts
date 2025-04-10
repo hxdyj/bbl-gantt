@@ -4,7 +4,9 @@ import { uid } from "uid";
 import { DeepRequired } from "utility-types";
 import { getDurationStartTime } from "./time";
 export function getUID(id?: string | number) {
-	return `gantt-uid-${id ?? uid(6)}`
+	const prefix = 'gantt-uid-'
+	if (id?.toString().startsWith(prefix)) return id.toString()
+	return `${prefix}${id ?? uid(6)}`
 }
 
 //深度优先遍历数据
@@ -55,8 +57,14 @@ export function initDealData(data: GanttItem[], options: DeepRequired<GanttOptio
 
 		item.events.forEach(ev => {
 			ev.id = getUID(ev.id)
-			ev.start = isDuration ? getDurationStartTime(ev.start as number) : dayjs(ev.start)
-			ev.end = isDuration ? getDurationStartTime(ev.end as number) : dayjs(ev.end)
+
+			if (!dayjs.isDayjs(ev.start)) {
+				ev.start = isDuration ? getDurationStartTime(ev.start as number) : dayjs(ev.start)
+			}
+			if (!dayjs.isDayjs(ev.end)) {
+				ev.end = isDuration ? getDurationStartTime(ev.end as number) : dayjs(ev.end)
+			}
+
 			if (ev.start.valueOf() < minStart.valueOf()) {
 				minStart = ev.start.valueOf()
 			}

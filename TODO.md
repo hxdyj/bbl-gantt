@@ -17,3 +17,4 @@
 - [ ] event item dependence
 - [ ] add mode to drag add new event item
 - [ ] context menu event
+- [ ] fix duratio mode step timeTick
