@@ -45,6 +45,8 @@ export function Duration() {
 			console.log('on container_wheel', e)
 		}).on('init', (list: any) => {
 			console.log('on init', list)
+		}).on('event_item_body_context_menu', (e, item, gantt) => {
+			console.log('event_item_body_context_menu', e, item, gantt)
 		})
 		return () => {
 			gantt.current?.destroy()
