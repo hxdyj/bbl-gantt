@@ -7,7 +7,6 @@ import { CssNameKey } from "../const/const";
 import { EventItemRender } from "./eventItem/eventItemRender";
 import { EventBusEventName } from "../event/const";
 import { throttle } from "lodash-es";
-import { HEADER_WHEEL_TIME_METRIC_DEFAULT_VALUE } from '../index';
 
 export class HeaderRender extends PartRender {
 	constructor(public gantt: Gantt, public renderer: Render) {
@@ -231,28 +230,38 @@ export class HeaderRender extends PartRender {
 		if (this.gantt.options.action.headerWheelTimeMetric) {
 			evt.stopPropagation()
 			evt.preventDefault()
+
+			const defaultValue = this.gantt.getHeaderWheelTimeMetricLimitDefaultRange()
 			//@ts-ignore
-			const { min = HEADER_WHEEL_TIME_METRIC_DEFAULT_VALUE.min, max = HEADER_WHEEL_TIME_METRIC_DEFAULT_VALUE.max } = this.gantt.options.action.headerWheelTimeMetric || HEADER_WHEEL_TIME_METRIC_DEFAULT_VALUE
+			const { min = defaultValue.min, max = defaultValue.max } = this.gantt.options.action.headerWheelTimeMetric || defaultValue
 			const { deltaY } = evt as WheelEvent
 			const direction = deltaY < 0 ? -1 : 1
 			const zoomIntensity = 0.5
 			let zoom = Math.exp(direction * zoomIntensity)
 
-
-			let newTimeMetric = this.gantt.time.stepTime * zoom
+			const isDurationMode = this.gantt.options.mode === GanttMode.Duration
+			let newValue = (isDurationMode ? this.gantt.options.column.width : this.gantt.time.stepTime) * zoom
 
 			if (direction == -1) {
-				newTimeMetric = Math.max(newTimeMetric, min)
+				newValue = Math.max(newValue, min)
 			} else {
-				newTimeMetric = Math.min(newTimeMetric, max)
+				newValue = Math.min(newValue, max)
 			}
 
-			this.gantt.updateOptions({
-				column: {
-					timeMetric: newTimeMetric
-				}
-			})
-
+			this.gantt.updateOptions(
+				isDurationMode ?
+					{
+						column: {
+							width: newValue
+						}
+					}
+					:
+					{
+						column: {
+							timeMetric: newValue
+						}
+					}
+			)
 			this.clearHeaderWheelTimer()
 			this.headerWheelTimer = setTimeout(() => {
 				this.gantt.time.onScroll(new Event('scroll'))

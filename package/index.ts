@@ -269,10 +269,8 @@ export type GanttItem = {
 	[key: string]: any
 }
 
-export const HEADER_WHEEL_TIME_METRIC_DEFAULT_VALUE = {
-	min: 1000,
-	max: 31536000000//一年的时间ms
-}
+
+
 
 export class Gantt extends EventBindingThis {
 	id: string;
@@ -318,11 +316,15 @@ export class Gantt extends EventBindingThis {
 		}
 
 		if (options.action?.headerWheelTimeMetric) {
-
 			if (options.action?.headerWheelTimeMetric === true) {
-				options.action.headerWheelTimeMetric = cloneDeep(HEADER_WHEEL_TIME_METRIC_DEFAULT_VALUE)
+				options.action.headerWheelTimeMetric = this.getHeaderWheelTimeMetricLimitDefaultRange(options)
 			} else {
-				options.action.headerWheelTimeMetric = defaultsDeep({}, options.action.headerWheelTimeMetric, HEADER_WHEEL_TIME_METRIC_DEFAULT_VALUE)
+				const defaultValue = this.getHeaderWheelTimeMetricLimitDefaultRange(options)
+				options.action.headerWheelTimeMetric = defaultsDeep({}, options.action.headerWheelTimeMetric, defaultValue)
+				if (options.mode == GanttMode.Duration) {
+					//@ts-ignore
+					options.action.headerWheelTimeMetric!.max = Math.min(options.action.headerWheelTimeMetric!.max, options.durationModeOptions.duration)
+				}
 			}
 		}
 
@@ -414,6 +416,21 @@ export class Gantt extends EventBindingThis {
 	unbindEvent() {
 		this.parentContainerResizeObserver.disconnect()
 		this.container.removeEventListener('scroll', this.onContainerScroll)
+	}
+
+	getHeaderWheelTimeMetricLimitDefaultRange(options?: GanttOptions) {
+		const opt = options || this.options
+		if (opt.mode == GanttMode.Duration) {
+			return {
+				min: 5,
+				max: opt.durationModeOptions.duration
+			}
+		}
+
+		return {
+			min: 1000,
+			max: 31536000000//一年的时间ms
+		}
 	}
 
 

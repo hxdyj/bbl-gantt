@@ -27,10 +27,10 @@ export function Duration() {
 			},
 			view: {
 				overrideHeaderTitle: false,
-				showTimeTicks: false,
-				showTimeTickText: false,
-				showTicks: true,
-				showTickText: true,
+				showTimeTicks: true,
+				showTimeTickText: true,
+				showTicks: false,
+				showTickText: false,
 				showScrollBar: true,
 				headerTickTextTickNeeded: false,
 			},
@@ -42,7 +42,7 @@ export function Duration() {
 			},
 
 		}).on('container_wheel', (e: any) => {
-			console.log('on container_wheel', e)
+			// console.log('on container_wheel', e)
 		}).on('init', (list: any) => {
 			console.log('on init', list)
 		}).on('event_item_body_context_menu', (e, item, gantt) => {
