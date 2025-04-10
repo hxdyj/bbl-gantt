@@ -71,10 +71,18 @@ export class RowsRender extends PartRender {
 		const rowId = ele.getAttribute('data-row-id')
 		const rowIndex = this.gantt.list.findIndex(row => row.id === rowId)
 		const row = this.gantt.list[rowIndex]
-
-
-		if (this.gantt.options.action.enableNewEventItem) {
-			this.bgRectMouseDownEvent = event
+		this.bgRectMouseDownEvent = event
+	}
+	onBgRectMouseMove(evt: Event) {
+		const event = evt as MouseEvent
+		const ele = event.target as SVGRectElement
+		const rowId = ele.getAttribute('data-row-id')
+		const rowIndex = this.gantt.list.findIndex(row => row.id === rowId)
+		const row = this.gantt.list[rowIndex]
+		const downEvent = this.bgRectMouseDownEvent as MouseEvent
+		if (this.gantt.options.action.enableNewEventItem &&
+			(event.clientX - downEvent.clientX) != 0 && !this.addEventItem
+		) {
 			const { x: eventX } = this.gantt.stage.point(event.clientX, event.clientY)
 
 			const xTime = this.gantt.time.x2time(eventX)
@@ -97,13 +105,6 @@ export class RowsRender extends PartRender {
 			})
 			this.gantt.status.addEventIteming = true
 		}
-	}
-	onBgRectMouseMove(evt: Event) {
-		const event = evt as MouseEvent
-		const ele = event.target as SVGRectElement
-		const rowId = ele.getAttribute('data-row-id')
-		const rowIndex = this.gantt.list.findIndex(row => row.id === rowId)
-		const row = this.gantt.list[rowIndex]
 
 		if (this.gantt.status.addEventIteming) {
 			this.renderer.events.onTypeResizeMouseMove(event)
@@ -130,7 +131,6 @@ export class RowsRender extends PartRender {
 			const eventItemData = this.addEventItem.options.event
 			row.events.push(eventItemData)
 
-			this.bgRectMouseDownEvent = null
 
 			this.gantt.eventBus.emit(EventBusEventName.event_item_add, {
 				item: this.addEventItem,
@@ -141,6 +141,8 @@ export class RowsRender extends PartRender {
 			this.addEventItem = null
 			this.gantt.status.addEventIteming = false
 		}
+		this.bgRectMouseDownEvent = null
+
 	}
 
 	onContainerMouseLeave(evt: Event) {

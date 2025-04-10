@@ -15,5 +15,6 @@
 - [x] context menu event
 - [x] duration mode on scroll header to resize timeMetric
 - [x] add mode to drag add new event item
+- [ ] select row
 - [ ] resize and move to edge auto scroll
 - [ ] event item dependence
