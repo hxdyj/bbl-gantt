@@ -22,7 +22,15 @@ export abstract class EventItemRender extends EventBindingThis {
 		if (!this.gantt.options.action.enableEventResize) {
 			this.g.addClass('no-resize')
 		}
-		this.bindEventThis(['onBodyMouseDown', 'onBodyMouseEnter', 'onBodyMouseLeave', 'onLeftResizeMouseDown', 'onRightResizeMouseDown', 'onBodyContextMenu'])
+		this.bindEventThis([
+			'onBodyMouseDown',
+			'onBodyMouseEnter',
+			'onBodyMouseLeave',
+			'onLeftResizeMouseDown',
+			'onRightResizeMouseDown',
+			'onBodyContextMenu',
+			'onBodyClick',
+		])
 		this.render()
 		const { bindEvent = true } = options || {}
 		if (bindEvent) {
@@ -85,6 +93,10 @@ export abstract class EventItemRender extends EventBindingThis {
 	onBodyContextMenu(event: Event) {
 		event.preventDefault()
 		this.gantt.eventBus.emit(EventBusEventName.event_item_body_context_menu, event, this.options.event, this.gantt)
+	}
+
+	onBodyClick(event: Event) {
+		this.gantt.eventBus.emit(EventBusEventName.event_item_body_click, event, this.options.event, this.gantt)
 	}
 
 	svgjsInstance: {
@@ -154,6 +166,7 @@ export abstract class EventItemRender extends EventBindingThis {
 				moveRect?.on('mouseenter', this.onBodyMouseEnter)
 				moveRect?.on('mouseleave', this.onBodyMouseLeave)
 				moveRect?.on('contextmenu', this.onBodyContextMenu)
+				moveRect?.on('click', this.onBodyClick)
 				leftResize?.on('mousedown', this.onLeftResizeMouseDown)
 				leftResize?.on('mouseenter', this.onBodyMouseEnter)
 				leftResize?.on('mouseleave', this.onBodyMouseLeave)
