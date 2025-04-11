@@ -94,17 +94,14 @@ export class HeaderRender extends PartRender {
 		if (!tmpItem) return
 		const g = (this.gantt.stage.find(`.${CssNameKey.time_range}`)[0] || new G().addClass(CssNameKey.time_range)) as G
 		this.timeRange = g
-		const { translateX = 0 } = tmpItem?.g?.transform() || {}
-		const bbox = tmpItem?.svgjsInstance.moveRect?.bbox()!
+
 		const gBbox = tmpItem?.g?.bbox()
-		const startX = bbox.x
-		const endX = startX + bbox.width
-		if (!bbox) return
 
 		const text = (g.find(`.${CssNameKey.time_range_text}`)[0] || new Text().addClass(CssNameKey.time_range_text)) as Text
+		const { start, end } = tmpItem.options.event
 
-		const startTime = this.gantt.time.x2time(startX + translateX)
-		const endTime = this.gantt.time.x2time(endX + translateX)
+		const startTime = dayjs.min(start, end)
+		const endTime = dayjs.max(start, end)
 
 		const startTimeFormat = this.gantt.options.view.headerTimeFormat({
 			gantt: this.gantt,

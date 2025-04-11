@@ -15,7 +15,7 @@
 - [x] context menu event
 - [x] duration mode on scroll header to resize timeMetric
 - [x] add mode to drag add new event item
+- [x] scale time metric auto step time error
+- [x] event item resize outof edge
 - [ ] resize and move to edge auto scroll
 - [ ] event item dependence
-- [ ] scale time metric auto step time error
-- [ ] event item resize outof edge

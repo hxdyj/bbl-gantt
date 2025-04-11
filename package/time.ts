@@ -129,7 +129,8 @@ export class Time extends EventBindingThis {
 		// }
 		const startTime = this.getTickByIndex(0)
 		//@ts-ignore
-		return startTime.add(index, this.fixUnit)
+		const result = startTime.add(index, this.fixUnit)
+		return result
 	}
 
 	lastTimeTick() {
