@@ -149,19 +149,20 @@ export class RowsRender extends PartRender {
 
 			this.renderer.events.onTypeResizeMouseUp()
 			const { start, end } = this.addEventItem.options.event
+
 			if (start.isSame(end)) {
 				this.addEventItem.destroy()
-				return
+			} else {
+				const eventItemData = this.addEventItem.options.event
+				row.events.push(eventItemData)
+
+
+				this.gantt.eventBus.emit(EventBusEventName.event_item_add, {
+					item: this.addEventItem,
+					row,
+					rowIndex
+				}, this.gantt)
 			}
-			const eventItemData = this.addEventItem.options.event
-			row.events.push(eventItemData)
-
-
-			this.gantt.eventBus.emit(EventBusEventName.event_item_add, {
-				item: this.addEventItem,
-				row,
-				rowIndex
-			}, this.gantt)
 
 			this.addEventItem = null
 			this.gantt.status.addEventIteming = false
