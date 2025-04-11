@@ -271,7 +271,11 @@ export class EventsRender extends PartRender {
 		this.createTmpItem()
 
 		if (!this.tmpItem) return
-		this.caculateTmpItemFinalX(diffX, start ? 'left-resize' : 'right-resize')
+		const operateType = start ? 'left-resize' : 'right-resize'
+		this.caculateTmpItemFinalX(diffX, operateType)
+
+		this.fixOutOfEdge(operateType)
+
 		this.tmpItem.render()
 		this.tmpItem.svgjsInstance.rightResize?.show()
 		this.tmpItem.svgjsInstance.leftResize?.show()
@@ -303,6 +307,44 @@ export class EventsRender extends PartRender {
 		document.body.style.cursor = 'auto'
 	}
 
+	fixOutOfEdge(type: EventItemOperateType) {
+		if (!this.itemRender) return
+		if (!this.gantt.options.action.enableMoveOrResizeOutOfEdge) {
+			if (!this.tmpItem) return
+			const { start, end } = this.itemRender.options.event
+			const diff = end.diff(start)
+
+			if (this.tmpItem.options.event.start.isBefore(this.gantt.time.startTime)) {
+				if (type === 'left-resize' || type === 'body-move') {
+					this.tmpItem.options.event.start = this.gantt.time.startTime.clone()
+				}
+				if (type == 'body-move') {
+					this.tmpItem.options.event.end = this.tmpItem.options.event.start.add(diff, 'millisecond')
+				}
+			}
+
+			const lastTime = this.gantt.time.stageWidthTime()
+
+			if (this.tmpItem.options.event.start.isAfter(lastTime)) {
+				this.tmpItem.options.event.start = lastTime.clone()
+			}
+
+			if (this.tmpItem.options.event.end.isAfter(lastTime)) {
+				if (type === 'right-resize' || type === 'body-move') {
+					this.tmpItem.options.event.end = lastTime.clone()
+				}
+				if (type == 'body-move') {
+					this.tmpItem.options.event.start = this.tmpItem.options.event.end.subtract(diff, 'millisecond')
+				}
+			}
+
+			if (this.tmpItem.options.event.end.isBefore(this.gantt.time.startTime)) {
+				this.tmpItem.options.event.end = this.gantt.time.startTime.clone()
+			}
+
+		}
+	}
+
 	onTypeBodyMoveMouseMove(event: MouseEvent) {
 		if (!this.startEvent || !this.itemRender) return
 		const { x: eventX } = this.gantt.stage.point(event.clientX, event.clientY)
@@ -314,23 +356,7 @@ export class EventsRender extends PartRender {
 		this.createTmpItem()
 		this.caculateTmpItemFinalX(diffX, 'body-move')
 
-		if (!this.gantt.options.action.enableMoveOrResizeOutOfEdge) {
-			if (!this.tmpItem) return
-			const { start, end } = this.itemRender.options.event
-			const diff = end.diff(start)
-
-			if (this.tmpItem.options.event.start.isBefore(this.gantt.time.startTime)) {
-				this.tmpItem.options.event.start = this.gantt.time.startTime.clone()
-				this.tmpItem.options.event.end = this.tmpItem.options.event.start.add(diff, 'millisecond')
-			}
-
-			const lastTime = this.gantt.time.stageWidthTime()
-
-			if (this.tmpItem.options.event.end.isAfter(lastTime)) {
-				this.tmpItem.options.event.end = lastTime
-				this.tmpItem.options.event.start = this.tmpItem.options.event.end.subtract(diff, 'millisecond')
-			}
-		}
+		this.fixOutOfEdge('body-move')
 
 		this.tmpItem?.render()
 		this.tmpItem?.svgjsInstance.rightResize?.show()
