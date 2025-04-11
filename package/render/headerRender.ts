@@ -11,7 +11,15 @@ import { throttle } from "lodash-es";
 export class HeaderRender extends PartRender {
 	constructor(public gantt: Gantt, public renderer: Render) {
 		super(gantt, renderer)
-		this.bindEventThis(['onScroll', 'onBodyMouseDown', 'onBodyMouseUp', 'onHeaderWheel'])
+		this.bindEventThis(
+			[
+				'onScroll',
+				'onBodyMouseDown',
+				'onBodyMouseUp',
+				'onHeaderWheel',
+				'_onHeaderWheel',
+			]
+		)
 		this.bindEvent()
 	}
 
@@ -45,6 +53,7 @@ export class HeaderRender extends PartRender {
 			this.renderCureentTime(currentTimeX)
 		}
 	}
+
 
 	onScroll(event: Event) {
 		this.g?.transform({
@@ -225,12 +234,18 @@ export class HeaderRender extends PartRender {
 	}
 
 	private headerWheelTimer: null | ReturnType<typeof setTimeout> = null
-	onHeaderWheel = throttle((evt: Event) => {
-		this.gantt.eventBus.emit(EventBusEventName.header_wheel, this.gantt, evt)
+
+	onHeaderWheel(evt: Event) {
 		if (this.gantt.options.action.headerWheelTimeMetric) {
 			evt.stopPropagation()
 			evt.preventDefault()
+			this._onHeaderWheel(evt)
+		}
+	}
 
+	_onHeaderWheel = throttle((evt: Event) => {
+		this.gantt.eventBus.emit(EventBusEventName.header_wheel, this.gantt, evt)
+		if (this.gantt.options.action.headerWheelTimeMetric) {
 			const defaultValue = this.gantt.getHeaderWheelTimeMetricLimitDefaultRange()
 			//@ts-ignore
 			const { min = defaultValue.min, max = defaultValue.max } = this.gantt.options.action.headerWheelTimeMetric || defaultValue

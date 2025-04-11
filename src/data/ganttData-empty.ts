@@ -1,7 +1,7 @@
 export const ganttData = [
 	{
 		name: '1',
-		bg: 'red-group',
+		bg: '#23C343',
 		events: [
 
 		],

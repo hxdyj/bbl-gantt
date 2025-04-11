@@ -12,4 +12,8 @@ export class EventBusEventName {
 	static event_item_right_resize_mouse_down = 'event_item_right_resize_mouse_down'
 
 	static event_item_add = 'event_item_add'
+
+
+
+	static row_click = 'row_click'
 }

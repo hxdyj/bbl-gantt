@@ -49,6 +49,15 @@ export function Duration() {
 			console.log('event_item_body_context_menu', e, item, gantt)
 		}).on('event_item_body_click', (e, item, gantt) => {
 			console.log('event_item_body_click', e, item, gantt)
+		}).on('row_click', (e, item, gantt: Gantt) => {
+			console.log('row_click', e, item, gantt)
+			item.row.bg = '#23C343'
+			const preClickRow = gantt.render.rows.lastClickRow
+			if (preClickRow) {
+				preClickRow.bg = 'transparent'
+				gantt.render.rows.renderRow(preClickRow)
+			}
+			gantt.render.rows.renderRow(item.row)
 		})
 		return () => {
 			gantt.current?.destroy()

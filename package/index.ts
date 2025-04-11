@@ -307,6 +307,52 @@ export class Gantt extends EventBindingThis {
 		super()
 		console.group('New Gantt')
 		this.id = uid(6)
+
+		this.options = this.initOptions(options)
+
+		if (!this.options.el) {
+			throw new Error('Container must be provided')
+		}
+		this.parentContainer = getElement(this.options.el as ContainerType)
+		this.container = createOrGetEle(CssNameKey.container, this.parentContainer)
+
+
+
+		this.body = createOrGetEle(CssNameKey.body, this.container)
+		ganttManager.addNewInstance(this)
+
+		this.createTime = Date.now()
+
+		if (!this.container) {
+			throw new Error('Container not found')
+		}
+
+		if (!this.options.view.showScrollBar) {
+			this.container.classList.add('no-scroll-bar')
+		}
+		if (this.options.mode == GanttMode.Duration) {
+			this.container.classList.add(CssNameKey.duration_mode)
+		}
+
+		this.parentContainerRectInfo = getContainerInfo(this.parentContainer)
+		this.containerRectInfo = getContainerInfo(this.container)
+		this.caculateContainerInfo()
+
+		console.log('init containerRectInfo', this.id)
+		this.stage = SVG()
+		this.bindEventThis(['onContainerScroll'])
+		this.init()
+		this.time = new Time(this)
+		this.view = new View(this)
+		this.render = new Render(this)
+		this.bindEvent()
+		console.groupEnd()
+
+	}
+
+	initOptions(options: GanttOptions, defaultOptions: DeepPartial<GanttOptions> = defaultGanttOptions): DeepRequired<GanttOptions> & {
+		mode: GanttMode
+	} {
 		if (options.readOnly) {
 			const userAction = options.action
 			const readOnlyAction: _GanttOptions['action'] = {
@@ -334,55 +380,15 @@ export class Gantt extends EventBindingThis {
 
 		options.data = cloneDeep(options.data || [])
 
-		this.options = defaultsDeep({}, options, defaultGanttOptions)
-
-
-		if (!this.options.el) {
-			throw new Error('Container must be provided')
-		}
-		this.parentContainer = getElement(this.options.el as ContainerType)
-
-
-
-		this.container = createOrGetEle(CssNameKey.container, this.parentContainer)
-
-		if (!this.options.view.showScrollBar) {
-			this.container.classList.add('no-scroll-bar')
-		}
-
-		this.body = createOrGetEle(CssNameKey.body, this.container)
-		ganttManager.addNewInstance(this)
-
-		this.createTime = Date.now()
-
-		if (!this.container) {
-			throw new Error('Container not found')
-		}
-
-
-		if (options.mode == GanttMode.Duration) {
-			if (!options.column?.padding) {
-				this.options.column.padding.left = 0
-				this.options.column.padding.right = 0
+		const resultOptions = defaultsDeep({}, options, defaultOptions)
+		if (resultOptions.mode == GanttMode.Duration) {
+			if (!resultOptions.column?.padding) {
+				resultOptions.column!.padding!.left = 0
+				resultOptions.column!.padding!.right = 0
 			}
-
-			this.container.classList.add(CssNameKey.duration_mode)
 		}
 
-		this.parentContainerRectInfo = getContainerInfo(this.parentContainer)
-		this.containerRectInfo = getContainerInfo(this.container)
-		this.caculateContainerInfo()
-
-		console.log('init containerRectInfo', this.id)
-		this.stage = SVG()
-		this.bindEventThis(['onContainerScroll'])
-		this.init()
-		this.time = new Time(this)
-		this.view = new View(this)
-		this.render = new Render(this)
-		this.bindEvent()
-		console.groupEnd()
-
+		return resultOptions
 	}
 
 
@@ -501,12 +507,12 @@ export class Gantt extends EventBindingThis {
 
 
 	updateOptions(options: Partial<Omit<GanttOptions, 'el'>>) {
-		this.destroy()
-		this.destroyed = false
-		const constructor = Object.getPrototypeOf(this).constructor
-		const _options = defaultsDeep(options, this.options)
-		Object.assign(this, omit(new constructor(_options), 'uid'))
-		this.time.onScroll()
+		//@ts-ignore
+		this.options = this.initOptions(options, this.options)
+		this.init()
+		this.time.destroy()
+		this.time = new Time(this)
+		this.render.render()
 	}
 
 	protected parentContainerResizeObserverCallback: ResizeObserverCallback = (entries: any) => {
