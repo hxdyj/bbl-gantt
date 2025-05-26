@@ -1,6 +1,6 @@
 {
 	"name": "bbl-gantt",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"type": "module",
 	"keywords": [
 		"gantt chart",
@@ -65,7 +65,8 @@
 	"files": [
 		"dist",
 		"types",
-		"README.md"
+		"README.md",
+		"README-en.md"
 	],
 	"dependencies": {
 		"@svgdotjs/svg.js": "^3.2.4",
