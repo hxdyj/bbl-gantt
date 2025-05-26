@@ -1,7 +1,14 @@
 {
 	"name": "bbl-gantt",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"type": "module",
+	"keywords": [
+		"gantt chart",
+		"gantt",
+		"chart",
+		"svg",
+		"甘特图"
+	],
 	"scripts": {
 		"dev": "vite --mode development --force",
 		"build": "vite build -c vite.lib.config.ts",
