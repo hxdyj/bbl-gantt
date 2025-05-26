@@ -43,6 +43,7 @@ export declare class Time extends EventBindingThis {
     getNoneEventStartTime(): dayjs.Dayjs;
     time2x(time: Dayjs, startTime?: Dayjs): number;
     x2time(x: number, startTime?: Dayjs): Dayjs;
+    getWidthByTwoTime(time1: Dayjs, time2: Dayjs): number;
     containerScrollLeftTime(): dayjs.Dayjs;
     stageWidthTime(): dayjs.Dayjs;
     length2milliseconds(length: number): number;

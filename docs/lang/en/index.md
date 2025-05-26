@@ -21,7 +21,7 @@ features:
   - title: Framework-Agnostic
     details: Can be integrated with any Web framework
   - title: Easy to Use
-    details: Out of the box, easy to get started, rich configuration, clear documentation.
+    details: Out of the box, easy to get started, rich configuration, clear documentation
   - title: Customizable
     details: Styling and functionality can be customized through configuration items
 ---

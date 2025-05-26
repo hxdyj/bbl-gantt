@@ -1,5 +1,4 @@
 import { default as Gantt } from './index';
-import { Dayjs } from 'dayjs';
 import { EventBindingThis } from './event';
 import { HeaderRender } from './render/headerRender';
 import { TicksRender } from './render/ticksRender';
@@ -20,7 +19,5 @@ export declare class Render extends EventBindingThis {
         width: number;
         height: number;
     };
-    getXbyTime(time: Dayjs): number;
     getYbyIndex(index: number): number;
-    getWidthByTwoTime(time1: Dayjs, time2: Dayjs): number;
 }
