@@ -4,7 +4,7 @@ import pkg from '../../../package.json'
 // https://vitepress.dev/reference/site-config
 export const zh = defineConfig({
 	lang: 'zh-Hans',
-	description: '一个框架无关的JS图片标注库，支持多种标注方式，包括矩形、圆、多边形、直线、图片、Path等',
+	description: '一个框架无关的JS甘特图库，支持resize、拖拽新建、支持自定义样式、以及支持duration模式等功能',
 	themeConfig: {
 		nav: nav(),
 		sidebar: {
@@ -15,26 +15,31 @@ export const zh = defineConfig({
 					{ text: '开始', link: '/start' },
 				]
 			},
-			'/guide/': {
-				base: '/guide',
-				items: [
-					{ text: '基本使用', link: '/base' },
-					{ text: '多实例', link: '/multiple-instance' },
-				]
-			},
 			'/api/': {
 				base: '/api',
 				items: [
 					{
-						text: '构造函数', items: [
-							{ text: '实例化选项', link: '/constructor-options' },
+						text: 'Gantt类', items: [
+							{ text: '构造函数', link: '/constructor-options' },
 							{ text: '属性', link: '/constructor-props' },
 							{ text: '方法', link: '/constructor-methods' },
+							{ text: '事件', link: '/constructor-on' },
 						]
 					},
-					{ text: 'Plugin类', link: '/plugin-class' },
-					{ text: 'Shape类', link: '/shape-class' },
-					{ text: 'Action类', link: '/action-class' },
+					{
+						text: 'View类', link: '/view-class', items: []
+					},
+					{
+						text: 'Time类', link: '/time-class', items: []
+					},
+					{
+						text: 'Render类', link: '/render-class', items: [
+							{ text: 'Header', link: '/render/header' },
+							{ text: 'Rows', link: '/render/rows' },
+							{ text: 'Ticks', link: '/render/ticks' },
+							{ text: 'Events', link: '/render/events' },
+						]
+					},
 				]
 			},
 		},
@@ -45,7 +50,7 @@ export const zh = defineConfig({
 		// },
 
 		footer: {
-			message: '基于<a href="https://github.com/hxdyj/image-mark-demo/blob/main/LICENSE">MIT 许可</a>',
+			message: '基于<a href="https://github.com/hxdyj/bbl-gantt/blob/main/LICENSE">MIT 许可</a>',
 			copyright: `Copyright © 2025-present <a href="https://github.com/hxdyj">hxdyj</a>`
 		},
 
@@ -80,39 +85,29 @@ function nav(): DefaultTheme.NavItem[] {
 	return [
 		{
 			text: 'Demo',
-			link: 'http://localhost:5173/',
+			link: 'https://bbl-gantt.demo.wingblog.top',
 		},
 		{
 			text: '开始',
-			link: '/zh/start/start',
+			link: '/start/start',
 			activeMatch: '/start'
 		},
 		{
-			text: '教程',
-			link: '/zh/guide/base',
-			activeMatch: '/guide'
-		},
-		{
 			text: 'API',
-			link: '/zh/api/constructor-options',
+			link: '/api/constructor-options',
 			activeMatch: '/api'
 		},
 		{
-			text: '插件',
-			link: '/zh/guide/what-is-vitepress',
-			activeMatch: '/zh/guide/'
-		},
-		{
 			text: '赞助',
-			link: '/zh/guide/what-is-vitepress',
-			activeMatch: '/zh/guide/'
+			link: '/sponsor',
+			activeMatch: '/sponsor'
 		},
 		{
 			text: pkg.version,
 			items: [
 				{
 					text: '更新日志',
-					link: 'https://github.com/hxdyj/image-mark-demo/blob/main/CHANGELOG.md'
+					link: 'https://github.com/hxdyj/bbl-gantt/releases'
 				}
 			]
 		}

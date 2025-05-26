@@ -28,7 +28,10 @@ export declare class HeaderRender extends PartRender {
     removeEventTimeRange(): void;
     private renderCureentTime;
     renderTimeTickText(getText: () => Text, tickTime: Dayjs, g: G, getPreText: () => Text, preTickId?: string): Text | null;
+    clearHeaderWheelTimer(): void;
+    private headerWheelTimer;
     onHeaderWheel(evt: Event): void;
+    _onHeaderWheel: import('lodash').DebouncedFuncLeading<(evt: Event) => void>;
     g: G | null;
     render(): void;
     clear(): void;

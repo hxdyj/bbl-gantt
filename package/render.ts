@@ -67,6 +67,16 @@ export class Render extends EventBindingThis {
 		this.gantt.stage.css({
 			background: 'var(--gantt-bg-color)'
 		})
+
+		if (this.gantt.containerRectInfo.height < this.gantt.parentContainerRectInfo.height && this.gantt.container.style.height.includes('calc')) {
+			this.gantt.container.style.height = 'unset'
+			this.gantt.container.style.maxHeight = 'unset'
+		}
+		if (this.gantt.containerRectInfo.width < this.gantt.parentContainerRectInfo.width && this.gantt.container.style.width.includes('calc')) {
+			this.gantt.container.style.width = 'unset'
+			this.gantt.container.style.maxWidth = 'unset'
+		}
+
 		this.ticks.render()
 		this.rows.render()
 		this.events.render()
@@ -94,18 +104,8 @@ export class Render extends EventBindingThis {
 		}
 	}
 
-	getXbyTime(time: Dayjs) {
-		return (dayjs.duration(time.diff(this.gantt.time.getTickByIndex(0))).asMilliseconds() / this.gantt.time.stepTime) * this.gantt.options.column.width
-	}
-
 	getYbyIndex(index: number) {
 		return (index * this.gantt.options.row.height) + this.gantt.options.header.height
-	}
-
-	getWidthByTwoTime(time1: Dayjs, time2: Dayjs) {
-		const start = dayjs.min(time1, time2)
-		const end = dayjs.max(time1, time2)
-		return (dayjs.duration(end.diff(start)).asMilliseconds() / this.gantt.time.stepTime) * this.gantt.options.column.width
 	}
 
 }

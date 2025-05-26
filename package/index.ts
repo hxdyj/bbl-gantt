@@ -7,6 +7,7 @@ import minMax from "dayjs/plugin/minMax"
 import weekOfYear from "dayjs/plugin/weekOfYear"
 import isBetween from "dayjs/plugin/isBetween"
 import dayjs, { UnitType } from "dayjs";
+import './style.scss'
 dayjs.extend(duration)
 dayjs.extend(minMax)
 dayjs.extend(weekOfYear)
@@ -37,6 +38,7 @@ export enum TimeMetric {
 	MONTH = 'MONTH',
 	YEAR = 'YEAR',
 }
+
 
 export type TimeScale = keyof Pick<typeof TimeMetric, 'SECOND' | 'MINUTE' | 'HOUR' | 'DAY' | 'WEEK' | 'MONTH' | 'YEAR'>
 
@@ -151,7 +153,7 @@ export const defaultGanttOptions: DeepPartial<GanttOptions> = {
 		showTimeTicks: true,
 		showTimeTickText: true,
 
-		headerTickTextTickNeeded: true, // showTickText时默认展示所有tick的对应时间的header上边的刻度条，如果这个设置成true，则只展示 showTickText 展示文字部分的刻度条（也就是会隐藏那些重叠文字的对应tick的刻度条）
+		headerTickTextTickNeeded: true, // 有些刻度文字会重叠，但是我们只想展示不重叠的文字（设置overrideHeaderTitle为true即可），设置此属性为true会将没有文字部分的刻度隐藏
 
 		showEventTimeRange: true,
 		overrideHeaderTitle: false,
@@ -347,7 +349,10 @@ export class Gantt extends EventBindingThis {
 		this.render = new Render(this)
 		this.bindEvent()
 		console.groupEnd()
-
+		setTimeout(() => {
+			this.time.onScroll(new Event('scroll'))
+			this.eventBus.emit(EventBusEventName.init, this)
+		}, 0);
 	}
 
 	initOptions(options: GanttOptions, defaultOptions: DeepPartial<GanttOptions> = defaultGanttOptions): DeepRequired<GanttOptions> & {
@@ -409,13 +414,10 @@ export class Gantt extends EventBindingThis {
 
 		this.list = list
 		console.log(`init deal data`, minTime, maxTime, cloneDeep(list))
-		Promise.resolve().then(() => {
-			this.eventBus.emit(EventBusEventName.init, this.list, this)
-		})
 	}
 
 	private onContainerScroll(e: Event) {
-		this.eventBus.emit(EventBusEventName.container_wheel, e, this)
+		this.eventBus.emit(EventBusEventName.container_scroll, e, this)
 	}
 
 	bindEvent() {
@@ -496,7 +498,6 @@ export class Gantt extends EventBindingThis {
 		if (this.options.view.showScrollBar && this.options.view.whileShowScrollReduceScrollBarSize) {
 			containerWidth = `calc(${containerWidth} - var(--gantt-scrollbar-width))`
 			containerHeight = `calc(${containerHeight} - var(--gantt-scrollbar-height))`
-
 		}
 
 		this.container.style.height = containerHeight

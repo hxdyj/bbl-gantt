@@ -1,5 +1,5 @@
 import { G, Rect, Text } from "@svgdotjs/svg.js";
-import Gantt, { GanttMode, HEADER_WHEEL_TIME_METRIC_DEFAULT_VALUE } from "../index";
+import Gantt, { GanttMode } from "../index";
 import dayjs, { Dayjs, UnitType } from "dayjs";
 import { PartRender } from "./index";
 import { Render } from "../render";
@@ -191,7 +191,7 @@ export class HeaderRender extends PartRender {
 
 	renderTimeTickText(getText: () => Text, tickTime: Dayjs, g: G, getPreText: () => Text, preTickId = ''): Text | null {
 		const isDurationMode = this.gantt.options.mode === GanttMode.Duration
-		const x = this.renderer.getXbyTime(tickTime)
+		const x = this.gantt.time.time2x(tickTime)
 		let text: null | Text = null
 
 		text = getText()
@@ -241,7 +241,6 @@ export class HeaderRender extends PartRender {
 	}
 
 	_onHeaderWheel = throttle((evt: Event) => {
-		this.gantt.eventBus.emit(EventBusEventName.header_wheel, this.gantt, evt)
 		if (this.gantt.options.action.headerWheelTimeMetric) {
 			const defaultValue = this.gantt.getHeaderWheelTimeMetricLimitDefaultRange()
 			//@ts-ignore
@@ -280,6 +279,7 @@ export class HeaderRender extends PartRender {
 				this.clearHeaderWheelTimer()
 			}, 0);
 		}
+		this.gantt.eventBus.emit(EventBusEventName.header_wheel, evt, this.gantt)
 	}, 200, {
 		leading: true,
 		trailing: true
@@ -299,7 +299,7 @@ export class HeaderRender extends PartRender {
 		let preTickId = ''
 		for (const tickItem of ticksIterator) {
 			const { tickTime, index } = tickItem
-			const x = this.renderer.getXbyTime(tickTime)
+			const x = this.gantt.time.time2x(tickTime)
 			const height = 20
 			const idClassName = `tick-time-id-${index}`
 			const rect = g.find(`.${idClassName}.${CssNameKey.header_time_tick_item}`)[0] || new Rect().addClass(CssNameKey.header_time_tick_item).addClass(idClassName)

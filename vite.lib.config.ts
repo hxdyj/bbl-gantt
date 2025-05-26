@@ -3,7 +3,10 @@ import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
 import strip from '@rollup/plugin-strip'
 import pkg from './package.json'
+import cleanPlugin from 'vite-plugin-clean'
+
 export default defineConfig({
+	publicDir: 'public-faker',
 	build: {
 		lib: {
 			entry: path.resolve(__dirname, './package/index.ts'),
@@ -26,6 +29,9 @@ export default defineConfig({
 		minify: false
 	},
 	plugins: [
+		cleanPlugin({
+			targetFiles: ['./dist', './types'],
+		}),
 		strip({ include: '**/*.(js|ts)' }),
 		dts({
 			outDir: path.resolve(__dirname, './types'),

@@ -3,7 +3,7 @@ import { search as enSearch } from './en'
 import { search as zhSearch } from './zh'
 
 export const shared = defineConfig({
-	title: 'ImageMark',
+	title: 'Gantt',
 	lastUpdated: true,
 	cleanUrls: true,
 	metaChunk: true,
@@ -11,6 +11,7 @@ export const shared = defineConfig({
 	rewrites: {
 		"zh/:rest*": ":rest*",
 	},
+	appearance: "force-dark",
 	// sitemap: {
 	// 	hostname: 'https://vitepress.dev',
 	// 	transformItems(items) {
@@ -18,7 +19,10 @@ export const shared = defineConfig({
 	// 	}
 	// },
 	themeConfig: {
-
+		logo: '/logo.svg',
+		socialLinks: [
+			{ icon: 'github', link: 'https://github.com/hxdyj/bbl-gantt' }
+		],
 		search: {
 			provider: 'local',
 			options: {

@@ -199,6 +199,12 @@ export class Time extends EventBindingThis {
 		return _startTime.add((x / this.gantt.options.column.width) * this.stepTime, 'millisecond')
 	}
 
+	getWidthByTwoTime(time1: Dayjs, time2: Dayjs) {
+		const start = dayjs.min(time1, time2)
+		const end = dayjs.max(time1, time2)
+		return (dayjs.duration(end.diff(start)).asMilliseconds() / this.gantt.time.stepTime) * this.gantt.options.column.width
+	}
+
 	containerScrollLeftTime() {
 		return this.x2time(this.gantt.container.scrollLeft)
 	}

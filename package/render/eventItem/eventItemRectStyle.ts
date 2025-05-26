@@ -8,9 +8,9 @@ export class EventItemRectStyle extends EventItemRender {
 		const { start, end } = getStartAndEndTime(event)
 
 		const rect = (this.g.find(`.${CssNameKey.event_body}`)[0] || new Rect().addClass(CssNameKey.event_body)) as Rect
-		const width = this.renderer.getWidthByTwoTime(start, end)
+		const width = this.gantt.time.getWidthByTwoTime(start, end)
 
-		const x = this.renderer.getXbyTime(start)
+		const x = this.gantt.time.time2x(start)
 
 		const eventRectStylePadY = this.gantt.options.view.eventRectStylePadY
 		const pad = eventRectStylePadY > 1 ? eventRectStylePadY : this.gantt.options.row.height * eventRectStylePadY
@@ -32,7 +32,7 @@ export class EventItemRectStyle extends EventItemRender {
 			style: 'overflow:visible;'
 		})
 		foreignObject.clear()
-		foreignObject.add(SVG(`<div class="h-full flex items-center w-full" style="padding:0 6px;overflow:hidden;white-space:nowrap;">${event.name}</div>`, true))
+		foreignObject.add(SVG(`<div style="width:100%;height:100%;display:flex;align-items:center;padding:0 6px;overflow:hidden;white-space:nowrap;">${event.name}</div>`, true))
 		foreignObject.move(x, y)
 		textG.addTo(this.g)
 	}

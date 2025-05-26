@@ -19,3 +19,4 @@
 - [x] event item resize outof edge
 - [ ] resize and move to edge auto scroll
 - [ ] event item dependence
+- [ ] delete event item

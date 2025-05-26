@@ -6,6 +6,7 @@ import { AppError } from '../views/Error/Error'
 import { IconFont } from '../components/Iconfont'
 import { Base } from '../views/Base'
 import { Duration } from '../views/Duration'
+import { GanttHeaderTest } from '../views/GanttHeaderTest'
 
 interface CustomRouteFields {
 	meta?: {
@@ -35,7 +36,10 @@ export const routes: IRoute[] = [
 		element: <App />,
 		errorElement: <AppError />,
 		children: [
-
+			{
+				path: '/test/header',
+				element: <GanttHeaderTest />,
+			},
 			{
 				layoutRoute: true,
 				element: <Layout />,

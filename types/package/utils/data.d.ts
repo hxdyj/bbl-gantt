@@ -1,7 +1,7 @@
 import { default as dayjs } from 'dayjs';
 import { _GanttItem, GanttItem, GanttOptions } from '../index';
 import { DeepRequired } from 'utility-types';
-export declare function getUID(): string;
+export declare function getUID(id?: string | number): string;
 export declare function walkData(data: GanttItem[], callback: (params: {
     item: GanttItem;
     level: number;

@@ -46,34 +46,52 @@ export type HeaderTimeFormatArgs = {
     type: 'currentTime' | 'timeRange' | 'tick';
 };
 export type _GanttOptions = {
-    el: ContainerType;
+    readOnly?: boolean;
     column?: DeepPartial<Column>;
     row?: {
-        height: number;
+        height?: number;
     };
     header?: {
-        height: number;
+        height?: number;
     };
     view?: {
         headerTimeFormat?: (args: HeaderTimeFormatArgs) => string;
+        whileShowScrollReduceScrollBarSize?: boolean;
+        whileRowsLessContainerAutoReduceHeight?: boolean;
+        showScrollBar?: boolean;
         showTicks?: boolean;
         showTickText?: boolean;
         showTimeTicks?: boolean;
         showTimeTickText?: boolean;
+        headerTickTextTickNeeded?: boolean;
+        showEventTimeRange?: boolean;
         overrideHeaderTitle?: boolean;
+        eventRectStylePadY?: number;
     };
     action?: {
+        headerWheelTimeMetric?: boolean | {
+            min?: number;
+            max?: number;
+        };
+        moveOrResizeStep?: boolean;
+        enableEventMove?: boolean;
+        enableEventResize?: boolean;
         enableCurrentTime?: boolean;
         enableMoveOrResizeOutOfEdge?: boolean;
+        enableNewEventItem?: boolean;
     };
-    data: GanttItem[];
+    data?: GanttItem[];
 };
-export type GanttOptions = (_GanttOptions & {
+export type NormalModeGanttOptions = _GanttOptions & {
     mode?: GanttMode.Normal;
-}) | (_GanttOptions & {
+};
+export type DurationModeGanttOptions = _GanttOptions & {
     mode: GanttMode.Duration;
     durationModeOptions: DurationModeOptions;
-});
+};
+export type GanttOptions = (NormalModeGanttOptions | DurationModeGanttOptions) & {
+    el: ContainerType;
+};
 export declare const defaultGanttOptions: DeepPartial<GanttOptions>;
 export declare class GanttManager {
     ganttEleInstanceWeakMap: WeakMap<HTMLElement, Gantt>;
@@ -121,25 +139,35 @@ export declare class Gantt extends EventBindingThis {
     status: {
         eventMoving: boolean;
         eventResizing: boolean;
+        addEventIteming: boolean;
     };
-    options: DeepRequired<GanttOptions>;
+    options: DeepRequired<GanttOptions> & {
+        mode: GanttMode;
+    };
     parentContainerRectInfo: ReturnType<typeof getContainerInfo>;
     containerRectInfo: ReturnType<typeof getContainerInfo>;
     view: View;
     time: Time;
     render: Render;
     constructor(options: GanttOptions);
+    initOptions(options: GanttOptions, defaultOptions?: DeepPartial<GanttOptions>): DeepRequired<GanttOptions> & {
+        mode: GanttMode;
+    };
     minTime: Dayjs | null;
     maxTime: Dayjs | null;
     protected init(): void;
+    private onContainerScroll;
     bindEvent(): void;
     unbindEvent(): void;
+    getHeaderWheelTimeMetricLimitDefaultRange(options?: GanttOptions): {
+        min: number;
+        max: number;
+    };
     caculateContainerInfo(): void;
     updateOptions(options: Partial<Omit<GanttOptions, 'el'>>): void;
     protected parentContainerResizeObserverCallback: ResizeObserverCallback;
     protected parentContainerResizeObserver: ResizeObserver;
     destroy(): void;
-    protected draw(): void;
     on(...rest: any): this;
     off(...rest: any): this;
 }

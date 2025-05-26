@@ -5,7 +5,7 @@ import { Render } from "../render";
 import { CssNameKey } from "../const/const";
 import { EventItemRender } from "./eventItem/eventItemRender";
 import { getUID } from "../utils/data";
-import { EventBusEventName } from "#/event/const";
+import { EventBusEventName } from "../event/const";
 
 export class RowsRender extends PartRender {
 	constructor(public gantt: Gantt, public renderer: Render) {

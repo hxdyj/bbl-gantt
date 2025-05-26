@@ -1,6 +1,6 @@
 export class EventBusEventName {
 	static init = 'init'
-	static container_wheel = 'container_wheel'
+	static container_scroll = 'container_scroll'
 
 	static header_wheel = 'header_wheel'
 

@@ -3,22 +3,25 @@
 layout: home
 
 hero:
-  name: 'ImageMark'
-  text: 'A mark tools for image.'
-  tagline: My great project tagline
+  name: 'Gantt'
+  text: 'Web Gantt Chart'
+  tagline: A framework-independent JS Gantt chart library, supporting resize, drag-and-drop to create new tasks, custom styling, and duration mode functionalities.
+  image:
+    src: /logo.svg
+    alt: Gantt
   actions:
     - theme: brand
-      text: Markdown Examples
-      link: /en/markdown-examples
+      text: Demo
+      link: https://bbl-gantt.demo.wingblog.top
     - theme: alt
-      text: API Examples
-      link: /en/api-examples
+      text: Quick Start
+      link: /en/start/start
 
 features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: Framework-Agnostic
+    details: Can be integrated with any Web framework
+  - title: Easy to Use
+    details: Out of the box, easy to get started, rich configuration, clear documentation.
+  - title: Customizable
+    details: Styling and functionality can be customized through configuration items
 ---

@@ -10,6 +10,7 @@ export declare class Time extends EventBindingThis {
     timeTicks: number;
     stepTime: number;
     fixUnit: OpUnitType | null;
+    fixUnitStepTime: number;
     startTime: Dayjs;
     endTime: Dayjs;
     private preInViewBoxTickIndexRange;
@@ -26,7 +27,7 @@ export declare class Time extends EventBindingThis {
     destroy(): void;
     caculateInViewBoxTickIndexRange(): void;
     caculateInViewBoxTimeTickIndexRange(): void;
-    private onScroll;
+    onScroll: import('lodash').DebouncedFuncLeading<(event: Event) => void>;
     getTimeTickByIndex(index: number): dayjs.Dayjs;
     lastTimeTick(): dayjs.Dayjs;
     getTimeTicksIterator(): Generator<{
@@ -42,6 +43,8 @@ export declare class Time extends EventBindingThis {
     getNoneEventStartTime(): dayjs.Dayjs;
     time2x(time: Dayjs, startTime?: Dayjs): number;
     x2time(x: number, startTime?: Dayjs): Dayjs;
+    containerScrollLeftTime(): dayjs.Dayjs;
+    stageWidthTime(): dayjs.Dayjs;
     length2milliseconds(length: number): number;
     caculateTicks(minTime: Dayjs, maxTime: Dayjs): {
         startTime: dayjs.Dayjs;

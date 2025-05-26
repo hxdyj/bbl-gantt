@@ -41,8 +41,8 @@ export function Duration() {
 				enableMoveOrResizeOutOfEdge: false
 			},
 
-		}).on('container_wheel', (e: any) => {
-			// console.log('on container_wheel', e)
+		}).on('container_scroll', (e: any) => {
+			// console.log('on container_scroll', e)
 		}).on('init', (list: any) => {
 			console.log('on init', list)
 		}).on('event_item_body_context_menu', (e, item, gantt) => {

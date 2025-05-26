@@ -18,6 +18,8 @@ export declare abstract class EventItemRender extends EventBindingThis {
     onBodyMouseDown(event: Event): void;
     onBodyMouseEnter(event: Event): void;
     onBodyMouseLeave(event: Event): void;
+    onBodyContextMenu(event: Event): void;
+    onBodyClick(event: Event): void;
     svgjsInstance: {
         anchor: Rect | null;
         moveRect: Rect | null;

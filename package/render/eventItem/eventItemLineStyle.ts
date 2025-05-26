@@ -10,8 +10,8 @@ export class EventItemLineStyle extends EventItemRender {
 		const { event, index } = this.options
 		const { start, end } = getStartAndEndTime(event)
 		const rect = (this.g.find(`.${CssNameKey.event_body}`)[0] || new Rect().addClass(CssNameKey.event_body)) as Rect
-		const width = this.renderer.getWidthByTwoTime(start, end)
-		const x = this.renderer.getXbyTime(start)
+		const width = this.gantt.time.getWidthByTwoTime(start, end)
+		const x = this.gantt.time.time2x(start)
 		const height = 4
 		const y = this.renderer.getYbyIndex(index) + (this.gantt.options.row.height - height) / 2
 
@@ -46,7 +46,7 @@ export class EventItemLineStyle extends EventItemRender {
 			style: 'overflow:visible;'
 		})
 		foreignObject.clear()
-		foreignObject.add(SVG(`<div class="h-full flex items-center w-full" style="padding:0 6px;overflow:hidden;white-space:nowrap;${textColor}">${event.name}</div>`, true))
+		foreignObject.add(SVG(`<div style="width:100%;height:100%;display:flex;align-items:center;padding:0 6px;overflow:hidden;white-space:nowrap;${textColor}">${event.name}</div>`, true))
 		foreignObject.move(x + 3, y - foreignObjectHeight - 6)
 	}
 }

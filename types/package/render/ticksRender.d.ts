@@ -9,9 +9,11 @@ export declare class TicksRender extends PartRender {
     g: G | null;
     gText: G | null;
     constructor(gantt: Gantt, renderer: Render);
-    renderTickItem(tickTime: Dayjs, index: number, preTickId?: string, g?: G, textG?: G): {
+    renderTickItem(tickTime: Dayjs, index: number, source?: 'header' | 'ticks', idPrefix?: string, preTickId?: string, g?: G, textG?: G): {
         idClassName: string;
         text: Text | null;
+        rect: import('@svgdotjs/svg.js').Element;
+        rectTimeTick: import('@svgdotjs/svg.js').Element | null;
     };
     render(): void;
     clear(): void;
