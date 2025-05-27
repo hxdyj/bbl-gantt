@@ -1,5 +1,3 @@
-import { getUID, walkData } from "#/utils/data"
-import { uid } from "uid"
 
 export const ganttData = [
 	{
@@ -7,12 +5,12 @@ export const ganttData = [
 		bg: '#23C343',
 		events: [
 			{
-				name: '行进机动',
+				name: '订机票',
 				start: 0,
 				end: 500,
 			},
 			{
-				name: 'l大森撒',
+				name: '订酒店',
 				start: 700,
 				end: 1550,
 			},
@@ -22,7 +20,7 @@ export const ganttData = [
 				name: '1.1',
 				events: [
 					{
-						name: '234234',
+						name: '飞行中',
 						start: 0,
 						end: 325,
 					},
@@ -32,14 +30,14 @@ export const ganttData = [
 						name: '1.1.1',
 						events: [
 							{
-								name: '温热我惹我',
+								name: '到达北京',
 								start: 800,
 								end: 1500,
 								color: '#D91AD9',
 								textColor: '#D91AD9'
 							},
 							{
-								name: 'e挼e热',
+								name: '休息',
 								start: 1600,
 								end: 3000,
 							},
@@ -50,7 +48,7 @@ export const ganttData = [
 						name: '1.1.2',
 						events: [
 							{
-								name: '惹我惹我',
+								name: '吃饭',
 								start: 500,
 								end: 1500,
 							},
@@ -63,11 +61,3 @@ export const ganttData = [
 	},
 ]
 
-//@ts-ignore
-walkData(ganttData, ({ item, level, parent }) => {
-	// item.id = getUID(item.id)
-	item.id = uid(6)
-	item.events.forEach(ev => {
-		ev.id = uid(6)
-	})
-})

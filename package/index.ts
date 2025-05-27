@@ -12,6 +12,7 @@ dayjs.extend(duration)
 dayjs.extend(minMax)
 dayjs.extend(weekOfYear)
 dayjs.extend(isBetween)
+
 import { CssNameKey } from "./const/const";
 import { uid } from 'uid'
 import { createOrGetEle, getContainerInfo, getElement } from "./utils/dom";
@@ -111,6 +112,9 @@ export type _GanttOptions = {
 		enableNewEventItem?: boolean
 	}
 	data?: GanttItem[]
+	format?: {
+		eventItemTime?: (time: Dayjs) => GanttEventItemTime
+	}
 }
 
 export type NormalModeGanttOptions = _GanttOptions & {
@@ -224,6 +228,11 @@ export const defaultGanttOptions: DeepPartial<GanttOptions> = {
 		enableCurrentTime: true,
 		enableMoveOrResizeOutOfEdge: false,
 		enableNewEventItem: true,
+	},
+	format: {
+		eventItemTime(time: Dayjs) {
+			return time
+		}
 	}
 }
 export class GanttManager {
@@ -244,11 +253,11 @@ export class GanttManager {
 }
 
 export const ganttManager = new GanttManager()
-
+export type GanttEventItemTime = string | number | Date | Dayjs
 export type GanttEventItem = {
 	id: string
-	start: string | number | Date | Dayjs
-	end: string | number | Date | Dayjs
+	start: GanttEventItemTime
+	end: GanttEventItemTime
 	name: string
 	shape?: EventShapeType
 	color?: string
@@ -384,12 +393,9 @@ export class Gantt extends EventBindingThis {
 
 		const resultOptions = defaultsDeep(options, defaultOptions)
 		if (resultOptions.mode == GanttMode.Duration) {
-			if (!resultOptions.column?.padding) {
-				resultOptions.column!.padding!.left = 0
-				resultOptions.column!.padding!.right = 0
-			}
+			resultOptions.column!.padding!.left = 0
+			resultOptions.column!.padding!.right = 0
 		}
-
 		return resultOptions
 	}
 

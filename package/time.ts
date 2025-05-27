@@ -1,6 +1,6 @@
 import dayjs, { Dayjs, ManipulateType, OpUnitType, UnitTypeLongPlural, UnitTypeShort } from "dayjs";
 import Gantt, { GanttMode, TimeMetric, TimeScale } from "./index";
-import { FORMAT_FULL_TIME } from "./utils/time";
+import { FORMAT_FULL_TIME, getDurationStartTime } from "./utils/time";
 import { EventBindingThis } from "./event";
 import duration, { DurationUnitType } from 'dayjs/plugin/duration';
 import { throttle } from "lodash-es";
@@ -181,6 +181,11 @@ export class Time extends EventBindingThis {
 
 	getNoneEventStartTime() {
 		return dayjs().startOf(this.fixUnit!)
+	}
+
+	dayjs2duration(time: Dayjs) {
+		const milliseconds = time.diff(getDurationStartTime(), 'milliseconds')
+		return milliseconds / 1000
 	}
 
 	time2x(time: Dayjs, startTime?: Dayjs): number {

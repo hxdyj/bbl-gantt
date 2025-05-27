@@ -50,3 +50,9 @@ Events 部分的 G 实例
 参数：`(event: GanttEventItem, emit=false)`
 
 删除某个事件项(画布+数据)，如果 emit 为 true，则触发事件
+
+### updateEventItem
+
+参数：`eventOrId: GanttEventItem | string, newData: DeepPartial<Omit<GanttEventItem, 'id'>>, needRender = true`
+
+更新某个事件项，如果 needRender 为 true，则重新渲染

@@ -81,6 +81,9 @@ export type _GanttOptions = {
         enableNewEventItem?: boolean;
     };
     data?: GanttItem[];
+    format?: {
+        eventItemTime?: (time: Dayjs) => GanttEventItemTime;
+    };
 };
 export type NormalModeGanttOptions = _GanttOptions & {
     mode?: GanttMode.Normal;
@@ -100,10 +103,11 @@ export declare class GanttManager {
     removeInstance(instance: Gantt): void;
 }
 export declare const ganttManager: GanttManager;
+export type GanttEventItemTime = string | number | Date | Dayjs;
 export type GanttEventItem = {
     id: string;
-    start: string | number | Date | Dayjs;
-    end: string | number | Date | Dayjs;
+    start: GanttEventItemTime;
+    end: GanttEventItemTime;
     name: string;
     shape?: EventShapeType;
     color?: string;

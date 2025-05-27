@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { _GanttItem, GanttItem, GanttMode, GanttOptions } from "../index";
+import { _GanttItem, GanttEventItemTime, GanttItem, GanttMode, GanttOptions } from "../index";
 import { uid } from "uid";
 import { DeepRequired } from "utility-types";
 import { getDurationStartTime } from "./time";
@@ -32,6 +32,10 @@ export function walkData(
 			walkData(item.children, callback, level + 1, item)
 		}
 	})
+}
+
+export function formatDataTimeToDayjs(time: GanttEventItemTime, isDuration: boolean) {
+	return isDuration ? getDurationStartTime(time as number) : dayjs(time)
 }
 
 /*
@@ -67,10 +71,10 @@ export function initDealData(data: GanttItem[], options: DeepRequired<GanttOptio
 			}
 
 			if (!dayjs.isDayjs(ev.start)) {
-				ev.start = isDuration ? getDurationStartTime(ev.start as number) : dayjs(ev.start)
+				ev.start = formatDataTimeToDayjs(ev.start, isDuration)
 			}
 			if (!dayjs.isDayjs(ev.end)) {
-				ev.end = isDuration ? getDurationStartTime(ev.end as number) : dayjs(ev.end)
+				ev.end = formatDataTimeToDayjs(ev.end, isDuration)
 			}
 
 			if (ev.start.valueOf() < minStart.valueOf()) {

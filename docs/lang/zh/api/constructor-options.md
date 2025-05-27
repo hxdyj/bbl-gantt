@@ -76,12 +76,17 @@ export type GanttOptions = {
 		enableNewEventItem?: boolean //是否允许新增事件项
 	}
 	data?: GanttItem[] //数据
+	//格式化配置
+	format?: {
+		eventItemTime?: (time: Dayjs) => GanttEventItemTime // 当 normal 模式 eventItem 时间改变时候，格式化 options.data 中的时间的格式
+	}
 }
 
 export type Column = {
 	width: number //每列的宽度
 	timeMetric: number | TimeMetric //毫秒数或者时间度量，代表每列的时间长度
 	padding: {
+		//duration模式不生效，都为0
 		//根据所有数据算出整个数据需要划分为多少列，这里的padding代表在这些列的前后要留多少空白列
 		left: number
 		right: number
@@ -118,5 +123,32 @@ export type ContainerType = string | HTMLElement
 export enum GanttMode {
 	Normal = 'normal',
 	Duration = 'duration',
+}
+
+export type GanttItem = {
+	id: string
+	name: string
+	events: GanttEventItem[]
+	children?: GanttItem[]
+	bg?: string
+	[key: string]: any
+}
+
+export type GanttEventItem = {
+	id: string
+	start: GanttEventItemTime
+	end: GanttEventItemTime
+	name: string
+	shape?: EventShapeType
+	color?: string
+	textColor?: string
+	[key: string]: any
+}
+
+export type GanttEventItemTime = string | number | Date | Dayjs
+
+export enum EventShapeType {
+	rect = 'rect',
+	line = 'line',
 }
 ```

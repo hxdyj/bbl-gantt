@@ -19,5 +19,7 @@
 - [x] event item resize outof edge
 - [x] delete event item
 - [x] delete row
+- [x] event item resize or move or create update options data
+- [x] update event item data function
 - [ ] resize and move to edge auto scroll
 - [ ] event item dependence

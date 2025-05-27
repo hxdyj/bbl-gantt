@@ -3,6 +3,17 @@ import { useEffect, useRef, useState } from "react"
 import { OperateGroup } from "../components/OperateGroup"
 import Gantt, { GanttItem, GanttMode, GanttOptions, TimeMetric } from "#/index"
 import { ganttData } from "../data/ganttData-duration-test"
+import { uid } from "uid"
+import { walkData } from "#/utils/data"
+
+//@ts-ignore
+walkData(ganttData, ({ item, level, parent }) => {
+	// item.id = getUID(item.id)
+	item.id = uid(6)
+	item.events.forEach(ev => {
+		ev.id = uid(6)
+	})
+})
 
 
 export function Duration() {
@@ -45,21 +56,27 @@ export function Duration() {
 			// console.log('on container_scroll', e)
 		}).on('init', (list: any) => {
 			console.log('on init', list)
-		}).on('event_item_body_context_menu', (e, item) => {
-			console.log('event_item_body_context_menu', e, item)
-			gantt.current?.render.events.deleteEvent(item)
-		}).on('event_item_body_click', (e, item, gantt) => {
-			console.log('event_item_body_click', e, item, gantt)
-		}).on('row_click', (e, item, gantt: Gantt) => {
-			console.log('row_click', e, item, gantt)
-			item.row.bg = '#23C343'
-			const preClickRow = gantt.render.rows.lastClickRow
-			if (preClickRow) {
-				preClickRow.bg = 'transparent'
-				gantt.render.rows.renderRow(preClickRow)
-			}
-			gantt.render.rows.renderRow(item.row)
 		})
+			//@ts-ignore
+			.on('event_item_body_context_menu', (e, item) => {
+				console.log('event_item_body_context_menu', e, item)
+				gantt.current?.render.events.deleteEvent(item)
+			})
+			//@ts-ignore
+			.on('event_item_body_click', (e, item, gantt) => {
+				console.log('event_item_body_click', e, item, gantt)
+			})
+			//@ts-ignore
+			.on('row_click', (e, item, gantt: Gantt) => {
+				console.log('row_click', e, item, gantt)
+				item.row.bg = '#23C343'
+				const preClickRow = gantt.render.rows.lastClickRow
+				if (preClickRow) {
+					preClickRow.bg = 'transparent'
+					gantt.render.rows.renderRow(preClickRow)
+				}
+				gantt.render.rows.renderRow(item.row)
+			})
 		return () => {
 			gantt.current?.destroy()
 		}
@@ -84,9 +101,20 @@ export function Duration() {
 							}}>Gantt Option Data</Button>
 
 							<Button onClick={() => {
+								//@ts-ignore
 								const rowItem = data.current?.[0]?.children[0]
+								//@ts-ignore
 								gantt.current?.render.rows.deleteRow(rowItem)
 							}}>Delete Row</Button>
+
+							<Button onClick={() => {
+								const eventItem = gantt.current?.list[0].events[0]!
+								gantt.current?.render.events.updateEventItem(eventItem, {
+									name: 'new name',
+									end: eventItem.end.valueOf() / 1000 - 60,
+									color: '#FF0000'
+								})
+							}}>Update Event Item</Button>
 
 						</Button.Group>
 					</OperateGroup>

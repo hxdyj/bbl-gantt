@@ -50,3 +50,9 @@ Removes an event item from the canvas.
 Parameters: `(event: GanttEventItem, emit=false)`
 
 Delete an event item (canvas and data), if emit is true, the event will be triggered.
+
+### updateEventItem
+
+Parameters: `eventOrId: GanttEventItem | string, newData: DeepPartial<Omit<GanttEventItem, 'id'>>, needRender = true`
+
+Updates an event item, if needRender is true, the canvas will be re-rendered.

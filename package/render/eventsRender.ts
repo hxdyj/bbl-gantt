@@ -1,5 +1,5 @@
 import { Circle, Element, G, Rect, SVG } from "@svgdotjs/svg.js";
-import Gantt, { _GanttEventItem } from "..";
+import Gantt, { _GanttEventItem, GanttEventItem, GanttEventItemTime, GanttItem, GanttMode } from "../index";
 import { PartRender } from "./index";
 import { Render } from "../render";
 import { CssNameKey } from "../const/const";
@@ -9,7 +9,8 @@ import { EventItemRectStyle } from "./eventItem/eventItemRectStyle";
 import { cloneDeep } from "lodash-es";
 import { EventBusEventName } from "../event/const";
 import dayjs, { Dayjs } from "dayjs";
-import { walkData } from "../utils/data";
+import { formatDataTimeToDayjs, walkData } from "../utils/data";
+import { DeepPartial } from "utility-types";
 export enum EventShapeType {
 	rect = 'rect',
 	line = 'line'
@@ -27,7 +28,13 @@ export type RenderItemOptions = {
 }
 export type EventItemOperateType = 'left-resize' | 'right-resize' | 'body-move'
 
-
+export type FindOptionEventItemResult = {
+	item: GanttItem
+	parent: GanttItem | null
+	event: _GanttEventItem
+	eventOrigin?: GanttEventItem
+	eventIndex: number
+}
 export class EventsRender extends PartRender {
 	constructor(public gantt: Gantt, public renderer: Render) {
 		super(gantt, renderer)
@@ -76,6 +83,25 @@ export class EventsRender extends PartRender {
 		}
 	}
 
+
+	findOptionDataEvent(event: _GanttEventItem): null | FindOptionEventItemResult {
+		let result: FindOptionEventItemResult | null = null
+		walkData(this.gantt.options.data, (({ item, parent, level }) => {
+			let eventIndex = parent?.events.findIndex(e => e.id === event.id)
+			if (eventIndex !== void 0 && eventIndex > -1) {
+				result = {
+					item,
+					parent,
+					event,
+					eventOrigin: parent?.events[eventIndex],
+					eventIndex,
+				}
+				return false
+			}
+		}))
+		return result
+	}
+
 	deleteEvent(event: _GanttEventItem, emit = false) {
 		this.removeEvent(event)
 		const index = this.gantt.list.findIndex(row => row.events.find(e => e.id === event.id))
@@ -83,19 +109,17 @@ export class EventsRender extends PartRender {
 			const row = this.gantt.list[index]
 			const eventIndex = row.events.findIndex(e => e.id === event.id)
 			row.events.splice(eventIndex, 1)
-			walkData(this.gantt.options.data, (({ item, parent, level }) => {
-				let eventIndex = parent?.events.findIndex(e => e.id === event.id)
-				if (eventIndex !== void 0 && eventIndex > -1) {
-					parent?.events.splice(eventIndex, 1)
-					emit && this.gantt.eventBus.emit(EventBusEventName.event_item_delete, {
-						item,
-						parent,
-						event,
-					}, this.gantt)
 
-					return false
-				}
-			}))
+			const optionDataEvent = this.findOptionDataEvent(event)
+			if (optionDataEvent) {
+				const { item, parent } = optionDataEvent
+				parent?.events.splice(eventIndex, 1)
+				emit && this.gantt.eventBus.emit(EventBusEventName.event_item_delete, {
+					item,
+					parent,
+					event,
+				}, this.gantt)
+			}
 		}
 	}
 
@@ -313,6 +337,53 @@ export class EventsRender extends PartRender {
 		document.body.style.cursor = 'ew-resize'
 	}
 
+	updateEventItem(eventOrId: _GanttEventItem | string, newData: DeepPartial<Omit<_GanttEventItem | GanttEventItem, 'id'>>, needRender = true) {
+
+		const isDuration = this.gantt.options.mode === GanttMode.Duration
+
+		if (newData.start != void 0 && !dayjs.isDayjs(newData.start)) {
+			newData.start = formatDataTimeToDayjs(newData.start, isDuration)
+		}
+
+		if (newData.end != void 0 && !dayjs.isDayjs((newData.end))) {
+			newData.end = formatDataTimeToDayjs(newData.end, isDuration)
+		}
+
+		let listEvent: _GanttEventItem | undefined = void 0
+		if (typeof eventOrId === 'string') {
+			listEvent = this.gantt.list.find(row => row.events.find(e => e.id === eventOrId))?.events.find(e => e.id === eventOrId)
+		} else {
+			listEvent = eventOrId
+		}
+
+		if (listEvent) {
+			const optionDataEvent = this.findOptionDataEvent(listEvent)
+			Object.assign(listEvent, newData)
+			optionDataEvent && Object.assign(optionDataEvent, {
+				...newData,
+				...this.formatEventDataTime(newData)
+			})
+			needRender && this.map.get(listEvent)?.render()
+		}
+	}
+
+	formatEventDataTime(newData: DeepPartial<Omit<_GanttEventItem, 'id'>>) {
+		const isDuration = this.gantt.options.mode === GanttMode.Duration
+		const timeObj: {
+			start?: GanttEventItemTime
+			end?: GanttEventItemTime
+		} = {}
+
+		if (newData?.start != void 0) {
+			timeObj.start = isDuration ? this.gantt.time.dayjs2duration(newData.start as Dayjs) : this.gantt.options.format.eventItemTime(newData.start as Dayjs)
+		}
+
+		if (newData?.end != void 0) {
+			timeObj.end = isDuration ? this.gantt.time.dayjs2duration(newData.end as Dayjs) : this.gantt.options.format.eventItemTime(newData.end as Dayjs)
+		}
+		return timeObj
+	}
+
 	onTypeResizeMouseUp() {
 		if (!this.startEvent || !this.itemRender || !this.tmpItem) return
 
@@ -324,8 +395,10 @@ export class EventsRender extends PartRender {
 			newEventData.start = end
 		}
 
-		this.itemRender.options.event.start = newEventData.start
-		this.itemRender.options.event.end = newEventData.end
+		this.updateEventItem(this.itemRender.options.event, {
+			start: newEventData.start,
+			end: newEventData.end
+		}, false)
 
 		this.startEvent = null
 		this.tmpItem?.destroy()
@@ -405,8 +478,10 @@ export class EventsRender extends PartRender {
 			newEventData.start = end
 		}
 
-		this.itemRender.options.event.start = newEventData.start
-		this.itemRender.options.event.end = newEventData.end
+		this.updateEventItem(this.itemRender.options.event, {
+			start: newEventData.start,
+			end: newEventData.end
+		}, false)
 
 		this.startEvent = null
 		this.tmpItem?.destroy()

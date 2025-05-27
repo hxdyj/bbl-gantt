@@ -4,19 +4,30 @@ import { OperateGroup } from "../components/OperateGroup"
 import Gantt, { GanttItem, GanttMode, TimeMetric } from "#/index"
 import './Base.scss'
 import { ganttData } from "../data/ganttData-full"
+import { walkData } from "#/utils/data"
+import { uid } from "uid"
+
+//@ts-ignore
+walkData(ganttData, ({ item, level, parent }) => {
+	// item.id = getUID(item.id)
+	item.id = uid(6)
+	item.events.forEach(ev => {
+		ev.id = uid(6)
+	})
+})
 
 
 export function Base() {
 	let gantt = useRef<Gantt | null>(null)
 	const containerRef = useRef<HTMLDivElement>(null)
-	const data: GanttItem[] = ganttData as unknown as GanttItem[]
+	const data = useRef(ganttData as unknown as GanttItem[])
 	const [timeMetric, setTimeMetric] = useState(30000)
 	const [tickWidth, setTickWidth] = useState(30)
 	useEffect(() => {
 		if (!containerRef.current) throw new Error("containerRef is null")
 		gantt.current = new Gantt({
 			el: containerRef.current,
-			data,
+			data: data.current,
 			view: {
 				showTicks: true,
 				showTickText: true,

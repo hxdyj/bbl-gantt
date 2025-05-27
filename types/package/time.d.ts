@@ -41,6 +41,7 @@ export declare class Time extends EventBindingThis {
         index: number;
     }, void, unknown>;
     getNoneEventStartTime(): dayjs.Dayjs;
+    dayjs2duration(time: Dayjs): number;
     time2x(time: Dayjs, startTime?: Dayjs): number;
     x2time(x: number, startTime?: Dayjs): Dayjs;
     getWidthByTwoTime(time1: Dayjs, time2: Dayjs): number;

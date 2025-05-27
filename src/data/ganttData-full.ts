@@ -1,3 +1,4 @@
+
 export const ganttData = [
 	{
 		name: '1',

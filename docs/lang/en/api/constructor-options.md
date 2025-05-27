@@ -76,12 +76,17 @@ export type GanttOptions = {
 		enableNewEventItem?: boolean // whether to enable creating new event item
 	}
 	data?: GanttItem[] // data
+	//format config
+	format?: {
+		eventItemTime?: (time: Dayjs) => GanttEventItemTime // while normal mode, eventItemTime is a function to format the time in options.data
+	}
 }
 
 export type Column = {
 	width: number // column width
 	timeMetric: number | TimeMetric // time metric or milliseconds, represents the time length of each column
 	padding: {
+		// duration mode is unvalidate, all padding is 0
 		// accord to all data, calculate how many columns the data needs to be divided into, the padding represents how many blank columns to leave before and after these columns
 		left: number
 		right: number
@@ -118,5 +123,32 @@ export type ContainerType = string | HTMLElement
 export enum GanttMode {
 	Normal = 'normal',
 	Duration = 'duration',
+}
+
+export type GanttItem = {
+	id: string
+	name: string
+	events: GanttEventItem[]
+	children?: GanttItem[]
+	bg?: string
+	[key: string]: any
+}
+
+export type GanttEventItem = {
+	id: string
+	start: GanttEventItemTime
+	end: GanttEventItemTime
+	name: string
+	shape?: EventShapeType
+	color?: string
+	textColor?: string
+	[key: string]: any
+}
+
+export type GanttEventItemTime = string | number | Date | Dayjs
+
+export enum EventShapeType {
+	rect = 'rect',
+	line = 'line',
 }
 ```
