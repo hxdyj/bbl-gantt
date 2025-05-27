@@ -31,14 +31,14 @@ export function Base() {
 			view: {
 				showTicks: true,
 				showTickText: true,
-				showTimeTickText: false,
-				showTimeTicks: false,
-				headerTickTextTickNeeded: true,
+				showTimeTickText: true,
+				showTimeTicks: true,
+				headerTickTextTickNeeded: false,
 				overrideHeaderTitle: false
 			},
 			column: {
-				width: 60,
-				timeMetric: 18000
+				width: 300,
+				timeMetric: 800
 			},
 			action: {
 				headerWheelTimeMetric: true,
