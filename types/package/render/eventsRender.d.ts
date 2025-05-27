@@ -24,6 +24,8 @@ export declare class EventsRender extends PartRender {
     constructor(gantt: Gantt, renderer: Render);
     map: WeakMap<_GanttEventItem, EventItemRender>;
     renderEvent(event: _GanttEventItem, index: number, eventIndex: number, g: G): EventItemRender | null;
+    deleteEvent(event: _GanttEventItem, emit?: boolean): void;
+    removeEvent(event: _GanttEventItem): void;
     bindEvent(): void;
     unbindEvent(): void;
     private startEvent;

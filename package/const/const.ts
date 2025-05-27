@@ -24,6 +24,7 @@ export class CssNameKey {
 
 	static rows = 'rows'
 	static row_line = 'row-line'
+	static row_item = 'row-item'
 
 	static ticks = 'ticks'
 	static ticks_text_group = 'ticks-text-group'

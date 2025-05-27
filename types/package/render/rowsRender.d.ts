@@ -9,6 +9,7 @@ export declare class RowsRender extends PartRender {
     bindEvent(): void;
     unbindEvent(): void;
     renderRow(row: _GanttItem, index?: number): void;
+    deleteRow(row: _GanttItem, emit?: boolean): void;
     g: G | null;
     render(): void;
     private getEventRowInfo;

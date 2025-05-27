@@ -42,3 +42,9 @@ Renders the entire Rows.
 ### destroy
 
 Destroys the Rows part.
+
+### deleteRow
+
+Parameters:`(row: GanttItem, emit=false)`
+
+Delete a row (canvas and data), if emit is true, the event will be triggered.

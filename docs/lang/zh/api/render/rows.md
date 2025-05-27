@@ -42,3 +42,9 @@ Rows 部分的 G 实例
 ### destroy
 
 销毁 Rows 部分
+
+### deleteRow
+
+参数：`(row: GanttItem, emit=false)`
+
+删除某个 row(画布+数据)，如果 emit 为 true，则触发事件

@@ -9,6 +9,7 @@ import { EventItemRectStyle } from "./eventItem/eventItemRectStyle";
 import { cloneDeep } from "lodash-es";
 import { EventBusEventName } from "../event/const";
 import dayjs, { Dayjs } from "dayjs";
+import { walkData } from "../utils/data";
 export enum EventShapeType {
 	rect = 'rect',
 	line = 'line'
@@ -73,6 +74,35 @@ export class EventsRender extends PartRender {
 			this.map.set(event, eventItemRender)
 			return eventItemRender
 		}
+	}
+
+	deleteEvent(event: _GanttEventItem, emit = false) {
+		this.removeEvent(event)
+		const index = this.gantt.list.findIndex(row => row.events.find(e => e.id === event.id))
+		if (index > -1) {
+			const row = this.gantt.list[index]
+			const eventIndex = row.events.findIndex(e => e.id === event.id)
+			row.events.splice(eventIndex, 1)
+			walkData(this.gantt.options.data, (({ item, parent, level }) => {
+				let eventIndex = parent?.events.findIndex(e => e.id === event.id)
+				if (eventIndex !== void 0 && eventIndex > -1) {
+					parent?.events.splice(eventIndex, 1)
+					emit && this.gantt.eventBus.emit(EventBusEventName.event_item_delete, {
+						item,
+						parent,
+						event,
+					}, this.gantt)
+
+					return false
+				}
+			}))
+		}
+	}
+
+	removeEvent(event: _GanttEventItem) {
+		const renderItem = this.map.get(event)
+		renderItem?.destroy()
+		this.map.delete(event)
 	}
 
 	bindEvent() {

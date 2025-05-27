@@ -61,8 +61,20 @@ Callback parameters: `(data:{ item:EventItemRender, row:GanttItem, rowIndex:numb
 
 Triggered when an event item is added to the Gantt.
 
+### event_item_delete
+
+Callback parameters:`(data: { event:GanttEventItem, item:GanttItem, parent:GanttItem }, gantt:Gantt)`
+
+Triggered when an event item is deleted from the Gantt.
+
 ### row_click
 
 Callback parameters: `(evt:Event, data: { row:GanttItem, rowIndex:number }, gantt:Gantt)`
 
 Triggered when a row is clicked.
+
+### row_delete
+
+Callback parameters:`(row:GanttItem, gantt:Gantt)`
+
+Triggered when a row is deleted from the Gantt.

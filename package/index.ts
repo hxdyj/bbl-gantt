@@ -246,7 +246,7 @@ export class GanttManager {
 export const ganttManager = new GanttManager()
 
 export type GanttEventItem = {
-	id: string //必须是字母开头 因为是用来做css里id或者class的
+	id: string
 	start: string | number | Date | Dayjs
 	end: string | number | Date | Dayjs
 	name: string
@@ -265,7 +265,7 @@ export type _GanttItem = Omit<GanttItem, 'events'> & {
 }
 
 export type GanttItem = {
-	id: string //必须是字母开头 因为是用来做css里id或者class的
+	id: string
 	name: string
 	events: GanttEventItem[]
 	children?: GanttItem[]
@@ -309,7 +309,6 @@ export class Gantt extends EventBindingThis {
 		super()
 		console.group('New Gantt')
 		this.id = uid(6)
-
 		this.options = this.initOptions(options)
 
 		if (!this.options.el) {
@@ -383,9 +382,7 @@ export class Gantt extends EventBindingThis {
 			}
 		}
 
-		options.data = cloneDeep(options.data || [])
-
-		const resultOptions = defaultsDeep({}, options, defaultOptions)
+		const resultOptions = defaultsDeep(options, defaultOptions)
 		if (resultOptions.mode == GanttMode.Duration) {
 			if (!resultOptions.column?.padding) {
 				resultOptions.column!.padding!.left = 0
@@ -507,12 +504,13 @@ export class Gantt extends EventBindingThis {
 	}
 
 
-	updateOptions(options: Partial<Omit<GanttOptions, 'el'>>) {
+	updateOptions(options?: Partial<Omit<GanttOptions, 'el'>>) {
 		//@ts-ignore
-		this.options = this.initOptions(options, this.options)
+		this.options = options ? this.initOptions(options as GanttOptions, this.options) : this.options
 		this.init()
 		this.time.destroy()
 		this.time = new Time(this)
+		this.caculateContainerInfo()
 		this.render.render()
 	}
 

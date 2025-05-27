@@ -17,6 +17,7 @@
 - [x] add mode to drag add new event item
 - [x] scale time metric auto step time error
 - [x] event item resize outof edge
+- [x] delete event item
+- [x] delete row
 - [ ] resize and move to edge auto scroll
 - [ ] event item dependence
-- [ ] delete event item

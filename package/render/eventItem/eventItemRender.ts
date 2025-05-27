@@ -6,6 +6,7 @@ import { RenderItemOptions } from "../eventsRender";
 import { Render } from "../../render";
 import { uid } from 'uid';
 import { EventBusEventName } from "../../event/const";
+import { getUID } from "../../utils/data";
 
 export abstract class EventItemRender extends EventBindingThis {
 	uid: string
@@ -15,7 +16,9 @@ export abstract class EventItemRender extends EventBindingThis {
 		super()
 		const { event, addTo } = options
 		this.uid = `event-item-` + uid(6)
-		this.g = (addTo.find(`#${event.id}`)[0] || new G().id(event.id)).addClass(CssNameKey.event_item) as G
+
+		const eventId = getUID(event.id)
+		this.g = (addTo.find(`#${eventId}`)[0] || new G().id(eventId)).addClass(CssNameKey.event_item) as G
 		if (!this.gantt.options.action.enableEventMove) {
 			this.g.addClass('no-move')
 		}
@@ -187,7 +190,9 @@ export abstract class EventItemRender extends EventBindingThis {
 	destroy() {
 		this.unbindEvent()
 		this.g.remove()
+		this.isRendered = false
 	}
+
 }
 
 

@@ -164,7 +164,7 @@ export declare class Gantt extends EventBindingThis {
         max: number;
     };
     caculateContainerInfo(): void;
-    updateOptions(options: Partial<Omit<GanttOptions, 'el'>>): void;
+    updateOptions(options?: Partial<Omit<GanttOptions, 'el'>>): void;
     protected parentContainerResizeObserverCallback: ResizeObserverCallback;
     protected parentContainerResizeObserver: ResizeObserver;
     destroy(): void;

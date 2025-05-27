@@ -4,7 +4,7 @@ import { PartRender } from "./index";
 import { Render } from "../render";
 import { CssNameKey } from "../const/const";
 import { EventItemRender } from "./eventItem/eventItemRender";
-import { getUID } from "../utils/data";
+import { getUID, walkData } from "../utils/data";
 import { EventBusEventName } from "../event/const";
 
 export class RowsRender extends PartRender {
@@ -36,12 +36,16 @@ export class RowsRender extends PartRender {
 			index = this.gantt.list.findIndex(item => item.id === row.id)
 		}
 		const g = this.g!
+		const rowId = getUID(row.id)
+
+		const rowG = g.find(`.${rowId}`)[0] || new G().addClass(`${rowId}`).addClass(CssNameKey.row_item)
+
 		const bgClassName = `row-bg-${row.id}`
-		const bgRect = g.find(`.${bgClassName}`)[0] || new Rect().addClass('row-bg').addClass(bgClassName)
+		const bgRect = rowG.find(`.${bgClassName}`)[0] || new Rect().addClass(bgClassName).addClass('row-bg')
 		bgRect.size(this.gantt.stage.width(), this.gantt.options.row.height).move(0, this.renderer.getYbyIndex(index))
 		bgRect.attr('style', `fill: ${row.bg || 'transparent'};`)
 		bgRect.attr('data-row-id', row.id)
-		bgRect.addTo(g)
+		bgRect.addTo(rowG)
 
 		bgRect.off('mousedown', this.onBgRectMouseDown)
 		bgRect.off('mousemove', this.onBgRectMouseMove)
@@ -51,14 +55,35 @@ export class RowsRender extends PartRender {
 
 		const y = this.renderer.getYbyIndex(index)
 
-		const rect = g.find(`.${CssNameKey.row_line}.${row.id}`)[0] || new Rect().addClass(CssNameKey.row_line).addClass(row.id)
+		const rect = rowG.find(`.${CssNameKey.row_line}`)[0] || new Rect().addClass(CssNameKey.row_line)
 
 		rect.size(this.gantt.stage.width(), 0.2).move(0, y)
 
 		if (index === 0) {
 			rect.opacity(0)
 		}
-		rect.addTo(g)
+
+		rect.addTo(rowG)
+		rowG.addTo(g)
+	}
+
+
+	deleteRow(row: _GanttItem, emit = false) {
+		let hasRow = false
+		walkData(this.gantt.options.data, ({ item, parent }) => {
+			const rowIndex = parent?.children?.findIndex(item => item.id === row.id)
+			if (rowIndex !== void 0 && rowIndex > -1) {
+				parent?.children?.splice(rowIndex, 1)
+				hasRow = true
+
+				return false
+			}
+		})
+
+		if (hasRow) {
+			this.gantt.updateOptions()
+			emit && this.gantt.eventBus.emit(EventBusEventName.row_delete, row, this.gantt)
+		}
 	}
 
 	g: G | null = null

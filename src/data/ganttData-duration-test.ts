@@ -1,3 +1,6 @@
+import { getUID, walkData } from "#/utils/data"
+import { uid } from "uid"
+
 export const ganttData = [
 	{
 		name: '1',
@@ -60,4 +63,11 @@ export const ganttData = [
 	},
 ]
 
-
+//@ts-ignore
+walkData(ganttData, ({ item, level, parent }) => {
+	// item.id = getUID(item.id)
+	item.id = uid(6)
+	item.events.forEach(ev => {
+		ev.id = uid(6)
+	})
+})

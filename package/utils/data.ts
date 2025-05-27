@@ -3,6 +3,7 @@ import { _GanttItem, GanttItem, GanttMode, GanttOptions } from "../index";
 import { uid } from "uid";
 import { DeepRequired } from "utility-types";
 import { getDurationStartTime } from "./time";
+import { cloneDeep } from 'lodash-es';
 export function getUID(id?: string | number) {
 	const prefix = 'gantt-uid-'
 	if (id?.toString().startsWith(prefix)) return id.toString()
@@ -16,19 +17,22 @@ export function walkData(
 		item: GanttItem,
 		level: number,
 		parent: GanttItem | null
-	}) => void, level = 0, parent: GanttItem | null = null) {
+	}) => void | boolean, level = 0, parent: GanttItem | null = null) {
 	data.forEach(item => {
-		callback({
+		const callbackParams = {
 			item,
 			level,
 			parent
-		})
+		}
+		const flag = callback(callbackParams)
+
+		if (flag === false) return callbackParams
+
 		if (item.children) {
 			walkData(item.children, callback, level + 1, item)
 		}
 	})
 }
-
 
 /*
 1. 获取最大时间和最小时间
@@ -41,11 +45,12 @@ export function initDealData(data: GanttItem[], options: DeepRequired<GanttOptio
 
 	const isDuration = options.mode == GanttMode.Duration
 
-	walkData(data, ({ item, level, parent }) => {
+	walkData(cloneDeep(data), ({ item, level, parent }) => {
 		if (item.id === void 0) {
-			item.id = getUID()
+			// item.id = getUID()
+			item.id = uid(6)
 		} else {
-			item.id = getUID(item.id)
+			// item.id = getUID(item.id)
 		}
 		item.level = level
 		if (parent) {
@@ -56,7 +61,10 @@ export function initDealData(data: GanttItem[], options: DeepRequired<GanttOptio
 		let maxEnd = -Infinity
 
 		item.events.forEach(ev => {
-			ev.id = getUID(ev.id)
+			// ev.id = getUID(ev.id)
+			if (ev.id === void 0) {
+				ev.id = uid(6)
+			}
 
 			if (!dayjs.isDayjs(ev.start)) {
 				ev.start = isDuration ? getDurationStartTime(ev.start as number) : dayjs(ev.start)

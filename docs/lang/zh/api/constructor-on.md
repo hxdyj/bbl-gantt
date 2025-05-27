@@ -61,8 +61,20 @@ Gantt 实例可以监听的事件
 
 事件项添加时触发
 
+### event_item_delete
+
+回调参数：`(data: { event:GanttEventItem, item:GanttItem, parent:GanttItem }, gantt:Gantt)`
+
+事件项删除时触发
+
 ### row_click
 
 回调参数：`(evt:Event, data: { row:GanttItem, rowIndex:number }, gantt:Gantt)`
 
 行点击时触发
+
+### row_delete
+
+回调参数：`(row:GanttItem, gantt:Gantt)`
+
+行删除时触发

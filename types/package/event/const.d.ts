@@ -8,5 +8,7 @@ export declare class EventBusEventName {
     static event_item_left_resize_mouse_down: string;
     static event_item_right_resize_mouse_down: string;
     static event_item_add: string;
+    static event_item_delete: string;
     static row_click: string;
+    static row_delete: string;
 }

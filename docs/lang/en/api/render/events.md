@@ -38,3 +38,15 @@ Renders the entire events part.
 ### destroy
 
 Destroys the events part.
+
+### removeEvent
+
+Parameters: `(event: GanttEventItem)`
+
+Removes an event item from the canvas.
+
+### deleteEvent
+
+Parameters: `(event: GanttEventItem, emit=false)`
+
+Delete an event item (canvas and data), if emit is true, the event will be triggered.

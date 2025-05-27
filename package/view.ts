@@ -2,6 +2,7 @@ import { defaultsDeep, find, last, minBy } from "lodash-es";
 import Gantt, { _GanttItem, TimeMetric } from ".";
 import { CssNameKey } from "./const/const";
 import { Rect } from "@svgdotjs/svg.js";
+import { getUID } from "./utils/data";
 
 export type Point = [number, number]
 
@@ -29,7 +30,7 @@ export class View {
 		const _options = defaultsDeep(options, {
 			behavior: 'smooth',
 		})
-		const ele = this.gantt.stage.findOne(`#${id}`)
+		const ele = this.gantt.stage.findOne(`#${getUID(id)}`)
 		const anchor = ele?.findOne(`.${CssNameKey.event_anchor}`) as Rect
 		if (!anchor) return
 		// anchor?.scrollIntoView(_options)

@@ -16,6 +16,7 @@ export declare class CssNameKey {
     static header_tick_text: string;
     static rows: string;
     static row_line: string;
+    static row_item: string;
     static ticks: string;
     static ticks_text_group: string;
     static tick_item: string;

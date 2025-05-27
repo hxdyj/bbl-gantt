@@ -6,7 +6,7 @@ export declare function walkData(data: GanttItem[], callback: (params: {
     item: GanttItem;
     level: number;
     parent: GanttItem | null;
-}) => void, level?: number, parent?: GanttItem | null): void;
+}) => void | boolean, level?: number, parent?: GanttItem | null): void;
 export declare function initDealData(data: GanttItem[], options: DeepRequired<GanttOptions>): {
     maxTime: dayjs.Dayjs | null;
     minTime: dayjs.Dayjs | null;
