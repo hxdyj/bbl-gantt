@@ -129,3 +129,39 @@ npm i bbl-gantt
 	</body>
 </html>
 ```
+
+## 甘特图图表组成
+
+![](/img/parts.jpg)
+
+### tick
+
+时间刻度线，这个是自己在 options 里`column.timeMetric` 去设置间隔的
+
+### tick-text
+
+时间刻度线对应在 header 显示的时间
+
+### time-tick
+
+根据 tick 的时间间隔自动算出的合理的整数的时间，比如 30 分钟的间隔这里按小时去间隔渲染，如果是小于 15 分钟且大于 3 秒的间隔，则按分钟去间隔渲染
+
+### time-tick-text
+
+整数时间刻度线对应在 header 显示的时间
+
+### row
+
+行，一行可以有多个事件项
+
+### event-item
+
+事件项，描述一个事件持续的事件长短，目前支持两种样式 `line` 和 `rect`
+
+### time-range-text
+
+当事件项进行改变时间大小、移动、新建时候，显示的这个事件项的时间范围
+
+### current-time
+
+当在甘特图非事件项区域点击时候，显示当前时间

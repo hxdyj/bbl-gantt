@@ -129,3 +129,41 @@ npm i bbl-gantt
 	</body>
 </html>
 ```
+
+## gantt chart components
+
+![](/img/parts.jpg)
+
+### tick
+
+Time scale line, which is set by `column.timeMetric` in options.
+
+### tick-text
+
+The time scale line corresponds to the time displayed in the header.
+
+`tick`
+
+### time-tick
+
+A reasonable integer time automatically calculated based on the tick time interval, such as a 30-minute interval, the rendering is performed in hours, and if the interval is less than 15 minutes and greater than 3 seconds, the rendering is performed in minutes.
+
+### time-tick-text
+
+Integer time scale line corresponds to the time displayed in the header.
+
+### row
+
+Row, a row can have multiple event items
+
+### event-item
+
+`event-item`, which describes the duration of an event. Currently, two styles are supported,`line` and `rect`.
+
+### time-range-text
+
+When the event item changes the time size, moves, or creates, the time range of this event item is displayed.
+
+### current-time
+
+Display the current time when clicked in the non-event items area of the Gantt Chart
