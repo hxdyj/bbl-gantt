@@ -132,7 +132,7 @@ npm i bbl-gantt
 
 ## 甘特图图表组成
 
-![](/img/parts.jpg)
+![](/img/parts.png)
 
 ### tick
 

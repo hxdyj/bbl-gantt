@@ -132,7 +132,7 @@ npm i bbl-gantt
 
 ## gantt chart components
 
-![](/img/parts.jpg)
+![](/img/parts.png)
 
 ### tick
 
