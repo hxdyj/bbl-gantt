@@ -3,7 +3,6 @@ import './LeftMenuList.scss'
 import { IRoute, LAYOUT_ROUTE } from '../../../../router/router'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import logo from './logo.svg'
 export interface ReactProps {
 	children?: React.ReactNode;
 	className?: string;
@@ -120,7 +119,7 @@ export function LeftMenuList(props: {
 				props.collapse ? <div className='logo-small p-1 rounded-[3px]'> <img src={logo} alt='logo' className='logo-img w-full' /></div> :
 					<div className='logo-panel flex-col'>
 
-						{/* <img src={logo} alt='logo' className='logo-img w-[100px]' /> */}
+						<img src='/logo.svg' alt='logo' className='logo-img w-[100px]' />
 						<div className='logo-text mt-[8px]'>
 							BBL GANTT
 						</div>
