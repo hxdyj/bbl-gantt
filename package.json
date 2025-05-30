@@ -9,6 +9,12 @@
 		"svg",
 		"甘特图"
 	],
+	"description": "一个框架无关的JS甘特图库，支持resize、拖拽新建、支持自定义样式、以及支持duration模式等功能。A framework-independent JS Gantt chart library, supporting resize, drag-and-drop to create new tasks, custom styling, and duration mode functionalities.",
+	"repository": {
+		"url": "git+https://github.com/hxdyj/bbl-gantt.git"
+	},
+	"author": "hxdyj",
+	"license": "MIT",
 	"scripts": {
 		"dev": "vite --mode development --force",
 		"build": "vite build -c vite.lib.config.ts",

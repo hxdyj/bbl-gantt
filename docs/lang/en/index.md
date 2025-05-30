@@ -7,7 +7,7 @@ hero:
   text: 'Web Gantt Chart'
   tagline: A framework-independent JS Gantt chart library, supporting resize, drag-and-drop to create new tasks, custom styling, and duration mode functionalities.
   image:
-    src: /logo.svg
+    src: /banner.svg
     alt: Gantt
   actions:
     - theme: brand

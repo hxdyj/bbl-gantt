@@ -7,7 +7,7 @@ hero:
   text: 'Web甘特图'
   tagline: 一个框架无关的JS甘特图库，支持resize、拖拽新建、支持自定义样式、以及支持duration模式等功能。
   image:
-    src: /banner.png
+    src: /banner.svg
     alt: Gantt
   actions:
     - theme: brand
