@@ -1,6 +1,6 @@
 {
 	"name": "bbl-gantt",
-	"version": "0.0.5",
+	"version": "0.0.6",
 	"type": "module",
 	"keywords": [
 		"gantt chart",
@@ -67,7 +67,7 @@
 	},
 	"main": "./dist/index.umd.js",
 	"module": "./dist/index.es.js",
-	"types": "./types/index.d.ts",
+	"types": "./types//package/index.d.ts",
 	"files": [
 		"dist",
 		"types",
