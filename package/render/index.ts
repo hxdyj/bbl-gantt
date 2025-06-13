@@ -2,18 +2,14 @@ import { EventBindingThis } from "../event";
 import { Render } from "../render";
 import Gantt from "..";
 
-export abstract class PartRender extends EventBindingThis {
+export class PartRender extends EventBindingThis {
 	constructor(public gantt: Gantt, public renderer: Render) {
 		super()
 	}
-
-	abstract render(): void
-
+	render() { }
 	bindEvent() { }
-
 	unbindEvent() { }
-
-	abstract destroy(): void
+	destroy() { }
 }
 
 export * from './eventItem/index'
