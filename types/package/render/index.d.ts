@@ -10,3 +10,8 @@ export declare abstract class PartRender extends EventBindingThis {
     unbindEvent(): void;
     abstract destroy(): void;
 }
+export * from './eventItem/index';
+export * from './eventsRender';
+export * from './headerRender';
+export * from './rowsRender';
+export * from './ticksRender';

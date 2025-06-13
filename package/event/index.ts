@@ -20,3 +20,5 @@ export class EventBindingThis {
 		return this
 	}
 }
+
+export * from './const'

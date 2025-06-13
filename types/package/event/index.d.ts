@@ -3,3 +3,4 @@ export declare class EventBindingThis {
         [key: string]: any;
     }): this;
 }
+export * from './const';
