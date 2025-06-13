@@ -16,7 +16,6 @@ export enum EventShapeType {
 	line = 'line'
 }
 
-
 export type RenderItemOptions = {
 	event: _GanttEventItem,
 	index: number,

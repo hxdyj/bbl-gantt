@@ -178,7 +178,6 @@ export declare class Gantt extends EventBindingThis {
 export default Gantt;
 export * from './const/index';
 export * from './event/index';
-export * from './render/index';
 export * from './utils/index';
 export * from './render';
 export * from './time';
