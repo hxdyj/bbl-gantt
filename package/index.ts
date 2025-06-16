@@ -15,7 +15,7 @@ dayjs.extend(isBetween)
 
 import { CssNameKey } from "./const/const";
 import { uid } from 'uid'
-import { createOrGetEle, getContainerInfo, getElement } from "./utils/dom";
+import { createOrGetEle, getContainerInfo, getCssVar, getElement, hasScrollbar } from "./utils/dom";
 import { DeepPartial } from "@arco-design/web-react/es/Form/store";
 import { cloneDeep, defaultsDeep, omit, throttle } from "lodash-es";
 import { initDealData } from "./utils/data";
@@ -123,6 +123,9 @@ export type NormalModeGanttOptions = _GanttOptions & {
 export type DurationModeGanttOptions = _GanttOptions & {
 	mode: GanttMode.Duration,
 	durationModeOptions: DurationModeOptions
+	view?: _GanttOptions['view'] & {
+		timeFullWidth?: boolean   //是否时间铺满整个宽度，然后按照宽度和起止时间自动计算 gantt.column.timeMetric 和 gantt.column.width
+	}
 }
 
 export type GanttOptions = (NormalModeGanttOptions | DurationModeGanttOptions) & {
@@ -403,6 +406,22 @@ export class Gantt extends EventBindingThis {
 	minTime: Dayjs | null = null
 	maxTime: Dayjs | null = null
 
+
+	updateColumnByTimeFullWidth() {
+		if (this.options.mode == GanttMode.Duration && this.options.view.timeFullWidth) {
+			this.options.column.timeMetric = TimeMetric.MINUTE
+
+			let width = this.parentContainerRectInfo.width
+			if (hasScrollbar(this.container)?.vertical) {
+				const { scrollBarWidth } = getCssVar()
+				width -= scrollBarWidth
+			}
+
+			this.options.column.width = width / (this.options.durationModeOptions.duration / 60)
+			console.log('timeFullWidth:', width, this.options.column.timeMetric, this.options.column.width)
+		}
+	}
+
 	protected init() {
 		if (this.destroyed) return
 		const { minTime, maxTime, list } = initDealData(this.options.data, this.options)
@@ -413,6 +432,7 @@ export class Gantt extends EventBindingThis {
 			this.minTime = getDurationStartTime()
 			this.maxTime = getDurationStartTime(this.options.durationModeOptions.duration)
 			console.log('Duration min max time', this.minTime.format(FORMAT_FULL_TIME), this.maxTime.format(FORMAT_FULL_TIME))
+			this.updateColumnByTimeFullWidth()
 		}
 
 		this.list = list
@@ -467,12 +487,10 @@ export class Gantt extends EventBindingThis {
 			:
 			this.parentContainerRectInfo.height
 
-		const documentBodyComputedStyle = getComputedStyle(document.body)
-
-		// const scrollBarWidth = parseInt(documentBodyComputedStyle.getPropertyValue('--gantt-scrollbar-width'));
+		const { scrollBarWidth } = getCssVar()
 		const scrollBarHeight = this.options.view.showScrollBar ?
 			this.options.view.whileShowScrollReduceScrollBarSize ?
-				parseInt(documentBodyComputedStyle.getPropertyValue('--gantt-scrollbar-height'))
+				scrollBarWidth
 				: 0
 			: 0;
 
@@ -499,7 +517,12 @@ export class Gantt extends EventBindingThis {
 		let containerHeight = `${this.containerRectInfo.height}px`
 
 		if (this.options.view.showScrollBar && this.options.view.whileShowScrollReduceScrollBarSize) {
-			containerWidth = `calc(${containerWidth} - var(--gantt-scrollbar-width))`
+
+			let scrollBarWidth = `var(--gantt-scrollbar-width)`
+			if (this.options.mode == GanttMode.Duration && this.options.view.timeFullWidth) {
+				scrollBarWidth = '0px'
+			}
+			containerWidth = `calc(${containerWidth} - ${scrollBarWidth})`
 			containerHeight = `calc(${containerHeight} - var(--gantt-scrollbar-height))`
 		}
 
@@ -524,10 +547,12 @@ export class Gantt extends EventBindingThis {
 		if (entries[0]?.target === this.parentContainer) {
 			this.parentContainerRectInfo = getContainerInfo(this.parentContainer)
 			this.caculateContainerInfo()
-			if (Date.now() - this.createTime < 300) {
+			if (Date.now() - this.createTime < 300 || this.options.mode == GanttMode.Duration && this.options.view.timeFullWidth) {
 				console.log('inital resize')
+				this.updateColumnByTimeFullWidth()
 				this.time.init()
 			}
+
 			this.time.caculateInViewBoxTickIndexRange()
 			this.time.caculateInViewBoxTimeTickIndexRange()
 			this.render.render()

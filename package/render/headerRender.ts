@@ -242,6 +242,9 @@ export class HeaderRender extends PartRender {
 
 	_onHeaderWheel = throttle((evt: Event) => {
 		if (this.gantt.options.action.headerWheelTimeMetric) {
+			if (this.gantt.options.mode === GanttMode.Duration && this.gantt.options.view.timeFullWidth) {
+				return
+			}
 			const defaultValue = this.gantt.getHeaderWheelTimeMetricLimitDefaultRange()
 			//@ts-ignore
 			const { min = defaultValue.min, max = defaultValue.max } = this.gantt.options.action.headerWheelTimeMetric || defaultValue

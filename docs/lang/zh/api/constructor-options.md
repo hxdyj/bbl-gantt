@@ -35,6 +35,7 @@ export type GanttOptions = {
 	}
 	// 视图配置
 	view?: {
+		timeFullWidth?: boolean //是否时间铺满整个宽度，然后按照宽度和起止时间自动计算 gantt.column.timeMetric 和 gantt.column.width, 仅在 mode=duration 模式下生效
 		headerTimeFormat?: (args: HeaderTimeFormatArgs) => string //格式化时间显示
 		whileShowScrollReduceScrollBarSize?: boolean // 当展示滚动条的时候容器是否减去滚动条的大小
 		whileRowsLessContainerAutoReduceHeight?: boolean //当行数小于容器高度的时候是否自动减少容器高度

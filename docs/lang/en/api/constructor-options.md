@@ -35,6 +35,7 @@ export type GanttOptions = {
 	}
 	// view config
 	view?: {
+		timeFullWidth?: boolean //Whether the time covers the entire width, and then automatically calculate the gantt.column.timeMetric and gantt.column.width based on the width and start and end times, only taking effect in the mode=duration mode
 		headerTimeFormat?: (args: HeaderTimeFormatArgs) => string // time format function
 		whileShowScrollReduceScrollBarSize?: boolean // while container show scroll bar, reduce container size
 		whileRowsLessContainerAutoReduceHeight?: boolean // while rows height less container auto reduce height

@@ -91,6 +91,9 @@ export type NormalModeGanttOptions = _GanttOptions & {
 export type DurationModeGanttOptions = _GanttOptions & {
     mode: GanttMode.Duration;
     durationModeOptions: DurationModeOptions;
+    view?: _GanttOptions['view'] & {
+        timeFullWidth?: boolean;
+    };
 };
 export type GanttOptions = (NormalModeGanttOptions | DurationModeGanttOptions) & {
     el: ContainerType;
@@ -159,6 +162,7 @@ export declare class Gantt extends EventBindingThis {
     };
     minTime: Dayjs | null;
     maxTime: Dayjs | null;
+    updateColumnByTimeFullWidth(): void;
     protected init(): void;
     private onContainerScroll;
     bindEvent(): void;

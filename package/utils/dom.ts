@@ -32,3 +32,28 @@ export function createOrGetEle(className: string, parent: HTMLElement, tagName: 
 	parent.appendChild(ele)
 	return ele as HTMLElement
 }
+
+
+export function hasScrollbar(element: Element) {
+	// 检查垂直滚动条
+	const hasVerticalScroll = element.scrollHeight > element.clientHeight;
+
+	// 检查水平滚动条
+	const hasHorizontalScroll = element.scrollWidth > element.clientWidth;
+
+	return {
+		vertical: hasVerticalScroll,
+		horizontal: hasHorizontalScroll
+	}
+}
+
+
+export function getCssVar(ele?: Element) {
+	const computedStyle = getComputedStyle(ele || document.body)
+	const scrollBarWidth = parseInt(computedStyle.getPropertyValue('--gantt-scrollbar-width'))
+	const scrollBarHeight = parseInt(computedStyle.getPropertyValue('--gantt-scrollbar-height'))
+	return {
+		scrollBarWidth,
+		scrollBarHeight,
+	}
+}

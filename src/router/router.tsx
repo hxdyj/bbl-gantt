@@ -7,6 +7,7 @@ import { IconFont } from '../components/Iconfont'
 import { Base } from '../views/Base'
 import { Duration } from '../views/Duration'
 import { GanttHeaderTest } from '../views/GanttHeaderTest'
+import { DurationTimeFullWidth } from '../views/DurationTimeFullWidth'
 
 interface CustomRouteFields {
 	meta?: {
@@ -75,6 +76,16 @@ export const routes: IRoute[] = [
 								element: <Duration />,
 								meta: {
 									title: 'duration',
+									menuShow: true,
+									noLogin: false,
+									icon: <IconFont type="icon-demo" style={{ fontSize: '18px' }} />,
+								},
+							},
+							{
+								path: '/demo/duration-time-full-width',
+								element: <DurationTimeFullWidth />,
+								meta: {
+									title: 'duration-time-full-width',
 									menuShow: true,
 									noLogin: false,
 									icon: <IconFont type="icon-demo" style={{ fontSize: '18px' }} />,
