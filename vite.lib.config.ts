@@ -12,6 +12,7 @@ export default defineConfig({
 			entry: path.resolve(__dirname, './package/index.ts'),
 			name: pkg.name,
 			fileName: format => `index.${format}.js`,
+			cssFileName: 'style'
 		},
 		// rollupOptions: {
 		// 	external: (id) => {
