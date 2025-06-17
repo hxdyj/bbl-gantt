@@ -62,7 +62,7 @@ importers:
         version: 8.21.0(eslint@9.18.0(jiti@1.21.7))(typescript@5.7.3)
       '@vitejs/plugin-react':
         specifier: ^4.3.3
-        version: 4.3.4(vite@5.4.14(@types/node@20.17.16)(less@4.2.2)(sass@1.83.4))
+        version: 4.3.4(vite@6.3.5(@types/node@20.17.16)(jiti@1.21.7)(less@4.2.2)(sass@1.83.4)(yaml@2.7.0))
       autoprefixer:
         specifier: ^10.4.19
         version: 10.4.20(postcss@8.5.1)
@@ -124,14 +124,14 @@ importers:
         specifier: ^3.11.0
         version: 3.11.0
       vite:
-        specifier: ^5.3.3
-        version: 5.4.14(@types/node@20.17.16)(less@4.2.2)(sass@1.83.4)
+        specifier: ^6.3.5
+        version: 6.3.5(@types/node@20.17.16)(jiti@1.21.7)(less@4.2.2)(sass@1.83.4)(yaml@2.7.0)
       vite-plugin-clean:
         specifier: ^2.0.1
         version: 2.0.1(@types/node@20.17.16)(jiti@1.21.7)(less@4.2.2)(rollup@4.41.0)(sass@1.83.4)(yaml@2.7.0)
       vite-plugin-dts:
         specifier: ^4.3.0
-        version: 4.5.0(@types/node@20.17.16)(rollup@4.41.0)(typescript@5.7.3)(vite@5.4.14(@types/node@20.17.16)(less@4.2.2)(sass@1.83.4))
+        version: 4.5.0(@types/node@20.17.16)(rollup@4.41.0)(typescript@5.7.3)(vite@6.3.5(@types/node@20.17.16)(jiti@1.21.7)(less@4.2.2)(sass@1.83.4)(yaml@2.7.0))
       vitepress:
         specifier: ^1.5.0
         version: 1.6.3(@algolia/client-search@5.20.0)(@types/node@20.17.16)(@types/react@18.3.18)(less@4.2.2)(nprogress@0.2.0)(postcss@8.5.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4)(search-insights@2.17.3)(typescript@5.7.3)
@@ -3790,14 +3790,14 @@ snapshots:
 
   '@ungap/structured-clone@1.3.0': {}
 
-  '@vitejs/plugin-react@4.3.4(vite@5.4.14(@types/node@20.17.16)(less@4.2.2)(sass@1.83.4))':
+  '@vitejs/plugin-react@4.3.4(vite@6.3.5(@types/node@20.17.16)(jiti@1.21.7)(less@4.2.2)(sass@1.83.4)(yaml@2.7.0))':
     dependencies:
       '@babel/core': 7.26.0
       '@babel/plugin-transform-react-jsx-self': 7.25.9(@babel/core@7.26.0)
       '@babel/plugin-transform-react-jsx-source': 7.25.9(@babel/core@7.26.0)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
-      vite: 5.4.14(@types/node@20.17.16)(less@4.2.2)(sass@1.83.4)
+      vite: 6.3.5(@types/node@20.17.16)(jiti@1.21.7)(less@4.2.2)(sass@1.83.4)(yaml@2.7.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -5292,7 +5292,7 @@ snapshots:
       - tsx
       - yaml
 
-  vite-plugin-dts@4.5.0(@types/node@20.17.16)(rollup@4.41.0)(typescript@5.7.3)(vite@5.4.14(@types/node@20.17.16)(less@4.2.2)(sass@1.83.4)):
+  vite-plugin-dts@4.5.0(@types/node@20.17.16)(rollup@4.41.0)(typescript@5.7.3)(vite@6.3.5(@types/node@20.17.16)(jiti@1.21.7)(less@4.2.2)(sass@1.83.4)(yaml@2.7.0)):
     dependencies:
       '@microsoft/api-extractor': 7.49.1(@types/node@20.17.16)
       '@rollup/pluginutils': 5.1.4(rollup@4.41.0)
@@ -5305,7 +5305,7 @@ snapshots:
       magic-string: 0.30.17
       typescript: 5.7.3
     optionalDependencies:
-      vite: 5.4.14(@types/node@20.17.16)(less@4.2.2)(sass@1.83.4)
+      vite: 6.3.5(@types/node@20.17.16)(jiti@1.21.7)(less@4.2.2)(sass@1.83.4)(yaml@2.7.0)
     transitivePeerDependencies:
       - '@types/node'
       - rollup

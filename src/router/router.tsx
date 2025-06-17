@@ -8,6 +8,7 @@ import { Base } from '../views/Base'
 import { Duration } from '../views/Duration'
 import { GanttHeaderTest } from '../views/GanttHeaderTest'
 import { DurationTimeFullWidth } from '../views/DurationTimeFullWidth'
+import { Test } from '../views/Test'
 
 interface CustomRouteFields {
 	meta?: {
@@ -40,6 +41,10 @@ export const routes: IRoute[] = [
 			{
 				path: '/test/header',
 				element: <GanttHeaderTest />,
+			},
+			{
+				path: '/test/test',
+				element: <Test />,
 			},
 			{
 				layoutRoute: true,

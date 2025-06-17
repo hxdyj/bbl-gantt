@@ -50,7 +50,6 @@ export class Render extends EventBindingThis {
 
 		let width = Math.max(ganttBox.width, this.gantt.containerRectInfo.width)
 		let height = Math.max(ganttBox.height, this.gantt.containerRectInfo.height)
-
 		if (this.gantt.options.mode === GanttMode.Duration) {
 			width = ganttBox.width
 		}
@@ -64,9 +63,7 @@ export class Render extends EventBindingThis {
 		this.gantt.body.style.height = `${height}px`
 
 		this.gantt.stage.size(width, height)
-		this.gantt.stage.css({
-			background: 'var(--gantt-bg-color)'
-		})
+
 
 		if (this.gantt.containerRectInfo.height < this.gantt.parentContainerRectInfo.height && this.gantt.container.style.height.includes('calc')) {
 			this.gantt.container.style.height = 'unset'

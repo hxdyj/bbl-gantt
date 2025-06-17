@@ -352,7 +352,7 @@ export class Gantt extends EventBindingThis {
 		this.caculateContainerInfo()
 
 		console.log('init containerRectInfo', this.id)
-		this.stage = SVG()
+		this.stage = SVG().addClass(CssNameKey.svg)
 		this.bindEventThis(['onContainerScroll'])
 		this.init()
 		this.time = new Time(this)
@@ -487,14 +487,14 @@ export class Gantt extends EventBindingThis {
 			:
 			this.parentContainerRectInfo.height
 
-		const { scrollBarWidth } = getCssVar()
-		const scrollBarHeight = this.options.view.showScrollBar ?
+		const { scrollBarWidth, scrollBarHeight } = getCssVar()
+		const scrollBarFianlHeight = this.options.view.showScrollBar ?
 			this.options.view.whileShowScrollReduceScrollBarSize ?
-				scrollBarWidth
+				scrollBarHeight
 				: 0
 			: 0;
 
-		const containerReduceScrollBarHeight = this.containerRectInfo.height - scrollBarHeight
+		const containerReduceScrollBarHeight = this.containerRectInfo.height - scrollBarFianlHeight
 
 		if (this.options.view.whileRowsLessContainerAutoReduceHeight && this.list.length && containerReduceScrollBarHeight > contentHeight) {
 			finalHeight = contentHeight

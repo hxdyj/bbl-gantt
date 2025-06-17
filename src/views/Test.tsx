@@ -14,7 +14,7 @@ walkData(ganttData, ({ item, level, parent }) => {
 })
 
 
-export function DurationTimeFullWidth() {
+export function Test() {
 	let gantt = useRef<Gantt | null>(null)
 	const containerRef = useRef<HTMLDivElement>(null)
 	const data = useRef<GanttItem[]>(ganttData as unknown as GanttItem[])
@@ -27,25 +27,25 @@ export function DurationTimeFullWidth() {
 				duration: 60 * 10 // 10 min
 				// duration: 5 * 60 * 60 // 10 hours
 			},
+			header: {
+				height: 30
+			},
 			data: [],
 			view: {
+				showScrollBar: false,
 				timeFullWidth: true,
-				overrideHeaderTitle: false,
-				showTimeTicks: true,
-				showTimeTickText: true,
 				showTicks: false,
 				showTickText: false,
-				showScrollBar: false,
-				headerTickTextTickNeeded: false,
+				showTimeTicks: true,
+				showTimeTickText: true,
+				headerTickTextTickNeeded: true,
 				whileRowsLessContainerAutoReduceHeight: true,
+				// whileShowScrollReduceScrollBarSize: true,
 			},
 			action: {
-				headerWheelTimeMetric: false,
-				moveOrResizeStep: true,
 				enableCurrentTime: false,
 				enableMoveOrResizeOutOfEdge: false
 			},
-
 		})
 
 		return () => {
@@ -53,8 +53,10 @@ export function DurationTimeFullWidth() {
 		}
 	}, [])
 	return (
-		<div className="page-duration-time-full-width">
-			<div className="h-[60vh] w-full" ref={containerRef}>
+		<div className="page-duration-time-full-width flex items-start">
+			<div className="w-[500px] h-[30px] overflow-hidden">
+				<div className="w-full" ref={containerRef}>
+				</div>
 			</div>
 		</div>
 	)

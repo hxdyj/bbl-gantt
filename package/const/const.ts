@@ -5,6 +5,8 @@ export class CssNameKey {
 
 	static body = 'bbl-gantt-body'
 
+	static svg = 'bbl-gantt-svg'
+
 	static time_range = 'time-range'
 	static time_range_text = 'time-range-text'
 	static time_range_line = 'time-range-line'
