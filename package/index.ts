@@ -110,6 +110,7 @@ export type _GanttOptions = {
 		enableCurrentTime?: boolean
 		enableMoveOrResizeOutOfEdge?: boolean
 		enableNewEventItem?: boolean
+		hoverEventShowTimeRange?: boolean
 	}
 	data?: GanttItem[]
 	format?: {
@@ -231,6 +232,7 @@ export const defaultGanttOptions: DeepPartial<GanttOptions> = {
 		enableCurrentTime: true,
 		enableMoveOrResizeOutOfEdge: false,
 		enableNewEventItem: true,
+		hoverEventShowTimeRange: false,
 	},
 	format: {
 		eventItemTime(time: Dayjs) {

@@ -27,7 +27,9 @@ export class TicksRender extends PartRender {
 		const rect = g.find(`.${idClassName}.${CssNameKey.tick_item}`)[0] || new Rect().addClass(CssNameKey.tick_item).addClass(idClassName)
 
 		rect.size(0.2, this.gantt.stage.height()).move(x, y)
-		if (index === 0 || index === this.gantt.time.ticks - 1) {
+
+		//TODO(hxdyj): 确定逻辑
+		if (index === 0) { //|| index === this.gantt.time.ticks
 			if (this.gantt.options.mode !== GanttMode.Duration) {
 				rect.opacity(0)
 			}

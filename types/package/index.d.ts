@@ -79,6 +79,7 @@ export type _GanttOptions = {
         enableCurrentTime?: boolean;
         enableMoveOrResizeOutOfEdge?: boolean;
         enableNewEventItem?: boolean;
+        hoverEventShowTimeRange?: boolean;
     };
     data?: GanttItem[];
     format?: {

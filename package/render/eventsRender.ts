@@ -39,6 +39,9 @@ export class EventsRender extends PartRender {
 		super(gantt, renderer)
 		this.bindEventThis([
 			'onEventItemBodyMouseDown',
+			'onEventItemBodyMouseEnter',
+			'onEventItemBodyMouseMove',
+			'onEventItemBodyMouseLeave',
 			'onContainerMouseMove',
 			'onContainerMouseUp',
 			'onContainerMouseLeave',
@@ -130,6 +133,9 @@ export class EventsRender extends PartRender {
 
 	bindEvent() {
 		this.gantt.on(EventBusEventName.event_item_body_mouse_down, this.onEventItemBodyMouseDown)
+		this.gantt.on(EventBusEventName.event_item_body_mouse_enter, this.onEventItemBodyMouseEnter)
+		this.gantt.on(EventBusEventName.event_item_body_mouse_move, this.onEventItemBodyMouseMove)
+		this.gantt.on(EventBusEventName.event_item_body_mouse_leave, this.onEventItemBodyMouseLeave)
 		this.gantt.on(EventBusEventName.event_item_left_resize_mouse_down, this.onEventItemLeftResizeMouseDown)
 		this.gantt.on(EventBusEventName.event_item_right_resize_mouse_down, this.onEventItemRightResizeMouseDown)
 		this.gantt.container.addEventListener('mousemove', this.onContainerMouseMove)
@@ -139,6 +145,9 @@ export class EventsRender extends PartRender {
 
 	unbindEvent() {
 		this.gantt.off(EventBusEventName.event_item_body_mouse_down, this.onEventItemBodyMouseDown)
+		this.gantt.off(EventBusEventName.event_item_body_mouse_enter, this.onEventItemBodyMouseEnter)
+		this.gantt.off(EventBusEventName.event_item_body_mouse_move, this.onEventItemBodyMouseMove)
+		this.gantt.off(EventBusEventName.event_item_body_mouse_leave, this.onEventItemBodyMouseLeave)
 		this.gantt.off(EventBusEventName.event_item_left_resize_mouse_down, this.onEventItemLeftResizeMouseDown)
 		this.gantt.off(EventBusEventName.event_item_right_resize_mouse_down, this.onEventItemRightResizeMouseDown)
 		this.gantt.container.removeEventListener('mousemove', this.onContainerMouseMove)
@@ -153,6 +162,42 @@ export class EventsRender extends PartRender {
 	private tmpItem: EventItemRender | null = null
 
 	private operateType: EventItemOperateType | null = null
+
+	isHovering = false
+
+	onEventItemBodyMouseEnter(args: {
+		event: MouseEvent,
+		itemRender: EventItemRender
+	}) {
+		if (!this.gantt.options.action.hoverEventShowTimeRange || this.operateType || this.isHovering) return
+		this.itemRender = args.itemRender
+		this.renderer.header.renderEventTimeRange(args.event, this.itemRender)
+		this.isHovering = true
+	}
+
+	onEventItemBodyMouseMove(args: {
+		event: MouseEvent,
+		itemRender: EventItemRender
+	}) {
+		if (this.isHovering) {
+			this.renderer.header.renderEventTimeRange(args.event, this.itemRender)
+		}
+	}
+
+	cancelHovering() {
+		if (!this.isHovering) return
+		this.itemRender = null
+		this.renderer.header.removeEventTimeRange()
+		this.isHovering = false
+	}
+
+	onEventItemBodyMouseLeave(args: {
+		event: MouseEvent,
+		itemRender: EventItemRender
+	}) {
+		if (this.operateType) return
+		this.cancelHovering()
+	}
 
 	onEventItemLeftResizeMouseDown(args: {
 		event: MouseEvent,
@@ -178,8 +223,8 @@ export class EventsRender extends PartRender {
 		event: MouseEvent,
 		itemRender: EventItemRender
 	}) {
+		this.cancelHovering()
 		if (!this.gantt.options.action.enableEventMove) return
-
 		this.operateType = 'body-move'
 		const { event, itemRender } = args
 		this.startEvent = event
@@ -320,9 +365,7 @@ export class EventsRender extends PartRender {
 		const { x: startEventX } = this.gantt.stage.point(this.startEvent.clientX, this.startEvent.clientY)
 		const diffX = (eventX - startEventX)
 		this.itemRender.g.hide()
-
 		this.createTmpItem()
-
 		if (!this.tmpItem) return
 		const operateType = start ? 'left-resize' : 'right-resize'
 		this.caculateTmpItemFinalX(diffX, operateType)

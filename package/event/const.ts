@@ -6,6 +6,10 @@ export class EventBusEventName {
 
 
 	static event_item_body_mouse_down = 'event_item_body_mouse_down'
+	static event_item_body_mouse_enter = 'event_item_body_mouse_enter'
+	static event_item_body_mouse_over = 'event_item_body_mouse_over'
+	static event_item_body_mouse_move = 'event_item_body_mouse_move'
+	static event_item_body_mouse_leave = 'event_item_body_mouse_leave'
 	static event_item_body_context_menu = 'event_item_body_context_menu'
 	static event_item_body_click = 'event_item_body_click'
 	static event_item_left_resize_mouse_down = 'event_item_left_resize_mouse_down'

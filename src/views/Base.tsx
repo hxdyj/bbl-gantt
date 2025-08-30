@@ -44,6 +44,7 @@ export function Base() {
 				headerWheelTimeMetric: true,
 				moveOrResizeStep: false,
 				enableNewEventItem: false,
+				hoverEventShowTimeRange: true,
 			}
 		})
 		return () => {

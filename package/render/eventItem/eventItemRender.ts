@@ -28,6 +28,8 @@ export abstract class EventItemRender extends EventBindingThis {
 		this.bindEventThis([
 			'onBodyMouseDown',
 			'onBodyMouseEnter',
+			'onBodyMouseOver',
+			'onBodyMouseMove',
 			'onBodyMouseLeave',
 			'onLeftResizeMouseDown',
 			'onRightResizeMouseDown',
@@ -78,6 +80,10 @@ export abstract class EventItemRender extends EventBindingThis {
 	}
 
 	onBodyMouseEnter(event: Event) {
+		this.gantt.eventBus.emit(EventBusEventName.event_item_body_mouse_enter, {
+			event,
+			itemRender: this
+		}, this.gantt)
 		if (this.gantt.status.eventResizing || this.gantt.status.eventMoving) return
 		const evt = event as MouseEvent
 		const { leftResize, rightResize } = this.svgjsInstance
@@ -85,7 +91,25 @@ export abstract class EventItemRender extends EventBindingThis {
 		rightResize?.show()
 	}
 
+	onBodyMouseOver(event: Event) {
+		this.gantt.eventBus.emit(EventBusEventName.event_item_body_mouse_over, {
+			event,
+			itemRender: this
+		}, this.gantt)
+	}
+
+	onBodyMouseMove(event: Event) {
+		this.gantt.eventBus.emit(EventBusEventName.event_item_body_mouse_move, {
+			event,
+			itemRender: this
+		}, this.gantt)
+	}
+
 	onBodyMouseLeave(event: Event) {
+		this.gantt.eventBus.emit(EventBusEventName.event_item_body_mouse_leave, {
+			event,
+			itemRender: this
+		}, this.gantt)
 		if (this.gantt.status.eventResizing || this.gantt.status.eventMoving) return
 		const evt = event as MouseEvent
 		const { leftResize, rightResize } = this.svgjsInstance
@@ -167,6 +191,8 @@ export abstract class EventItemRender extends EventBindingThis {
 
 				moveRect?.on('mousedown', this.onBodyMouseDown)
 				moveRect?.on('mouseenter', this.onBodyMouseEnter)
+				moveRect?.on('mouseover', this.onBodyMouseOver)
+				moveRect?.on('mousemove', this.onBodyMouseMove)
 				moveRect?.on('mouseleave', this.onBodyMouseLeave)
 				moveRect?.on('contextmenu', this.onBodyContextMenu)
 				moveRect?.on('click', this.onBodyClick)

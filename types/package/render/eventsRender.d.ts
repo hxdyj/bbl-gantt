@@ -41,6 +41,20 @@ export declare class EventsRender extends PartRender {
     private itemRender;
     private tmpItem;
     private operateType;
+    isHovering: boolean;
+    onEventItemBodyMouseEnter(args: {
+        event: MouseEvent;
+        itemRender: EventItemRender;
+    }): void;
+    onEventItemBodyMouseMove(args: {
+        event: MouseEvent;
+        itemRender: EventItemRender;
+    }): void;
+    cancelHovering(): void;
+    onEventItemBodyMouseLeave(args: {
+        event: MouseEvent;
+        itemRender: EventItemRender;
+    }): void;
     onEventItemLeftResizeMouseDown(args: {
         event: MouseEvent;
         itemRender: EventItemRender;

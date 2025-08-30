@@ -17,6 +17,8 @@ export declare abstract class EventItemRender extends EventBindingThis {
     onRightResizeMouseDown(event: Event): void;
     onBodyMouseDown(event: Event): void;
     onBodyMouseEnter(event: Event): void;
+    onBodyMouseOver(event: Event): void;
+    onBodyMouseMove(event: Event): void;
     onBodyMouseLeave(event: Event): void;
     onBodyContextMenu(event: Event): void;
     onBodyClick(event: Event): void;
