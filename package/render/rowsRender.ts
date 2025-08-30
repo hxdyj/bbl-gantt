@@ -123,7 +123,7 @@ export class RowsRender extends PartRender {
 		const { event, row, rowIndex } = this.getEventRowInfo(evt)
 		const downEvent = this.bgRectMouseDownEvent as MouseEvent
 		if (!downEvent) return
-		if (this.gantt.options.action.enableNewEventItem &&
+		if (!this.gantt.options.readOnly && this.gantt.options.action.enableNewEventItem &&
 			(event.clientX - downEvent.clientX) != 0 && !this.addEventItem
 		) {
 			const { x: eventX } = this.gantt.stage.point(event.clientX, event.clientY)
