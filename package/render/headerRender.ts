@@ -189,7 +189,14 @@ export class HeaderRender extends PartRender {
 
 	}
 
-	renderTimeTickText(getText: () => Text, tickTime: Dayjs, g: G, getPreText: () => Text, preTickId = ''): Text | null {
+	renderTimeTickText(
+		getText: () => Text,
+		tickTime: Dayjs,
+		g: G,
+		getPreText: () => Text,
+		preTickId = '',
+		index: number = -1
+	): Text | null {
 		const isDurationMode = this.gantt.options.mode === GanttMode.Duration
 		const x = this.gantt.time.time2x(tickTime)
 		let text: null | Text = null
@@ -202,8 +209,26 @@ export class HeaderRender extends PartRender {
 			type: 'tick'
 		}))
 
+		const textAlign = typeof this.gantt.options.view.tickTextAlign === 'function' ? this.gantt.options.view.tickTextAlign({
+			time: tickTime,
+			index
+		}) : this.gantt.options.view.tickTextAlign
+
 		const textBox = text.bbox()
-		text.move(isDurationMode ? x : x - textBox.width / 2, (this.gantt.options.header.height - textBox.height) / 2)
+		const textY = (this.gantt.options.header.height - textBox.height) / 2
+
+		const handleAlign = {
+			'left': () => {
+				text.move(x, textY)
+
+			},
+			'center': () => {
+				text.move(x - textBox.width / 2, textY)
+			}
+		}[textAlign]
+
+		handleAlign()
+
 		text.attr({
 			style: 'user-select:none;'
 		})
@@ -314,7 +339,9 @@ export class HeaderRender extends PartRender {
 					tickTime,
 					g,
 					() => g.find(`.${preTickId}.${CssNameKey.header_time_tick_text}`)[0] as Text,
-					preTickId)
+					preTickId,
+					index
+				)
 
 			if (!this.gantt.options.view.showTimeTickText) {
 				text?.opacity(0)

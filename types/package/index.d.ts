@@ -45,6 +45,11 @@ export type HeaderTimeFormatArgs = {
     unit: UnitType;
     type: 'currentTime' | 'timeRange' | 'tick';
 };
+export type TickTextAlign = 'left' | 'center';
+export type TickTextAlignFunc = (args: {
+    time: Dayjs;
+    index: number;
+}) => TickTextAlign;
 export type _GanttOptions = {
     readOnly?: boolean;
     column?: DeepPartial<Column>;
@@ -67,6 +72,7 @@ export type _GanttOptions = {
         showEventTimeRange?: boolean;
         overrideHeaderTitle?: boolean;
         eventRectStylePadY?: number;
+        tickTextAlign?: TickTextAlign | TickTextAlignFunc;
     };
     action?: {
         headerWheelTimeMetric?: boolean | {

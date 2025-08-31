@@ -47,7 +47,8 @@ export class TicksRender extends PartRender {
 				tickTime,
 				textG,
 				() => textG.find(`.${preTickId}.${CssNameKey.header_tick_text}`)[0] as Text,
-				preTickId
+				preTickId,
+				index
 			)
 			text = newText
 

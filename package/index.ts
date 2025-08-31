@@ -72,6 +72,12 @@ export type HeaderTimeFormatArgs = {
 }
 
 
+export type TickTextAlign = 'left' | 'center'
+export type TickTextAlignFunc = (args: {
+	time: Dayjs
+	index: number
+}) => TickTextAlign
+
 export type _GanttOptions = {
 	readOnly?: boolean
 	column?: DeepPartial<Column>
@@ -98,6 +104,8 @@ export type _GanttOptions = {
 		showEventTimeRange?: boolean
 		overrideHeaderTitle?: boolean
 		eventRectStylePadY?: number,
+
+		tickTextAlign?: TickTextAlign | TickTextAlignFunc
 	},
 	action?: {
 		headerWheelTimeMetric?: boolean | {
@@ -165,6 +173,7 @@ export const defaultGanttOptions: DeepPartial<GanttOptions> = {
 
 		showEventTimeRange: true,
 		overrideHeaderTitle: false,
+		tickTextAlign: 'center',
 		/**
 		 * <1认为是百分比，>1认为是像素
 		 *  */

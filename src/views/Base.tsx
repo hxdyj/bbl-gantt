@@ -34,7 +34,10 @@ export function Base() {
 				showTimeTickText: true,
 				showTimeTicks: true,
 				headerTickTextTickNeeded: false,
-				overrideHeaderTitle: false
+				overrideHeaderTitle: false,
+				tickTextAlign({ index }) {
+					return index ? 'center' : 'left'
+				}
 			},
 			column: {
 				width: 300,

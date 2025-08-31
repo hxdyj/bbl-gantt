@@ -27,7 +27,7 @@ export declare class HeaderRender extends PartRender {
     renderEventTimeRange(event: MouseEvent, tmpItem?: EventItemRender | null): void;
     removeEventTimeRange(): void;
     private renderCureentTime;
-    renderTimeTickText(getText: () => Text, tickTime: Dayjs, g: G, getPreText: () => Text, preTickId?: string): Text | null;
+    renderTimeTickText(getText: () => Text, tickTime: Dayjs, g: G, getPreText: () => Text, preTickId?: string, index?: number): Text | null;
     clearHeaderWheelTimer(): void;
     private headerWheelTimer;
     onHeaderWheel(evt: Event): void;
