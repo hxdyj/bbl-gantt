@@ -32,7 +32,7 @@ export class EventItemRectStyle extends EventItemRender {
 			style: 'overflow:visible;'
 		})
 		foreignObject.clear()
-		foreignObject.add(SVG(`<div style="width:100%;height:100%;display:flex;align-items:center;padding:0 6px;overflow:hidden;white-space:nowrap;">${event.name}</div>`, true))
+		foreignObject.add(SVG(`<div class="text" style="width:100%;height:100%;display:flex;align-items:center;padding:0 6px;overflow:hidden;white-space:nowrap;">${event.name}</div>`, true))
 		foreignObject.move(x, y)
 		textG.addTo(this.g)
 	}

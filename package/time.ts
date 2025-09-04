@@ -284,28 +284,25 @@ export class Time extends EventBindingThis {
 				startTime,
 				endTime,
 				step: params,
-				callback: (time) => {
-					this.ticks++
+				callback: (time, sameEnd) => {
+					if (!sameEnd) {
+						this.ticks++
+					}
 				}
 			})
 			// console.groupEnd()
-
 		}
 
 		{
 			this.timeTicks = 0
-			// if (this.gantt.options.mode == GanttMode.Duration) {
-
-			// } else {
-
-			// }
-
 			stepTime({
 				startTime,
 				endTime,
 				step: [1, fixUnit!],
-				callback: (time) => {
-					this.timeTicks++
+				callback: (time, sameEnd) => {
+					if (!sameEnd) {
+						this.timeTicks++
+					}
 				}
 			})
 		}
@@ -429,7 +426,7 @@ function stepTime(params: {
 	startTime: Dayjs,
 	endTime: Dayjs,
 	step: [value: number, unit?: dayjs.ManipulateType | undefined],
-	callback: (time: Dayjs) => void
+	callback: (time: Dayjs, sameEnd?: boolean) => void
 	name?: string
 }) {
 	const { startTime, endTime, step, callback } = params
@@ -440,6 +437,6 @@ function stepTime(params: {
 		currentTime = currentTime.add(...step)
 	}
 	if (!startTime.isSame(endTime) && currentTime.isSame(endTime)) {
-		callback(currentTime)
+		callback(currentTime, true)
 	}
 }

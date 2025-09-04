@@ -46,7 +46,7 @@ export class EventItemLineStyle extends EventItemRender {
 			style: 'overflow:visible;'
 		})
 		foreignObject.clear()
-		foreignObject.add(SVG(`<div style="width:100%;height:100%;display:flex;align-items:center;padding:0 6px;overflow:hidden;white-space:nowrap;${textColor}">${event.name}</div>`, true))
+		foreignObject.add(SVG(`<div class="text" style="width:100%;height:100%;display:flex;align-items:center;padding:0 6px;overflow:hidden;white-space:nowrap;${textColor}">${event.name}</div>`, true))
 		foreignObject.move(x + 3, y - foreignObjectHeight - 6)
 	}
 }
