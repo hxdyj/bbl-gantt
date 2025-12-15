@@ -11,9 +11,10 @@ Operate the view of the Gantt
 
 ### constructor
 
-Parameters: `(gantt: Gantt)`
-
-Constructor, passing the Gantt instance
+```ts
+// Constructor, passing the Gantt instance
+constructor(gantt: Gantt): View
+```
 
 ## Instance Properties
 
@@ -21,28 +22,32 @@ Constructor, passing the Gantt instance
 
 Gantt instance
 
-## Methods
+## Instance Methods
 
 ### scrollToID
 
-Parameters: `(id: string, options?: ScrollToOptions)`
-
-Scrolls to the position of the element with the specified ID.
+```ts
+// Scrolls to the position of the element with the specified ID.
+scrollToID(id: string, options?: ScrollToOptions): void
+```
 
 ### scrollToItem
 
-Parameters: `(itemId: string, options?: ScrollToOptions)`
-
-Scrolls to the position of the element with the specified item ID.
+```ts
+// Scrolls to the position of the element with the specified item ID.
+scrollToItem(itemId: string, options?: ScrollToOptions): void
+```
 
 ### scrollToEvent
 
-Parameters: `(eventId: string, options?: ScrollToOptions)`
-
-Scrolls to the position of the element with the specified event ID.
+```ts
+// Scrolls to the position of the element with the specified event ID.
+scrollToEvent(eventId: string, options?: ScrollToOptions): void
+```
 
 ### scrollToEarliestItem
 
-Parameters: `(options?: ScrollToOptions)`
-
-Scrolls to the position of the earliest item.
+```ts
+// Scrolls to the position of the earliest item.
+scrollToEarliestItem(options?: ScrollToOptions): void
+```

@@ -73,6 +73,7 @@ export type _GanttOptions = {
         overrideHeaderTitle?: boolean;
         eventRectStylePadY?: number;
         tickTextAlign?: TickTextAlign | TickTextAlignFunc;
+        eventItemTimeFormat?: (time: Dayjs) => GanttEventItemTime;
     };
     action?: {
         headerWheelTimeMetric?: boolean | {
@@ -88,9 +89,6 @@ export type _GanttOptions = {
         hoverEventShowTimeRange?: boolean;
     };
     data?: GanttItem[];
-    format?: {
-        eventItemTime?: (time: Dayjs) => GanttEventItemTime;
-    };
 };
 export type NormalModeGanttOptions = _GanttOptions & {
     mode?: GanttMode.Normal;

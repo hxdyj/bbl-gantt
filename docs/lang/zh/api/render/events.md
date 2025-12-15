@@ -35,24 +35,38 @@ Events 部分的 G 实例
 
 渲染整个 Ticks
 
+```ts
+render(): void
+```
+
 ### destroy
 
 销毁 Ticks 部分
 
-### removeEvent
+```ts
+destroy(): void
+```
 
-参数：`(event: GanttEventItem)`
+### removeEvent
 
 画布上移除某个事件项
 
-### deleteEvent
+```ts
+removeEvent(event: GanttEventItem): void
+```
 
-参数：`(event: GanttEventItem, emit=false)`
+### deleteEvent
 
 删除某个事件项(画布+数据)，如果 emit 为 true，则触发事件
 
+```ts
+deleteEvent(event: GanttEventItem, emit?: boolean): void
+```
+
 ### updateEventItem
 
-参数：`eventOrId: GanttEventItem | string, newData: DeepPartial<Omit<GanttEventItem, 'id'>>, needRender = true`
-
 更新某个事件项，如果 needRender 为 true，则重新渲染
+
+```ts
+updateEventItem(eventOrId: GanttEventItem | string, newData: DeepPartial<Omit<GanttEventItem, 'id'>>, needRender?: boolean): void
+```

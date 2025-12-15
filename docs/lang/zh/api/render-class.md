@@ -11,9 +11,10 @@ footer: false
 
 ### constructor
 
-参数：`(gantt: Gantt)`
-
-构造函数，传入 Gantt 实例
+```ts
+// 构造函数，传入 Gantt 实例
+constructor(gantt: Gantt): Render
+```
 
 ## 实例属性
 
@@ -37,16 +38,36 @@ RowsRender 实例, RowsRender 负责渲染 rows 部分
 
 EventsRender 实例, EventsRender 负责渲染 events 部分
 
-## 方法
+## 实例方法
 
 ### render
 
 渲染整个 Gantt 实例
 
+```ts
+render(): void
+```
+
 ### caculateGanttBox
 
 计算整个 Gantt 实例 svg 元素的宽度和高度
 
+```ts
+caculateGanttBox(): void
+```
+
 ### getYbyIndex
 
 根据 index 计算 row 的 y 坐标
+
+```ts
+getYbyIndex(index: number): number
+```
+
+### destroy
+
+销毁渲染实例，清理所有子渲染器（header、ticks、rows、events）
+
+```ts
+destroy(): void
+```

@@ -7,18 +7,32 @@ footer: false
 
 ### updateOptions
 
-参数：`(options: Partial<Omit<GanttOptions, 'el'>>)`
+```ts
+// 更新实例的配置项
+updateOptions(options: Partial<Omit<GanttOptions, 'el'>>): void
+```
 
-更新实例的配置项
+### destroy
+
+```ts
+// 销毁实例,清理所有事件监听和资源
+destroy(): void
+```
 
 ### on
 
-参数：(...rest: any) `参考 eventemitter3 的 on 方法`
+```ts
+// 绑定实例事件,目前实例可监听的事件参考文档 [事件](/api/constructor-on)
+on(...rest: any): void
+```
 
-绑定实例事件，目前实例可监听的事件参考文档 [事件](/api/constructor-on)
+参考 eventemitter3 的 on 方法
 
 ### off
 
-参数：(...rest: any) `参考 eventemitter3 的 off 方法`
+```ts
+// 取消绑定实例事件
+off(...rest: any): void
+```
 
-取消绑定实例事件
+参考 eventemitter3 的 off 方法

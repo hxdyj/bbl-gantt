@@ -39,12 +39,22 @@ Last clicked row data
 
 Renders the entire Rows.
 
+```ts
+render(): void
+```
+
 ### destroy
 
 Destroys the Rows part.
 
+```ts
+destroy(): void
+```
+
 ### deleteRow
 
-Parameters:`(row: GanttItem, emit=false)`
-
 Delete a row (canvas and data), if emit is true, the event will be triggered.
+
+```ts
+deleteRow(row: GanttItem, emit?: boolean): void
+```

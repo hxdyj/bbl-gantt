@@ -43,18 +43,38 @@ Header 部分的 G 实例
 
 渲染整个 Header
 
+```ts
+render(): void
+```
+
 ### clear
 
 清除 Header 部分
+
+```ts
+clear(): void
+```
 
 ### destroy
 
 销毁 Header 部分
 
+```ts
+destroy(): void
+```
+
 ### showCurrentTime
 
 显示当前时间
 
+```ts
+showCurrentTime(): void
+```
+
 ### hideCurrentTime
 
 隐藏当前时间
+
+```ts
+hideCurrentTime(): void
+```

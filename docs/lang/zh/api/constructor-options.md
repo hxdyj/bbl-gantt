@@ -56,6 +56,7 @@ export type GanttOptions = {
 		 * <1认为是百分比，>1认为是像素
 		 *  */
 		eventRectStylePadY?: number
+		tickTextAlign?: TickTextAlign | TickTextAlignFunc // 刻度文字对齐方式，可以是 'left' | 'center' 或者一个函数
 		eventItemTimeFormat?: (time: Dayjs) => GanttEventItemTime // 当 normal 模式 eventItem 时间改变时候，格式化 options.data 中的时间的格式
 	}
 	//操作配置
@@ -76,6 +77,7 @@ export type GanttOptions = {
 		enableCurrentTime?: boolean //容器点击是否允许显示当前时间
 		enableMoveOrResizeOutOfEdge?: boolean //是否允许移动或调整大小超出边界
 		enableNewEventItem?: boolean //是否允许新增事件项
+		hoverEventShowTimeRange?: boolean //鼠标悬停在事件上时是否显示时间范围
 	}
 	data?: GanttItem[] //数据
 }
@@ -144,6 +146,13 @@ export type GanttEventItem = {
 }
 
 export type GanttEventItemTime = string | number | Date | Dayjs
+
+export type TickTextAlign = 'left' | 'center'
+
+export type TickTextAlignFunc = (args: {
+	time: Dayjs
+	index: number
+}) => TickTextAlign
 
 export enum EventShapeType {
 	rect = 'rect',

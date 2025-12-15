@@ -11,9 +11,10 @@ footer: false
 
 ### constructor
 
-参数：`(gantt: Gantt)`
-
-构造函数，传入 Gantt 实例
+```ts
+// 构造函数，传入 Gantt 实例
+constructor(gantt: Gantt): Time
+```
 
 ## 实例属性
 
@@ -49,40 +50,102 @@ fixUnit 转换成毫秒数
 
 视图结束时间，和 gantt 实例的 endTime 不同点在于，视图有时候可能大，gantt 内容填充不满，所以视图的 endTime 可能比 gantt 的 endTime 大
 
-## 方法
+## 实例方法
 
 ### time2x
 
-参数：`(time: Dayjs, startTime?: Dayjs): number`
-
-根据时间和开始时间计算 x 坐标
+```ts
+// 根据时间和开始时间计算 x 坐标
+time2x(time: Dayjs, startTime?: Dayjs): number
+```
 
 ### x2time
 
-参数：`(x: number, startTime?: Dayjs): Dayjs`
-
-根据 x 坐标和开始时间计算时间
+```ts
+// 根据 x 坐标和开始时间计算时间
+x2time(x: number, startTime?: Dayjs): Dayjs
+```
 
 ### containerScrollLeftTime
 
-参数：`(): Dayjs`
-
-计算当前 container 左侧滚动条的位置对应的时间
+```ts
+// 计算当前 container 左侧滚动条的位置对应的时间
+containerScrollLeftTime(): Dayjs
+```
 
 ### stageWidthTime
 
-参数：`(): Dayjs`
-
-计算 stage 宽度对应的时间
+```ts
+// 计算 stage 宽度对应的时间
+stageWidthTime(): Dayjs
+```
 
 ### length2milliseconds
 
-参数：`(length: number): number`
-
-根据长度计算毫秒数
+```ts
+// 根据长度计算毫秒数
+length2milliseconds(length: number): number
+```
 
 ### getWidthByTwoTime
 
-参数：`(time1: Dayjs, time2: Dayjs): number`
+```ts
+// 根据两个时间计算出时间之间的宽度
+getWidthByTwoTime(time1: Dayjs, time2: Dayjs): number
+```
 
-根据两个时间计算出时间之间的宽度
+### dayjs2duration
+
+```ts
+// 将 Dayjs 时间对象转换为 duration 格式（秒为单位）
+dayjs2duration(time: Dayjs): number
+```
+
+### getTickByIndex
+
+```ts
+// 根据刻度索引获取对应的时间
+getTickByIndex(index: number): Dayjs
+```
+
+### getTimeTickByIndex
+
+```ts
+// 根据时间刻度索引获取对应的时间
+getTimeTickByIndex(index: number): Dayjs
+```
+
+### lastTick
+
+```ts
+// 获取最后一个刻度的时间
+lastTick(): Dayjs
+```
+
+### lastTimeTick
+
+```ts
+// 获取最后一个时间刻度的时间
+lastTimeTick(): Dayjs
+```
+
+### getTicksIterator
+
+```ts
+// 获取刻度迭代器，用于遍历可视区域内的刻度
+getTicksIterator(): Generator
+```
+
+### getTimeTicksIterator
+
+```ts
+// 获取时间刻度迭代器，用于遍历可视区域内的时间刻度
+getTimeTicksIterator(): Generator
+```
+
+### getNoneEventStartTime
+
+```ts
+// 获取无事件时的开始时间
+getNoneEventStartTime(): Dayjs
+```

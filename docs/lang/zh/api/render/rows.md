@@ -39,12 +39,22 @@ Rows 部分的 G 实例
 
 渲染整个 Rows
 
+```ts
+render(): void
+```
+
 ### destroy
 
 销毁 Rows 部分
 
+```ts
+destroy(): void
+```
+
 ### deleteRow
 
-参数：`(row: GanttItem, emit=false)`
-
 删除某个 row(画布+数据)，如果 emit 为 true，则触发事件
+
+```ts
+deleteRow(row: GanttItem, emit?: boolean): void
+```

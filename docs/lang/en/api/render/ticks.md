@@ -39,10 +39,22 @@ Ticks part text G instance
 
 Renders the entire Ticks part.
 
+```ts
+render(): void
+```
+
 ### clear
 
 Clears the Ticks part.
 
+```ts
+clear(): void
+```
+
 ### destroy
 
 Destroy the Ticks part.
+
+```ts
+destroy(): void
+```

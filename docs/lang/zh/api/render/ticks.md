@@ -39,10 +39,22 @@ Ticks 文字的 G 实例
 
 渲染整个 Ticks
 
+```ts
+render(): void
+```
+
 ### clear
 
 清除 Ticks 部分
 
+```ts
+clear(): void
+```
+
 ### destroy
 
 销毁 Ticks 部分
+
+```ts
+destroy(): void
+```

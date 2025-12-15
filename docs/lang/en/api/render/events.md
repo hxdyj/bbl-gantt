@@ -35,24 +35,38 @@ The G instance of the events part
 
 Renders the entire events part.
 
+```ts
+render(): void
+```
+
 ### destroy
 
 Destroys the events part.
 
-### removeEvent
+```ts
+destroy(): void
+```
 
-Parameters: `(event: GanttEventItem)`
+### removeEvent
 
 Removes an event item from the canvas.
 
-### deleteEvent
+```ts
+removeEvent(event: GanttEventItem): void
+```
 
-Parameters: `(event: GanttEventItem, emit=false)`
+### deleteEvent
 
 Delete an event item (canvas and data), if emit is true, the event will be triggered.
 
+```ts
+deleteEvent(event: GanttEventItem, emit?: boolean): void
+```
+
 ### updateEventItem
 
-Parameters: `eventOrId: GanttEventItem | string, newData: DeepPartial<Omit<GanttEventItem, 'id'>>, needRender = true`
-
 Updates an event item, if needRender is true, the canvas will be re-rendered.
+
+```ts
+updateEventItem(eventOrId: GanttEventItem | string, newData: DeepPartial<Omit<GanttEventItem, 'id'>>, needRender?: boolean): void
+```

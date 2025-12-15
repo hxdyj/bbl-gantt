@@ -56,6 +56,7 @@ export type GanttOptions = {
 		 * >1 unit is percentage, <1 unit is pixel
 		 *  */
 		eventRectStylePadY?: number
+		tickTextAlign?: TickTextAlign | TickTextAlignFunc // tick text alignment, can be 'left' | 'center' or a function
 		eventItemTimeFormat?: (time: Dayjs) => GanttEventItemTime // while normal mode, eventItemTimeFormat is a function to format the time in options.data
 	}
 	// action config
@@ -76,6 +77,7 @@ export type GanttOptions = {
 		enableCurrentTime?: boolean // container click to show current time
 		enableMoveOrResizeOutOfEdge?: boolean // whether to enable moving or resizing events outside the edge of the container
 		enableNewEventItem?: boolean // whether to enable creating new event item
+		hoverEventShowTimeRange?: boolean // whether to show the event time range when hovering over the event
 	}
 	data?: GanttItem[] // data
 }
@@ -144,6 +146,13 @@ export type GanttEventItem = {
 }
 
 export type GanttEventItemTime = string | number | Date | Dayjs
+
+export type TickTextAlign = 'left' | 'center'
+
+export type TickTextAlignFunc = (args: {
+	time: Dayjs
+	index: number
+}) => TickTextAlign
 
 export enum EventShapeType {
 	rect = 'rect',

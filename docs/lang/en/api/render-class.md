@@ -11,9 +11,10 @@ Class for rendering the Gantt instance, which is responsible for rendering the e
 
 ### constructor
 
-Parameters: `(gantt: Gantt)`
-
-Constructor, which takes the Gantt instance as a parameter.
+```ts
+// Constructor, which takes the Gantt instance as a parameter
+constructor(gantt: Gantt): Render
+```
 
 ## Instance Properties
 
@@ -37,16 +38,36 @@ RowsRender instance, which is responsible for rendering the rows part.
 
 EventsRender instance, which is responsible for rendering the events part.
 
-## Methods
+## Instance Methods
 
 ### render
 
-Renders the entire Gantt instance.
+Renders the entire Gantt instance
+
+```ts
+render(): void
+```
 
 ### caculateGanttBox
 
-Calculates the width and height of the entire Gantt instance svg element.
+Calculates the width and height of the entire Gantt instance svg element
+
+```ts
+caculateGanttBox(): void
+```
 
 ### getYbyIndex
 
-Calculates the y coordinate of the row based on the index.
+Calculates the y coordinate of the row based on the index
+
+```ts
+getYbyIndex(index: number): number
+```
+
+### destroy
+
+Destroy the render instance and clean up all sub-renderers (header, ticks, rows, events)
+
+```ts
+destroy(): void
+```

@@ -7,18 +7,32 @@ footer: false
 
 ### updateOptions
 
-params: `(options: Partial<Omit<GanttOptions, 'el'>>)`
+```ts
+// Updates the configuration of the instance
+updateOptions(options: Partial<Omit<GanttOptions, 'el'>>): void
+```
 
-Updates the configuration of the instance.
+### destroy
+
+```ts
+// Destroy the instance, clean up all event listeners and resources
+destroy(): void
+```
 
 ### on
 
-params: (...rest: any) `Refer to the on method of eventemitter3`
+```ts
+// Binds instance events, which are currently available for the instance can be found in the documentation [Events](/en/api/constructor-on)
+on(...rest: any): void
+```
 
-Binds instance events, which are currently available for the instance can be found in the documentation [Events](/en/api/constructor-on).
+Refer to the on method of eventemitter3
 
 ### off
 
-params: (...rest: any) `Refer to the off method of eventemitter3`
+```ts
+// Cancel event binding
+off(...rest: any): void
+```
 
-Cancel event binding
+Refer to the off method of eventemitter3

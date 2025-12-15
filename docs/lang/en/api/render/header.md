@@ -43,18 +43,38 @@ Header G instance
 
 Renders the entire Header.
 
+```ts
+render(): void
+```
+
 ### clear
 
 Clears the Header part.
+
+```ts
+clear(): void
+```
 
 ### destroy
 
 Destroys the Header part.
 
+```ts
+destroy(): void
+```
+
 ### showCurrentTime
 
 Shows the current time.
 
+```ts
+showCurrentTime(): void
+```
+
 ### hideCurrentTime
 
 Hides the current time.
+
+```ts
+hideCurrentTime(): void
+```
