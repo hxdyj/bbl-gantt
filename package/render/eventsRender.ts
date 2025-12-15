@@ -417,11 +417,11 @@ export class EventsRender extends PartRender {
 		} = {}
 
 		if (newData?.start != void 0) {
-			timeObj.start = isDuration ? this.gantt.time.dayjs2duration(newData.start as Dayjs) : this.gantt.options.format.eventItemTime(newData.start as Dayjs)
+			timeObj.start = isDuration ? this.gantt.time.dayjs2duration(newData.start as Dayjs) : this.gantt.options.view.eventItemTimeFormat(newData.start as Dayjs)
 		}
 
 		if (newData?.end != void 0) {
-			timeObj.end = isDuration ? this.gantt.time.dayjs2duration(newData.end as Dayjs) : this.gantt.options.format.eventItemTime(newData.end as Dayjs)
+			timeObj.end = isDuration ? this.gantt.time.dayjs2duration(newData.end as Dayjs) : this.gantt.options.view.eventItemTimeFormat(newData.end as Dayjs)
 		}
 		return timeObj
 	}

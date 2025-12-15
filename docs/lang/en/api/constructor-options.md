@@ -56,6 +56,7 @@ export type GanttOptions = {
 		 * >1 unit is percentage, <1 unit is pixel
 		 *  */
 		eventRectStylePadY?: number
+		eventItemTimeFormat?: (time: Dayjs) => GanttEventItemTime // while normal mode, eventItemTimeFormat is a function to format the time in options.data
 	}
 	// action config
 	action?: {
@@ -77,10 +78,6 @@ export type GanttOptions = {
 		enableNewEventItem?: boolean // whether to enable creating new event item
 	}
 	data?: GanttItem[] // data
-	//format config
-	format?: {
-		eventItemTime?: (time: Dayjs) => GanttEventItemTime // while normal mode, eventItemTime is a function to format the time in options.data
-	}
 }
 
 export type Column = {

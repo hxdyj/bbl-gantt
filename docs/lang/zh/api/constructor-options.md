@@ -56,6 +56,7 @@ export type GanttOptions = {
 		 * <1认为是百分比，>1认为是像素
 		 *  */
 		eventRectStylePadY?: number
+		eventItemTimeFormat?: (time: Dayjs) => GanttEventItemTime // 当 normal 模式 eventItem 时间改变时候，格式化 options.data 中的时间的格式
 	}
 	//操作配置
 	action?: {
@@ -77,10 +78,6 @@ export type GanttOptions = {
 		enableNewEventItem?: boolean //是否允许新增事件项
 	}
 	data?: GanttItem[] //数据
-	//格式化配置
-	format?: {
-		eventItemTime?: (time: Dayjs) => GanttEventItemTime // 当 normal 模式 eventItem 时间改变时候，格式化 options.data 中的时间的格式
-	}
 }
 
 export type Column = {

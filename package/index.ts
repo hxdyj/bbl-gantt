@@ -106,6 +106,7 @@ export type _GanttOptions = {
 		eventRectStylePadY?: number,
 
 		tickTextAlign?: TickTextAlign | TickTextAlignFunc
+		eventItemTimeFormat?: (time: Dayjs) => GanttEventItemTime
 	},
 	action?: {
 		headerWheelTimeMetric?: boolean | {
@@ -121,9 +122,6 @@ export type _GanttOptions = {
 		hoverEventShowTimeRange?: boolean
 	}
 	data?: GanttItem[]
-	format?: {
-		eventItemTime?: (time: Dayjs) => GanttEventItemTime
-	}
 }
 
 export type NormalModeGanttOptions = _GanttOptions & {
@@ -231,6 +229,9 @@ export const defaultGanttOptions: DeepPartial<GanttOptions> = {
 				showTimeStr = durationObj.format(formatStr)
 			}
 			return showTimeStr
+		},
+		eventItemTimeFormat(time: Dayjs) {
+			return time
 		}
 	},
 	action: {
@@ -242,11 +243,6 @@ export const defaultGanttOptions: DeepPartial<GanttOptions> = {
 		enableMoveOrResizeOutOfEdge: false,
 		enableNewEventItem: true,
 		hoverEventShowTimeRange: false,
-	},
-	format: {
-		eventItemTime(time: Dayjs) {
-			return time
-		}
 	}
 }
 export class GanttManager {
