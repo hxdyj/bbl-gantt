@@ -225,7 +225,14 @@ export class Time extends EventBindingThis {
 	caculateTicks(minTime: Dayjs, maxTime: Dayjs) {
 		let startTime = dayjs(minTime)
 		let endTime = dayjs(maxTime)
-		const { timeMetric, padding } = this.gantt.options.column
+		const { timeMetric: originTimeMetric, padding } = this.gantt.options.column
+		let timeMetric: TimeMetric | number = 0
+		if (originTimeMetric == 'auto') {
+			// 自动计算时间度量
+			timeMetric = duration2timeMetric(dayjs.duration(endTime.diff(startTime)).asMilliseconds())
+		} else {
+			timeMetric = originTimeMetric
+		}
 		const { fixTimeMetric, params: subtractParams } = timeMetricToDayjsAddParams(timeMetric, padding.left)
 		const { params: addParams } = timeMetricToDayjsAddParams(timeMetric, padding.right)
 
@@ -285,9 +292,9 @@ export class Time extends EventBindingThis {
 				endTime,
 				step: params,
 				callback: (time, sameEnd) => {
-					if (!sameEnd) {
-						this.ticks++
-					}
+					// if (!sameEnd) {
+					this.ticks++
+					// }
 				}
 			})
 			// console.groupEnd()
@@ -300,9 +307,9 @@ export class Time extends EventBindingThis {
 				endTime,
 				step: [1, fixUnit!],
 				callback: (time, sameEnd) => {
-					if (!sameEnd) {
-						this.timeTicks++
-					}
+					// if (!sameEnd) {
+					this.timeTicks++
+					// }
 				}
 			})
 		}
@@ -439,4 +446,31 @@ function stepTime(params: {
 	if (!startTime.isSame(endTime) && currentTime.isSame(endTime)) {
 		callback(currentTime, true)
 	}
+}
+
+
+function duration2timeMetric(duration: number): TimeMetric {
+	if (duration < 3000) {
+		return TimeMetric.SECOND
+	}
+	if (duration >= 3000 && duration < 15 * MINUTE) {
+		return TimeMetric.MINUTE
+	}
+	if (duration >= 15 * MINUTE && duration < 6 * HOUR) {
+		return TimeMetric.HOUR
+	}
+	if (duration >= 6 * HOUR && duration < 0.5 * WEEK) {
+		return TimeMetric.DAY
+	}
+	if (duration >= 0.5 * WEEK && duration < 0.5 * MONTH) {
+		return TimeMetric.WEEK
+	}
+	if (duration >= 0.5 * MONTH && duration < 3 * MONTH) {
+		return TimeMetric.MONTH
+	}
+	if (duration >= 3 * MONTH) {
+		return TimeMetric.YEAR
+	}
+
+	return TimeMetric.HOUR
 }

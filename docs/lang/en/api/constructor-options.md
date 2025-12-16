@@ -84,7 +84,7 @@ export type GanttOptions = {
 
 export type Column = {
 	width: number // column width
-	timeMetric: number | TimeMetric // time metric or milliseconds, represents the time length of each column
+	timeMetric: number | TimeMetric | 'auto' // time metric or milliseconds, represents the time length of each column. When set to 'auto', the system automatically calculates an appropriate time metric based on the data's time range
 	padding: {
 		// duration mode is unvalidate, all padding is 0
 		// accord to all data, calculate how many columns the data needs to be divided into, the padding represents how many blank columns to leave before and after these columns
@@ -106,6 +106,27 @@ export enum TimeMetric {
 	MONTH = 'MONTH',
 	YEAR = 'YEAR',
 }
+```
+
+### timeMetric Auto Calculation Rules
+
+When `column.timeMetric` is set to `'auto'`, the system automatically selects an appropriate time metric based on the data's time range (duration):
+
+| Time Range (duration) | Auto-selected timeMetric |
+|---------------------|------------------------|
+| < 3 seconds | `SECOND` |
+| 3 seconds ~ 15 minutes | `MINUTE` |
+| 15 minutes ~ 6 hours | `HOUR` |
+| 6 hours ~ 3.5 days | `DAY` |
+| 3.5 days ~ 15 days | `WEEK` |
+| 15 days ~ 90 days | `MONTH` |
+| ≥ 90 days | `YEAR` |
+
+::: tip Tip
+The auto-calculation feature is especially useful for scenarios where the data time range is not fixed. The system intelligently selects the most appropriate time scale to display the data.
+:::
+
+```ts
 
 export type HeaderTimeFormatArgs = {
 	gantt: Gantt

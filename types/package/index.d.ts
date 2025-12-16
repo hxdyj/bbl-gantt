@@ -25,7 +25,7 @@ export declare enum TimeMetric {
 export type TimeScale = keyof Pick<typeof TimeMetric, 'SECOND' | 'MINUTE' | 'HOUR' | 'DAY' | 'WEEK' | 'MONTH' | 'YEAR'>;
 export type Column = {
     width: number;
-    timeMetric: number | TimeMetric;
+    timeMetric: number | TimeMetric | 'auto';
     padding: {
         left: number;
         right: number;

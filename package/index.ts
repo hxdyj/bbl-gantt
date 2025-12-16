@@ -45,7 +45,7 @@ export type TimeScale = keyof Pick<typeof TimeMetric, 'SECOND' | 'MINUTE' | 'HOU
 
 export type Column = {
 	width: number   //每列的宽度
-	timeMetric: number | TimeMetric  //毫秒数或者时间度量，代表每列的时间长度
+	timeMetric: number | TimeMetric | 'auto'  //毫秒数或者时间度量，代表每列的时间长度, auto的时候初始会根据容器宽度自动计算合适的列宽以及时间度量
 	padding: {  //根据所有数据算出整个数据需要划分为多少列，这里的padding代表在这些列的前后要留多少空白列
 		left: number,
 		right: number,
@@ -131,7 +131,7 @@ export type DurationModeGanttOptions = _GanttOptions & {
 	mode: GanttMode.Duration,
 	durationModeOptions: DurationModeOptions
 	view?: _GanttOptions['view'] & {
-		timeFullWidth?: boolean   //是否时间铺满整个宽度，然后按照宽度和起止时间自动计算 gantt.column.timeMetric 和 gantt.column.width
+		timeFullWidth?: boolean   //是否时间铺满整个宽度，然后按照宽度和起止时间自动计算 gantt.column.timeMetric
 	}
 }
 

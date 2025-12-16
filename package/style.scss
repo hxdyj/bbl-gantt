@@ -69,16 +69,17 @@
 		overflow: hidden;
 	}
 
-	&:hover {
-		&::-webkit-scrollbar-thumb {
-			background-color: var(--gantt-scrollbar-thumb-bg-hover-color);
-		}
-	}
+	// &:hover {
+	// 	&::-webkit-scrollbar-thumb {
+	// 		background-color: var(--gantt-scrollbar-thumb-bg-hover-color);
+	// 	}
+	// }
 	&::-webkit-scrollbar-thumb {
 		border: var(--gantt-scrollbar-thumb-border);
 		background-clip: var(--gantt-scrollbar-thumb-bg-clip);
 		border-radius: var(--gantt-scrollbar-thumb-border-radius);
-		background-color: var(--gantt-scrollbar-thumb-bg-color);
+		// background-color: var(--gantt-scrollbar-thumb-bg-color);
+		background-color: var(--gantt-scrollbar-thumb-bg-hover-color);
 	}
 
 	&::-webkit-scrollbar {

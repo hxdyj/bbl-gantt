@@ -84,7 +84,7 @@ export type GanttOptions = {
 
 export type Column = {
 	width: number //每列的宽度
-	timeMetric: number | TimeMetric //毫秒数或者时间度量，代表每列的时间长度
+	timeMetric: number | TimeMetric | 'auto' //毫秒数或者时间度量，代表每列的时间长度。当设置为 'auto' 时，系统会根据数据的起止时间范围自动计算合适的时间度量
 	padding: {
 		//duration模式不生效，都为0
 		//根据所有数据算出整个数据需要划分为多少列，这里的padding代表在这些列的前后要留多少空白列
@@ -106,6 +106,27 @@ export enum TimeMetric {
 	MONTH = 'MONTH',
 	YEAR = 'YEAR',
 }
+```
+
+### timeMetric 自动计算规则
+
+当 `column.timeMetric` 设置为 `'auto'` 时，系统会根据数据的起止时间范围（duration）自动选择合适的时间度量：
+
+| 时间范围 (duration) | 自动选择的 timeMetric |
+|-------------------|---------------------|
+| < 3 秒 | `SECOND` |
+| 3 秒 ~ 15 分钟 | `MINUTE` |
+| 15 分钟 ~ 6 小时 | `HOUR` |
+| 6 小时 ~ 3.5 天 | `DAY` |
+| 3.5 天 ~ 15 天 | `WEEK` |
+| 15 天 ~ 90 天 | `MONTH` |
+| ≥ 90 天 | `YEAR` |
+
+::: tip 提示
+自动计算功能特别适合数据时间范围不固定的场景，系统会智能选择最合适的时间刻度来展示数据。
+:::
+
+```ts
 
 export type HeaderTimeFormatArgs = {
 	gantt: Gantt
