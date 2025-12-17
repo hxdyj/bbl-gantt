@@ -267,10 +267,13 @@ export class Time extends EventBindingThis {
 			}
 
 			if (fixUnit) {
-				startTime = startTime.startOf(fixUnit)
-				if (this.gantt.options.mode != GanttMode.Duration) {
-					if (!endTime.startOf(fixUnit).isSame(endTime)) {
-						endTime = endTime.add(1, fixUnit).startOf(fixUnit)
+				const alignStartTimeToUnitTypeStartTime = this.gantt.options.time?.alginStartTimeToUnitTypeStartTime ?? true
+				if (alignStartTimeToUnitTypeStartTime) {
+					startTime = startTime.startOf(fixUnit)
+					if (this.gantt.options.mode != GanttMode.Duration) {
+						if (!endTime.startOf(fixUnit).isSame(endTime)) {
+							endTime = endTime.add(1, fixUnit).startOf(fixUnit)
+						}
 					}
 				}
 			}

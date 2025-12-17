@@ -84,6 +84,9 @@ export type _GanttOptions = {
 	row?: {
 		height?: number
 	}
+	time?: {
+		alginStartTimeToUnitTypeStartTime?: boolean //是否将时间轴的开始时间对齐到单位类型的开始时间，如：单位类型是天，那么时间轴的开始时间就会对齐到最近的天的开始时间
+	},
 	header?: {
 		height?: number
 	}
@@ -156,6 +159,9 @@ export const defaultGanttOptions: DeepPartial<GanttOptions> = {
 	},
 	header: {
 		height: 70
+	},
+	time: {
+		alginStartTimeToUnitTypeStartTime: true
 	},
 	view: {
 		showScrollBar: true,

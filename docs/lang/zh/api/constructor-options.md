@@ -29,6 +29,10 @@ export type GanttOptions = {
 	row?: {
 		height?: number // 行高
 	}
+	// 时间配置
+	time?: {
+		alginStartTimeToUnitTypeStartTime?: boolean // 是否将时间轴的开始时间对齐到单位类型的开始时间，如：单位类型是天，那么时间轴的开始时间就会对齐到最近的天的开始时间，默认为 true
+	}
 	// 头部配置
 	header?: {
 		height?: number // 头部高度

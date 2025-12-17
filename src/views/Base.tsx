@@ -39,6 +39,9 @@ export function Base() {
 					return index ? 'center' : 'left'
 				}
 			},
+			time: {
+				// alginStartTimeToUnitTypeStartTime:false
+			},
 			column: {
 				width: 300,
 				timeMetric: 800

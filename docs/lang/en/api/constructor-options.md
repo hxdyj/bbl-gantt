@@ -29,6 +29,10 @@ export type GanttOptions = {
 	row?: {
 		height?: number // row height
 	}
+	// time config
+	time?: {
+		alginStartTimeToUnitTypeStartTime?: boolean // whether to align the start time of the timeline to the start time of the unit type, for example: if the unit type is day, the start time of the timeline will be aligned to the start of the nearest day, default is true
+	}
 	// header config
 	header?: {
 		height?: number // header height
