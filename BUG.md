@@ -1,1 +1,3 @@
 - [ ] mouse click on event body , current-time render error
+- [ ] on wheel header right scroll blink
+- [ ] click gantt body , render current-time, move mouse, current-time hidden

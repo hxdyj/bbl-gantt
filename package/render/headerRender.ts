@@ -95,7 +95,7 @@ export class HeaderRender extends PartRender {
 		const g = (this.gantt.stage.find(`.${CssNameKey.time_range}`)[0] || new G().addClass(CssNameKey.time_range)) as G
 		this.timeRange = g
 
-		const gBbox = tmpItem?.g?.bbox()
+		const moveRectBbox = tmpItem?.svgjsInstance.moveRect?.bbox() || { y: 0 }
 
 		const text = (g.find(`.${CssNameKey.time_range_text}`)[0] || new Text().addClass(CssNameKey.time_range_text)) as Text
 		const { start, end } = tmpItem.options.event
@@ -135,11 +135,9 @@ export class HeaderRender extends PartRender {
 		})
 		text.addTo(g)
 
-
 		const rect = g.find(`.${CssNameKey.time_range_line}`)[0] || new Rect().addClass(CssNameKey.time_range_line)
-		const height = Math.abs(gBbox.y - textBox.y)
-		const pad = 8
-		rect.size(0.01, height - pad).move(stagePoint.x, this.gantt.container.scrollTop + textBox.height + pad)
+		const height = Math.abs(moveRectBbox.y - textBox.y2)
+		rect.size(0.01, height).move(stagePoint.x, this.gantt.container.scrollTop + textBox.y2)
 			.fill('transparent')
 		rect.addTo(g)
 
