@@ -143,7 +143,7 @@ export class HeaderRender extends PartRender {
 
 		const rect = g.find(`.${CssNameKey.time_range_line}`)[0] || new Rect().addClass(CssNameKey.time_range_line)
 		const height = Math.abs(moveRectBbox.y - textBox.y2)
-		rect.size(0.01, height).move(stagePoint.x, this.gantt.container.scrollTop + textBox.y2)
+		rect.size(0.01, height).move(stagePoint.x, textBox.y2)
 			.fill('transparent')
 		rect.addTo(g)
 
