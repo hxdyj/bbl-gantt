@@ -295,9 +295,9 @@ export class Time extends EventBindingThis {
 				endTime,
 				step: params,
 				callback: (time, sameEnd) => {
-					// if (!sameEnd) {
-					this.ticks++
-					// }
+					if (!sameEnd) {
+						this.ticks++
+					}
 				}
 			})
 			// console.groupEnd()

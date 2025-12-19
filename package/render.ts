@@ -102,7 +102,7 @@ export class Render extends EventBindingThis {
 	}
 
 	caculateGanttBox() {
-		let count = this.gantt.time.ticks - 1 //-1是因为最前边的刻度在起始位置
+		let count = this.gantt.time.ticks
 		if (this.gantt.options.mode === GanttMode.Duration) {
 			count = (this.gantt.options.durationModeOptions.duration * 1000) / this.gantt.time.stepTime
 		}
