@@ -308,6 +308,7 @@ export class Gantt extends EventBindingThis {
 	parentContainer: HTMLElement;
 	container: HTMLElement;
 	body: HTMLElement;
+	v_scroll_mask: HTMLElement;
 	stage: Svg;
 	eventBus = new EventEmitter()
 	private destroyed = false
@@ -345,6 +346,9 @@ export class Gantt extends EventBindingThis {
 
 
 		this.body = createOrGetEle(CssNameKey.body, this.container)
+		// this.parentContainer.style.position = 'relative'
+		this.v_scroll_mask = createOrGetEle(CssNameKey.v_scroll_mask, this.parentContainer)
+
 		ganttManager.addNewInstance(this)
 
 		this.createTime = Date.now()

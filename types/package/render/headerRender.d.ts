@@ -15,6 +15,7 @@ export declare class HeaderRender extends PartRender {
         currentTime: import('@svgdotjs/svg.js').Element;
         currentTimeX: number;
     };
+    onContainerScroll(): void;
     onCurrentTimeExistRender(): void;
     onScroll(event: Event): void;
     private mouseDownTime;
@@ -31,6 +32,9 @@ export declare class HeaderRender extends PartRender {
     clearHeaderWheelTimer(): void;
     private headerWheelTimer;
     onHeaderWheel(evt: Event): void;
+    parentContainerPrePosition: string;
+    showVScrollMask(): void;
+    hideVScrollMask(): void;
     _onHeaderWheel: import('lodash').DebouncedFuncLeading<(evt: Event) => void>;
     g: G | null;
     render(): void;

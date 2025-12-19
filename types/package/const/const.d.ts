@@ -3,6 +3,7 @@ export declare class CssNameKey {
     static duration_mode: string;
     static body: string;
     static svg: string;
+    static v_scroll_mask: string;
     static time_range: string;
     static time_range_text: string;
     static time_range_line: string;

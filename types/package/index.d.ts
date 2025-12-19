@@ -56,6 +56,9 @@ export type _GanttOptions = {
     row?: {
         height?: number;
     };
+    time?: {
+        alginStartTimeToUnitTypeStartTime?: boolean;
+    };
     header?: {
         height?: number;
     };
@@ -144,6 +147,7 @@ export declare class Gantt extends EventBindingThis {
     parentContainer: HTMLElement;
     container: HTMLElement;
     body: HTMLElement;
+    v_scroll_mask: HTMLElement;
     stage: Svg;
     eventBus: EventEmitter<string | symbol, any>;
     private destroyed;

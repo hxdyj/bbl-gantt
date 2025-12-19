@@ -84,6 +84,21 @@ export class Render extends EventBindingThis {
 			this.gantt.body.innerHTML = ''
 		}
 		this.gantt.stage.addTo(this.gantt.body)
+
+
+		this.clearHideVScrollMaskTimer()
+		this.hideVScrollMaskTimer = setTimeout(() => {
+			this.gantt?.render?.header?.hideVScrollMask()
+			this.clearHideVScrollMaskTimer()
+		}, 300);
+	}
+	hideVScrollMaskTimer: ReturnType<typeof setTimeout> | null = null
+
+	clearHideVScrollMaskTimer() {
+		if (this.hideVScrollMaskTimer) {
+			clearTimeout(this.hideVScrollMaskTimer)
+			this.hideVScrollMaskTimer = null
+		}
 	}
 
 	caculateGanttBox() {

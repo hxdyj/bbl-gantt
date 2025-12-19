@@ -15,6 +15,8 @@ export declare class Render extends EventBindingThis {
     private unbindEvent;
     destroy(): void;
     render(): void;
+    hideVScrollMaskTimer: ReturnType<typeof setTimeout> | null;
+    clearHideVScrollMaskTimer(): void;
     caculateGanttBox(): {
         width: number;
         height: number;

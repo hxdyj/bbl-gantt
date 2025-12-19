@@ -7,6 +7,8 @@ export class CssNameKey {
 
 	static svg = 'bbl-gantt-svg'
 
+	static v_scroll_mask = 'bbl-gantt-v-scroll-mask'
+
 	static time_range = 'time-range'
 	static time_range_text = 'time-range-text'
 	static time_range_line = 'time-range-line'

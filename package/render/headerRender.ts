@@ -18,6 +18,7 @@ export class HeaderRender extends PartRender {
 				'onBodyMouseUp',
 				'onHeaderWheel',
 				'_onHeaderWheel',
+				'onContainerScroll'
 			]
 		)
 		this.bindEvent()
@@ -27,6 +28,7 @@ export class HeaderRender extends PartRender {
 		this.gantt.container.addEventListener('scroll', this.onScroll)
 		this.gantt.body.addEventListener('mousedown', this.onBodyMouseDown)
 		this.gantt.body.addEventListener('mouseup', this.onBodyMouseUp)
+		this.gantt.on(EventBusEventName.container_scroll, this.onContainerScroll)
 
 	}
 
@@ -34,7 +36,7 @@ export class HeaderRender extends PartRender {
 		this.gantt.container.removeEventListener('scroll', this.onScroll)
 		this.gantt.body.removeEventListener('mousedown', this.onBodyMouseDown)
 		this.gantt.body.removeEventListener('mouseup', this.onBodyMouseUp)
-
+		this.gantt.off(EventBusEventName.container_scroll, this.onContainerScroll)
 	}
 
 	getCurrentTime() {
@@ -45,6 +47,10 @@ export class HeaderRender extends PartRender {
 			currentTime,
 			currentTimeX: exist ? parseFloat(currentTime.x() + '') : NaN
 		}
+	}
+
+	onContainerScroll() {
+		this.onCurrentTimeExistRender()
 	}
 
 	onCurrentTimeExistRender() {
@@ -154,7 +160,8 @@ export class HeaderRender extends PartRender {
 		this.currentTimeG = g
 		const rect = g.find(`.${CssNameKey.current_time_line}`)[0] || new Rect().addClass(CssNameKey.current_time_line)
 		const height = 26
-		rect.size(0.01, parseFloat(this.gantt.stage.height() + '') - this.gantt.container.scrollTop - height).move(x, height + this.gantt.container.scrollTop)
+		const rectWidth = 0.01
+		rect.size(rectWidth, parseFloat(this.gantt.stage.height() + '') - this.gantt.container.scrollTop - height).move(x + rectWidth, height + this.gantt.container.scrollTop)
 			.fill('transparent')
 		rect.addTo(g)
 
@@ -263,6 +270,25 @@ export class HeaderRender extends PartRender {
 		}
 	}
 
+	parentContainerPrePosition: string = ''
+
+	showVScrollMask() {
+		const parentContainerComputedStyle = getComputedStyle(this.gantt.parentContainer)
+		this.parentContainerPrePosition = parentContainerComputedStyle.position
+
+		// 缩放的时候临时遮住滚动条
+		this.gantt.parentContainer.style.position = 'relative'
+		this.gantt.v_scroll_mask.style.display = 'block'
+	}
+
+	hideVScrollMask() {
+		if (this.parentContainerPrePosition) {
+			this.gantt.parentContainer.style.position = this.parentContainerPrePosition
+			this.parentContainerPrePosition = ''
+		}
+		this.gantt.v_scroll_mask.style.display = 'none'
+	}
+
 	_onHeaderWheel = throttle((evt: Event) => {
 		if (this.gantt.options.action.headerWheelTimeMetric) {
 			if (this.gantt.options.mode === GanttMode.Duration && this.gantt.options.view.timeFullWidth) {
@@ -284,7 +310,7 @@ export class HeaderRender extends PartRender {
 			} else {
 				newValue = Math.min(newValue, max)
 			}
-
+			this.showVScrollMask()
 			this.gantt.updateOptions(
 				isDurationMode ?
 					{
