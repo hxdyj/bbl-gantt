@@ -1,7 +1,7 @@
 import { Button, Input, InputNumber, Select, Space } from "@arco-design/web-react"
 import { useEffect, useRef, useState } from "react"
 import { OperateGroup } from "../components/OperateGroup"
-import Gantt, { GanttItem, GanttMode, TimeMetric } from "#/index"
+import Gantt, { EventBusEventName, GanttItem, GanttMode, TimeMetric } from "#/index"
 import './Base.scss'
 import { ganttData } from "../data/ganttData-full"
 import { walkData } from "#/utils/data"
@@ -52,6 +52,8 @@ export function Base() {
 				enableNewEventItem: false,
 				hoverEventShowTimeRange: true,
 			}
+		}).on(EventBusEventName.event_item_body_click, () => {
+			console.log('event_item_body_click')
 		})
 		return () => {
 			gantt.current?.destroy()

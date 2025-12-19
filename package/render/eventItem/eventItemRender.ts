@@ -7,10 +7,10 @@ import { Render } from "../../render";
 import { uid } from 'uid';
 import { EventBusEventName } from "../../event/const";
 import { getUID } from "../../utils/data";
+import { values } from "lodash";
 
 export abstract class EventItemRender extends EventBindingThis {
 	uid: string
-	isRendered = false
 	g: G
 	constructor(public gantt: Gantt, public renderer: Render, public options: RenderItemOptions) {
 		super()
@@ -47,6 +47,8 @@ export abstract class EventItemRender extends EventBindingThis {
 	}
 
 	unbindEvent() {
+		this.svgjsInstance.moveRect?.off('click', this.onBodyClick)
+		// this.svgjsInstance.moveRect?.off('mousedown', this.onBodyMouseDown)
 	}
 
 	onLeftResizeMouseDown(event: Event) {
@@ -163,6 +165,17 @@ export abstract class EventItemRender extends EventBindingThis {
 			const y = this.renderer.getYbyIndex(index)
 			let moveRect: Rect | null = null
 			moveRect = (this.g.find(`.${CssNameKey.event_move_rect}`)[0] || new Rect().addClass(CssNameKey.event_move_rect)) as Rect
+
+			if (!this.g.has(moveRect)) {
+				moveRect?.on('mousedown', this.onBodyMouseDown)
+				moveRect?.on('mouseenter', this.onBodyMouseEnter)
+				moveRect?.on('mouseover', this.onBodyMouseOver)
+				moveRect?.on('mousemove', this.onBodyMouseMove)
+				moveRect?.on('mouseleave', this.onBodyMouseLeave)
+				moveRect?.on('contextmenu', this.onBodyContextMenu)
+				moveRect?.on('click', this.onBodyClick)
+			}
+
 			moveRect.size(width, height).move(x, y).fill('transparent').addTo(this.g)
 			let leftResize: Rect | null = null
 			let rightResize: Rect | null = null
@@ -176,39 +189,26 @@ export abstract class EventItemRender extends EventBindingThis {
 				const resizeBorderRadius = 3
 				leftResize.size(resizeWidth, resizeHeight).move(x, resizeY).radius(resizeBorderRadius).hide()
 				rightResize.size(resizeWidth, resizeHeight).move(x + width - resizeWidth, resizeY).radius(resizeBorderRadius).hide()
-
+				if (!this.g.has(leftResize)) {
+					leftResize?.on('mousedown', this.onLeftResizeMouseDown)
+					leftResize?.on('mouseenter', this.onBodyMouseEnter)
+					leftResize?.on('mouseleave', this.onBodyMouseLeave)
+				}
+				if (!this.g.has(rightResize)) {
+					rightResize?.on('mousedown', this.onRightResizeMouseDown)
+					rightResize?.on('mouseenter', this.onBodyMouseEnter)
+					rightResize?.on('mouseleave', this.onBodyMouseLeave)
+				}
 				leftResize.addTo(this.g)
 				rightResize.addTo(this.g)
 			}
 
-
-
 			this.svgjsInstance.moveRect = moveRect
 			this.svgjsInstance.leftResize = leftResize
 			this.svgjsInstance.rightResize = rightResize
-
-			if (!this.isRendered) {
-
-				moveRect?.on('mousedown', this.onBodyMouseDown)
-				moveRect?.on('mouseenter', this.onBodyMouseEnter)
-				moveRect?.on('mouseover', this.onBodyMouseOver)
-				moveRect?.on('mousemove', this.onBodyMouseMove)
-				moveRect?.on('mouseleave', this.onBodyMouseLeave)
-				moveRect?.on('contextmenu', this.onBodyContextMenu)
-				moveRect?.on('click', this.onBodyClick)
-				leftResize?.on('mousedown', this.onLeftResizeMouseDown)
-				leftResize?.on('mouseenter', this.onBodyMouseEnter)
-				leftResize?.on('mouseleave', this.onBodyMouseLeave)
-
-				rightResize?.on('mousedown', this.onRightResizeMouseDown)
-				rightResize?.on('mouseenter', this.onBodyMouseEnter)
-				rightResize?.on('mouseleave', this.onBodyMouseLeave)
-			}
 		}
-		if (!this.isRendered) {
-			this.g.addTo(addTo)
-			this.isRendered = true
-		}
+		this.g.addTo(addTo)
+
 	}
 
 	abstract renderItem(): void
@@ -216,7 +216,6 @@ export abstract class EventItemRender extends EventBindingThis {
 	destroy() {
 		this.unbindEvent()
 		this.g.remove()
-		this.isRendered = false
 	}
 
 }

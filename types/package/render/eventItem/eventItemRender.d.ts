@@ -8,7 +8,6 @@ export declare abstract class EventItemRender extends EventBindingThis {
     renderer: Render;
     options: RenderItemOptions;
     uid: string;
-    isRendered: boolean;
     g: G;
     constructor(gantt: Gantt, renderer: Render, options: RenderItemOptions);
     bindEvent(): void;
