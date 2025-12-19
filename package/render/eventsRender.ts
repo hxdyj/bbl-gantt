@@ -234,7 +234,9 @@ export class EventsRender extends PartRender {
 	onContainerMouseMove(event: MouseEvent) {
 		if (!this.startEvent) return
 		if (Math.abs(event.offsetX - this.startEvent.offsetX) > 1) {
-			this.renderer.header.hideCurrentTime()
+			if (this.itemRender) {
+				this.renderer.header.hideCurrentTime()
+			}
 			this.renderer.header.renderEventTimeRange(
 				event,
 				this.tmpItem
