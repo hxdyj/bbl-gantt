@@ -43,6 +43,9 @@ export const en = defineConfig({
 							{ text: 'Events', link: '/render/events' },
 						]
 					},
+					{
+						text: 'CSS Variables', link: '/css-vars', items: []
+					}
 				]
 			},
 		},

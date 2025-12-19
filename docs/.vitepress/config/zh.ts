@@ -40,6 +40,9 @@ export const zh = defineConfig({
 							{ text: 'Events', link: '/render/events' },
 						]
 					},
+					{
+						text: 'CSS变量', link: '/css-vars', items: []
+					}
 				]
 			},
 		},
