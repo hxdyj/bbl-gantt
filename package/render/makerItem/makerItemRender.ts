@@ -13,15 +13,27 @@ export class MakerItemRender {
 	time: Dayjs
 	x: number
 	constructor(public gantt: Gantt, public renderer: Render, public data: GanttMakerItem) {
+		const info = this.init()
+		this.time = info.time
+		this.x = info.x
+	}
+
+	init() {
 		this.time = dayjs(this.data.time)
 		this.x = this.gantt.time.time2x(this.time)
+		return {
+			time: this.time,
+			x: this.x
+		}
 	}
 
 	getClassPrefix() {
 		return `${CssNameKey.maker_item}-${this.data.id}`
 	}
 
+
 	render(options?: MakerItemRenderOptions) {
+		this.init()
 		const { parts = PARTS } = options || {}
 		if (parts.includes('header')) {
 			this.renderMakerHeaderPart()
@@ -39,7 +51,7 @@ export class MakerItemRender {
 		let width = originWidth / originHeight * height
 		const x = this.x - width / 2
 		const clampX = clamp(x, 0, this.gantt.body.clientWidth - width)
-		svg.size(width, height).move(clampX, this.gantt.options.header.height - height)
+		svg.size(width, height).move(this.time.isAfter(this.gantt.time.endTime) ? x : clampX, this.gantt.options.header.height - height)
 		this.renderer.header.g?.add(svg)
 	}
 

@@ -398,7 +398,6 @@ export class HeaderRender extends PartRender {
 			this.renderer.ticks.gText?.addTo(g)
 		}
 
-
 		this.renderer.maker?.render({ parts: ['header'] })
 		g.addTo(this.gantt.stage)
 		g.off('wheel', this.onHeaderWheel)
