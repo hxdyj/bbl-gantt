@@ -1,4 +1,4 @@
-import { default as Gantt } from './index';
+import { default as Gantt, MakerRender } from './index';
 import { EventBindingThis } from './event';
 import { HeaderRender } from './render/headerRender';
 import { TicksRender } from './render/ticksRender';
@@ -10,6 +10,7 @@ export declare class Render extends EventBindingThis {
     ticks: TicksRender;
     rows: RowsRender;
     events: EventsRender;
+    maker: MakerRender;
     constructor(gantt: Gantt);
     private bindEvent;
     private unbindEvent;

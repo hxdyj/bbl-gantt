@@ -15,7 +15,7 @@ dayjs.extend(isBetween)
 
 import { CssNameKey } from "./const/const";
 import { uid } from 'uid'
-import { createOrGetEle, getContainerInfo, getCssVar, getElement, hasScrollbar } from "./utils/dom";
+import { createOrGetEle, getContainerInfo, getScrollBarCssVar, getElement, hasScrollbar } from "./utils/dom";
 import { DeepPartial } from "@arco-design/web-react/es/Form/store";
 import { cloneDeep, defaultsDeep, omit, throttle } from "lodash-es";
 import { initDealData } from "./utils/data";
@@ -26,6 +26,7 @@ import { Time } from "./time";
 import { Render } from "./render";
 import { EventShapeType } from './render/eventsRender';
 import { FORMAT_FULL_TIME, formatDuration, getDurationStartTime } from "./utils/time";
+import { TickItemOptions } from "./render/ticksRender";
 export enum TimeMetric {
 	SECOND = 'SECOND',
 	MINUTE = 'MINUTE',
@@ -125,6 +126,7 @@ export type _GanttOptions = {
 		hoverEventShowTimeRange?: boolean
 	}
 	data?: GanttItem[]
+	makerData?: GanttMakerItem[]
 }
 
 export type NormalModeGanttOptions = _GanttOptions & {
@@ -145,6 +147,7 @@ export type GanttOptions = (NormalModeGanttOptions | DurationModeGanttOptions) &
 export const defaultGanttOptions: DeepPartial<GanttOptions> = {
 	readOnly: false,
 	data: [],
+	makerData: [],
 	mode: GanttMode.Normal,
 	column: {
 		width: 80,
@@ -270,6 +273,17 @@ export class GanttManager {
 
 export const ganttManager = new GanttManager()
 export type GanttEventItemTime = string | number | Date | Dayjs
+
+
+export type GanttMakerItem = {
+	id: string
+	time: GanttEventItemTime
+	svg: string
+	options?: {
+		tick?: TickItemOptions
+	}
+}
+
 export type GanttEventItem = {
 	id: string
 	start: GanttEventItemTime
@@ -430,7 +444,7 @@ export class Gantt extends EventBindingThis {
 
 			let width = this.parentContainerRectInfo.width
 			if (hasScrollbar(this.container)?.vertical) {
-				const { scrollBarWidth } = getCssVar()
+				const { scrollBarWidth } = getScrollBarCssVar()
 				width -= scrollBarWidth
 			}
 
@@ -504,7 +518,7 @@ export class Gantt extends EventBindingThis {
 			:
 			this.parentContainerRectInfo.height
 
-		const { scrollBarWidth, scrollBarHeight } = getCssVar()
+		const { scrollBarWidth, scrollBarHeight } = getScrollBarCssVar()
 		const scrollBarFianlHeight = this.options.view.showScrollBar ?
 			this.options.view.whileShowScrollReduceScrollBarSize ?
 				scrollBarHeight

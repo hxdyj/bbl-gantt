@@ -23,3 +23,4 @@
 - [x] update event item data function
 - [ ] resize and move to edge auto scroll
 - [ ] event item dependence
+- [ ] labelData & rangeData

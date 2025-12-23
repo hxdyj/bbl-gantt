@@ -6,6 +6,9 @@
 	--gantt-header-text-color: #4e5969;
 	--gantt-header-text-font-size: 14px;
 
+	--gantt-tick-width: 0.2;
+	--gantt-tick-maker-width: var(--gantt-tick-width);
+
 	--gantt-v-scroll-mask-bg-color: white;
 
 	--gantt-row-line-color: var(--gantt-tick-color);

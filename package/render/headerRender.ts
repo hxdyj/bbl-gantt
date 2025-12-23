@@ -1,4 +1,4 @@
-import { G, Rect, Text } from "@svgdotjs/svg.js";
+import { G, Rect, SVG, Text } from "@svgdotjs/svg.js";
 import Gantt, { GanttMode } from "../index";
 import dayjs, { Dayjs, UnitType } from "dayjs";
 import { PartRender } from "./index";
@@ -347,6 +347,8 @@ export class HeaderRender extends PartRender {
 
 		g.add(bgRect)
 
+		const timeTickTextGroup = g.find(`.${CssNameKey.time_ticks_header_group}`)[0] || new G().addClass(CssNameKey.time_ticks_header_group)
+
 		const ticksIterator = this.gantt.time.getTimeTicksIterator()
 		let preTickId = ''
 		for (const tickItem of ticksIterator) {
@@ -377,12 +379,14 @@ export class HeaderRender extends PartRender {
 				continue
 			}
 
-			rect.addTo(g)
-			text.addTo(g)
+			rect.addTo(timeTickTextGroup)
+			text.addTo(timeTickTextGroup)
+			timeTickTextGroup.addTo(g)
 
 
-
-			const { rect: tickRect, rectTimeTick } = this.renderer.ticks.renderTickItem(tickTime, index)
+			const { rect: tickRect, rectTimeTick } = this.renderer.ticks.renderTickItem({
+				tickTime, index
+			})
 			if (!this.gantt.options.view.showTimeTicks) {
 				tickRect?.hide()
 			}
@@ -394,6 +398,8 @@ export class HeaderRender extends PartRender {
 			this.renderer.ticks.gText?.addTo(g)
 		}
 
+
+		this.renderer.maker?.render({ parts: ['header'] })
 		g.addTo(this.gantt.stage)
 		g.off('wheel', this.onHeaderWheel)
 		g.on('wheel', this.onHeaderWheel)

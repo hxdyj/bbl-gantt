@@ -84,6 +84,7 @@ export type GanttOptions = {
 		hoverEventShowTimeRange?: boolean //鼠标悬停在事件上时是否显示时间范围
 	}
 	data?: GanttItem[] //数据
+	makerData?: GanttMakerItem[] //标记数据，用于在甘特图上标记特定时间点
 }
 
 export type Column = {
@@ -182,5 +183,17 @@ export type TickTextAlignFunc = (args: {
 export enum EventShapeType {
 	rect = 'rect',
 	line = 'line',
+}
+
+export type GanttMakerItem = {
+	id: string
+	time: GanttEventItemTime // 标记的时间点
+	svg: string // SVG 字符串，用于显示标记图标
+	options?: {
+		tick?: {
+			fill?: string // 刻度线颜色
+			width?: number // 刻度线宽度
+		}
+	}
 }
 ```

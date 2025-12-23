@@ -20,6 +20,12 @@ bbl-gantt provides a comprehensive set of CSS variables for customizing the appe
 	/* Color for tick lines in the timeline */
 	--gantt-tick-color: #86909c;
 
+	/* Width of tick lines */
+	--gantt-tick-width: 0.2;
+
+	/* Width of marker tick lines (inherits from --gantt-tick-width) */
+	--gantt-tick-maker-width: var(--gantt-tick-width);
+
 	/* ========== Header Styles ========== */
 
 	/* Color of tick lines in the header area (inherits from --gantt-tick-color) */

@@ -9,6 +9,7 @@ import { DeepRequired } from 'utility-types';
 import { Time } from './time';
 import { Render } from './render';
 import { EventShapeType } from './render/eventsRender';
+import { TickItemOptions } from './render/ticksRender';
 export declare enum TimeMetric {
     SECOND = "SECOND",
     MINUTE = "MINUTE",
@@ -92,6 +93,7 @@ export type _GanttOptions = {
         hoverEventShowTimeRange?: boolean;
     };
     data?: GanttItem[];
+    makerData?: GanttMakerItem[];
 };
 export type NormalModeGanttOptions = _GanttOptions & {
     mode?: GanttMode.Normal;
@@ -115,6 +117,14 @@ export declare class GanttManager {
 }
 export declare const ganttManager: GanttManager;
 export type GanttEventItemTime = string | number | Date | Dayjs;
+export type GanttMakerItem = {
+    id: string;
+    time: GanttEventItemTime;
+    svg: string;
+    options?: {
+        tick?: TickItemOptions;
+    };
+};
 export type GanttEventItem = {
     id: string;
     start: GanttEventItemTime;

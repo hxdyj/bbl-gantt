@@ -1,5 +1,5 @@
 import { ForeignObject, G, Rect, SVG, Text } from "@svgdotjs/svg.js";
-import Gantt, { _GanttEventItem, GanttMode } from "./index";
+import Gantt, { _GanttEventItem, GanttMode, MakerRender } from "./index";
 import dayjs, { Dayjs, UnitType } from "dayjs";
 import { EventBindingThis } from "./event";
 import { HeaderRender } from "./render/headerRender";
@@ -11,14 +11,15 @@ export class Render extends EventBindingThis {
 	ticks: TicksRender
 	rows: RowsRender
 	events: EventsRender
+	maker: MakerRender
 	constructor(public gantt: Gantt) {
 		super()
 		this.header = new HeaderRender(this.gantt, this)
 		this.ticks = new TicksRender(this.gantt, this)
 		this.rows = new RowsRender(this.gantt, this)
 		this.events = new EventsRender(this.gantt, this)
+		this.maker = new MakerRender(this.gantt, this)
 		this.render()
-
 
 		this.gantt.view.scrollToEarliestItem({
 			behavior: 'instant',
@@ -39,6 +40,7 @@ export class Render extends EventBindingThis {
 		this.ticks.destroy()
 		this.rows.destroy()
 		this.events.destroy()
+		this.maker.destroy()
 	}
 
 
@@ -78,6 +80,7 @@ export class Render extends EventBindingThis {
 		this.rows.render()
 		this.events.render()
 		this.header.render()
+		this.maker.render()
 
 		const svg = this.gantt.body.querySelector('svg')
 		if (svg !== this.gantt.stage.node) {

@@ -1,9 +1,14 @@
 import { G, Rect, Text } from "@svgdotjs/svg.js";
-import Gantt, { GanttMode } from "../index";
+import Gantt, { GanttMode, getCssVars, getScrollBarCssVar } from "../index";
 import { PartRender } from "./index";
 import { Render } from "../render";
 import { CssNameKey } from "../const/const";
 import { Dayjs } from "dayjs";
+
+export type TickItemOptions = {
+	fill?: string
+	width?: number
+}
 
 export class TicksRender extends PartRender {
 	g: G | null = null
@@ -13,7 +18,17 @@ export class TicksRender extends PartRender {
 	}
 
 
-	renderTickItem(tickTime: Dayjs, index: number, source: 'header' | 'ticks' = 'header', idPrefix = `time-tick-id-`, preTickId = '', g?: G, textG?: G) {
+	renderTickItem(options: {
+		tickTime: Dayjs,
+		index?: number,
+		source?: 'header' | 'ticks' | 'maker',
+		idPrefix?: string,
+		preTickId?: string,
+		g?: G,
+		textG?: G
+		tickItemOptions?: TickItemOptions
+	}) {
+		let { tickTime, index = 0, source = 'header', idPrefix = 'time-tick-id-', preTickId = '', g, textG, tickItemOptions = {} } = options
 		if (!g) {
 			g = this.g!
 		}
@@ -24,9 +39,18 @@ export class TicksRender extends PartRender {
 		const x = this.gantt.time.time2x(tickTime)
 		const y = this.gantt.options.header.height
 		const idClassName = `${idPrefix}-${index}`
-		const rect = g.find(`.${idClassName}.${CssNameKey.tick_item}`)[0] || new Rect().addClass(CssNameKey.tick_item).addClass(idClassName)
+		const rect = g.find(`.${idClassName}.${CssNameKey.tick_item}`)[0] || new Rect().addClass(CssNameKey.tick_item).addClass(idClassName).addClass(CssNameKey.tick_item + `-${source}`)
 
-		rect.size(0.2, this.gantt.stage.height()).move(x, y)
+		const [width] = getCssVars([source === 'maker' ? '--gantt-tick-maker-width' : '--gantt-tick-width'])
+		rect.size(Number(width), this.gantt.stage.height()).move(x, y)
+
+		const { fill = null, width: tickWidth = null } = tickItemOptions
+		if (fill !== null) {
+			rect.attr('style', `fill:${fill}`)
+		}
+		if (tickWidth !== null) {
+			rect.width(tickWidth)
+		}
 
 		//TODO(hxdyj): 确定逻辑
 		if (index === 0) { //|| index === this.gantt.time.ticks
@@ -79,14 +103,22 @@ export class TicksRender extends PartRender {
 
 	render() {
 		const g = (this.gantt.stage.find(`.${CssNameKey.ticks}`)[0] || new G().addClass(CssNameKey.ticks)) as G
-		const gText = (this.gantt.stage.find(`.${CssNameKey.ticks_text_group}`)[0] || new G().addClass(CssNameKey.ticks_text_group)) as G
+		const gText = (this.gantt.stage.find(`.${CssNameKey.ticks_header_group}`)[0] || new G().addClass(CssNameKey.ticks_header_group)) as G
 		this.gText = gText
 		this.g = g
 		const ticksIterator = this.gantt.time.getTicksIterator()
 		let preTickId = ''
 		for (const tickItem of ticksIterator) {
 			const { tickTime, index } = tickItem
-			const { idClassName, text, rect } = this.renderTickItem(tickTime, index, 'ticks', `tick-id-`, preTickId, g, gText)
+			const { idClassName, text, rect } = this.renderTickItem({
+				tickTime,
+				index,
+				source: 'ticks',
+				idPrefix: `tick-id-`,
+				preTickId,
+				g,
+				textG: gText
+			})
 			if (!this.gantt.options.view.showTicks) {
 				rect?.hide()
 			}

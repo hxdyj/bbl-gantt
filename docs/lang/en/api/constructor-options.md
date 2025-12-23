@@ -84,6 +84,7 @@ export type GanttOptions = {
 		hoverEventShowTimeRange?: boolean // whether to show the event time range when hovering over the event
 	}
 	data?: GanttItem[] // data
+	makerData?: GanttMakerItem[] // marker data for marking specific time points on the Gantt chart
 }
 
 export type Column = {
@@ -182,5 +183,17 @@ export type TickTextAlignFunc = (args: {
 export enum EventShapeType {
 	rect = 'rect',
 	line = 'line',
+}
+
+export type GanttMakerItem = {
+	id: string
+	time: GanttEventItemTime // time point to mark
+	svg: string // SVG string for displaying the marker icon
+	options?: {
+		tick?: {
+			fill?: string // tick line color
+			width?: number // tick line width
+		}
+	}
 }
 ```

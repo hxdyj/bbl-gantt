@@ -7,6 +7,9 @@ export class CssNameKey {
 
 	static svg = 'bbl-gantt-svg'
 
+
+	static maker_item = 'maker-item'
+
 	static v_scroll_mask = 'bbl-gantt-v-scroll-mask'
 
 	static time_range = 'time-range'
@@ -19,6 +22,9 @@ export class CssNameKey {
 
 	static header = 'header'
 	static header_bg = 'header-bg'
+
+	static time_ticks_header_group = 'time-ticks-header-group'
+
 	static header_time_tick_item = 'time-tick-item'
 	static header_tick_text_time_tick_item = 'tick_text_time-tick-item'
 
@@ -31,7 +37,7 @@ export class CssNameKey {
 	static row_item = 'row-item'
 
 	static ticks = 'ticks'
-	static ticks_text_group = 'ticks-text-group'
+	static ticks_header_group = 'ticks-header-group'
 	static tick_item = 'tick-item'
 
 	static events = 'events'

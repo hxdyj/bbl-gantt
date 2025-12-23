@@ -3,6 +3,7 @@ export declare class CssNameKey {
     static duration_mode: string;
     static body: string;
     static svg: string;
+    static maker_item: string;
     static v_scroll_mask: string;
     static time_range: string;
     static time_range_text: string;
@@ -12,6 +13,7 @@ export declare class CssNameKey {
     static current_time_text: string;
     static header: string;
     static header_bg: string;
+    static time_ticks_header_group: string;
     static header_time_tick_item: string;
     static header_tick_text_time_tick_item: string;
     static header_time_tick_text: string;
@@ -20,7 +22,7 @@ export declare class CssNameKey {
     static row_line: string;
     static row_item: string;
     static ticks: string;
-    static ticks_text_group: string;
+    static ticks_header_group: string;
     static tick_item: string;
     static events: string;
     static event_anchor: string;
