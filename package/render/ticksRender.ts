@@ -133,6 +133,8 @@ export class TicksRender extends PartRender {
 			}
 
 		}
+
+		this.renderer?.maker?.render({ parts: ['tick'] })
 		if (!this.gantt.stage.has(g)) g.addTo(this.gantt.stage)
 	}
 
