@@ -9,5 +9,13 @@ export class PartRender<RenderOptions = any> extends EventBindingThis {
 	render(options?: RenderOptions) { }
 	bindEvent() { }
 	unbindEvent() { }
-	destroy() { }
+	/**
+	 * Clear all rendered content without destroying the renderer.
+	 * Subclasses should override this to clear their specific SVG groups.
+	 */
+	clear() { }
+	destroy() {
+		this.clear()
+		this.unbindEvent()
+	}
 }

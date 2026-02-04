@@ -7,6 +7,32 @@ footer: false
 
 Gantt 实例可以监听的事件
 
+### 类型安全的事件处理
+
+事件名称通过 `EventBusEventName` 常量对象进行类型检查。这提供了自动补全和编译时验证：
+
+```ts
+import Gantt, { EventBusEventName } from 'bbl-gantt'
+
+const gantt = new Gantt({ /* ... */ })
+
+// 推荐：使用 EventBusEventName 获得类型安全
+gantt.on(EventBusEventName.event_item_body_click, (event, eventItem, gantt) => {
+  console.log('事件被点击:', eventItem.name)
+})
+
+// 也支持：字符串事件名（向后兼容）
+gantt.on('event_item_body_click', (event, eventItem, gantt) => {
+  console.log('事件被点击:', eventItem.name)
+})
+```
+
+你也可以导入事件名称的类型：
+
+```ts
+import { EventBusEventNameType } from 'bbl-gantt'
+```
+
 ### init
 
 ```ts

@@ -7,6 +7,32 @@ footer: false
 
 Gantt instance can listen to events.
 
+### Type-Safe Event Handling
+
+Event names are type-checked via the `EventBusEventName` constant object. This provides autocomplete and compile-time validation:
+
+```ts
+import Gantt, { EventBusEventName } from 'bbl-gantt'
+
+const gantt = new Gantt({ /* ... */ })
+
+// Recommended: Use EventBusEventName for type safety
+gantt.on(EventBusEventName.event_item_body_click, (event, eventItem, gantt) => {
+  console.log('Event clicked:', eventItem.name)
+})
+
+// Also supported: String event names (for backward compatibility)
+gantt.on('event_item_body_click', (event, eventItem, gantt) => {
+  console.log('Event clicked:', eventItem.name)
+})
+```
+
+You can also import the type for event names:
+
+```ts
+import { EventBusEventNameType } from 'bbl-gantt'
+```
+
 ### init
 
 ```ts

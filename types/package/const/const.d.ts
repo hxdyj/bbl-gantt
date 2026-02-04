@@ -27,9 +27,9 @@ export declare class CssNameKey {
     static events: string;
     static event_anchor: string;
     static event_body: string;
-    static event_reisze: string;
-    static event_left_reisze: string;
-    static event_right_reisze: string;
+    static event_resize: string;
+    static event_left_resize: string;
+    static event_right_resize: string;
     static event_move_rect: string;
     static event_style_rect: string;
     static event_style_rect_bar: string;

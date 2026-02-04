@@ -30,6 +30,11 @@ export declare abstract class EventItemRender extends EventBindingThis {
     renderViewAnchor(parent: Element, event: _GanttEventItem, index: number): void;
     render(): void;
     abstract renderItem(): void;
+    /**
+     * Create a clone of this renderer with overridden options.
+     * Used for creating temporary items during drag/resize operations.
+     */
+    abstract clone(options: RenderItemOptions): EventItemRender;
     destroy(): void;
 }
 export declare function getStartAndEndTime(event: _GanttEventItem): {

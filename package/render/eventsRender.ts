@@ -305,12 +305,10 @@ export class EventsRender extends PartRender {
 	private createTmpItem() {
 		if (!this.itemRender) return
 		if (!this.tmpItem) {
-			//@ts-ignore
-			const cls = this.itemRender.__proto__.constructor
 			const options = cloneDeep(this.itemRender.options)
 			options.event.id = `tmp-${options.event.id}`
 			options.bindEvent = false
-			this.tmpItem = new cls(this.gantt, this.renderer, options)
+			this.tmpItem = this.itemRender.clone(options)
 		}
 	}
 

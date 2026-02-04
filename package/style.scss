@@ -173,12 +173,12 @@
 				}
 
 				&.no-resize {
-					.event_reisze {
+					.event_resize {
 						cursor: auto;
 					}
 				}
 
-				.event_reisze {
+				.event_resize {
 					fill: var(--gantt-event-item-resize-color);
 					stroke: var(--gantt-event-item-resize-stroke-color);
 					stroke-width: var(--gantt-event-item-resize-stroke-width);

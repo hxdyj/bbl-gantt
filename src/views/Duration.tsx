@@ -1,7 +1,7 @@
 import { Button, Input, InputNumber, Select, Space } from "@arco-design/web-react"
 import { useEffect, useRef, useState } from "react"
 import { OperateGroup } from "../components/OperateGroup"
-import Gantt, { GanttItem, GanttMode, GanttOptions, TimeMetric } from "#/index"
+import Gantt, { EventBusEventName, GanttItem, GanttMode, GanttOptions, TimeMetric } from "#/index"
 import { ganttData } from "../data/ganttData-duration-test"
 import { uid } from "uid"
 import { walkData } from "#/utils/data"
@@ -52,22 +52,22 @@ export function Duration() {
 				enableMoveOrResizeOutOfEdge: false
 			},
 
-		}).on('container_scroll', (e: any) => {
+		}).on(EventBusEventName.container_scroll, (e: any) => {
 			// console.log('on container_scroll', e)
-		}).on('init', (list: any) => {
+		}).on(EventBusEventName.init, (list: any) => {
 			console.log('on init', list)
 		})
 			//@ts-ignore
-			.on('event_item_body_context_menu', (e, item) => {
+			.on(EventBusEventName.event_item_body_context_menu, (e, item) => {
 				console.log('event_item_body_context_menu', e, item)
 				gantt.current?.render.events.deleteEvent(item)
 			})
 			//@ts-ignore
-			.on('event_item_body_click', (e, item, gantt) => {
+			.on(EventBusEventName.event_item_body_click, (e, item, gantt) => {
 				console.log('event_item_body_click', e, item, gantt)
 			})
 			//@ts-ignore
-			.on('row_click', (e, item, gantt: Gantt) => {
+			.on(EventBusEventName.row_click, (e, item, gantt: Gantt) => {
 				console.log('row_click', e, item, gantt)
 				item.row.bg = '#23C343'
 				const preClickRow = gantt.render.rows.lastClickRow

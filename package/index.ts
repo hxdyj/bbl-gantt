@@ -294,13 +294,10 @@ export type GanttEventItem = {
 	textColor?: string
 	[key: string]: any
 }
+
 export type _GanttEventItem = Omit<GanttEventItem, 'start' | 'end'> & {
 	start: Dayjs
 	end: Dayjs
-}
-
-export type _GanttItem = Omit<GanttItem, 'events'> & {
-	events: _GanttEventItem[]
 }
 
 export type GanttItem = {
@@ -310,6 +307,11 @@ export type GanttItem = {
 	children?: GanttItem[]
 	bg?: string
 	[key: string]: any
+}
+
+export type _GanttItem = Omit<GanttItem, 'events' | 'children'> & {
+	events: _GanttEventItem[]
+	children?: _GanttItem[]
 }
 
 

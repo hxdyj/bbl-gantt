@@ -181,8 +181,8 @@ export abstract class EventItemRender extends EventBindingThis {
 			let rightResize: Rect | null = null
 
 			if (this.gantt.options.action.enableEventResize) {
-				leftResize = (this.g.find(`.${CssNameKey.event_left_reisze}`)[0] || new Rect().addClass(CssNameKey.event_left_reisze).addClass(CssNameKey.event_reisze)) as Rect
-				rightResize = (this.g.find(`.${CssNameKey.event_right_reisze}`)[0] || new Rect().addClass(CssNameKey.event_right_reisze).addClass(CssNameKey.event_reisze)) as Rect
+				leftResize = (this.g.find(`.${CssNameKey.event_left_resize}`)[0] || new Rect().addClass(CssNameKey.event_left_resize).addClass(CssNameKey.event_resize)) as Rect
+				rightResize = (this.g.find(`.${CssNameKey.event_right_resize}`)[0] || new Rect().addClass(CssNameKey.event_right_resize).addClass(CssNameKey.event_resize)) as Rect
 				const resizeWidth = 8
 				const resizeHeight = height / 3
 				const resizeY = y + (height - resizeHeight) / 2
@@ -212,6 +212,12 @@ export abstract class EventItemRender extends EventBindingThis {
 	}
 
 	abstract renderItem(): void
+
+	/**
+	 * Create a clone of this renderer with overridden options.
+	 * Used for creating temporary items during drag/resize operations.
+	 */
+	abstract clone(options: RenderItemOptions): EventItemRender
 
 	destroy() {
 		this.unbindEvent()

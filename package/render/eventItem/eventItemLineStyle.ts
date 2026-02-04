@@ -1,11 +1,16 @@
 import { CssNameKey } from "../../const/const";
 import { Circle, Rect, SVG } from "@svgdotjs/svg.js";
 import { EventItemRender, getStartAndEndTime } from "./eventItemRender";
+import { RenderItemOptions } from "../eventsRender";
 
 
 
 
 export class EventItemLineStyle extends EventItemRender {
+	clone(options: RenderItemOptions): EventItemLineStyle {
+		return new EventItemLineStyle(this.gantt, this.renderer, options)
+	}
+
 	renderItem(): void {
 		const { event, index } = this.options
 		const { start, end } = getStartAndEndTime(event)
