@@ -9,6 +9,8 @@ footer: false
 
 ```shell
 npm i bbl-gantt
+# Install the @svgdotjs/svg.js library, which is a dependency of mark-img
+npm install @svgdotjs/svg.js
 ```
 
 ## Usage
@@ -22,6 +24,8 @@ npm i bbl-gantt
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Umd Test</title>
+		<!-- import style -->
+		<!-- [!code highlight] -->
 		<link rel="stylesheet" href="../dist/style.css" />
 		<style>
 			html,
@@ -34,6 +38,10 @@ npm i bbl-gantt
 
 	<body>
 		<div id="container" style="width: 100vw;height: 100vh;"></div>
+		<!-- import @svgdotjs/svg.js library -->
+		<!-- [!code highlight] -->
+		<script src="https://cdn.jsdelivr.net/npm/@svgdotjs/svg.js@latest/dist/svg.min.js"></script>
+		<!-- import mark-img library -->
 		<script src="../dist/index.umd.js"></script>
 		<script>
 			const Gantt = window['bbl-gantt'].Gantt
@@ -73,61 +81,40 @@ npm i bbl-gantt
 
 ### ES
 
-```html
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Esm Test</title>
-		<link rel="stylesheet" href="../dist/style.css" />
-		<style>
-			html,
-			body {
-				padding: 0;
-				margin: 0;
-			}
-		</style>
-	</head>
+```tsx
+import Gantt from 'bbl-gantt'
+// import style
+import 'bbl-gantt/dist/style.css' // [!code highlight]
 
-	<body>
-		<div id="container" style="width: 100vw;height: 100vh;"></div>
-		<script type="module">
-			// import Gantt from 'bbl-gantt'
-			import Gantt from '../dist/index.es.js'
-
-			const gantt = new Gantt({
-				el: '#container',
-				data: [
-					{
-						name: '1',
-						bg: '#23C343',
-						events: [
-							{
-								name: '1-event-1',
-								start: '2022-01-01 09:00:00',
-								end: '2022-01-01 09:10:00',
-								color: 'yellow',
-								textColor: 'yellow',
-							},
-							{
-								name: '1-event-1',
-								start: '2022-01-01 09:10:10',
-								end: '2022-01-01 09:20:00',
-							},
-						],
-					},
-				],
-				column: {
-					width: 10,
-					timeMetric: 18000,
+const gantt = new Gantt({
+	el: '#container',
+	data: [
+		{
+			name: '1',
+			bg: '#23C343',
+			events: [
+				{
+					name: '1-event-1',
+					start: '2022-01-01 09:00:00',
+					end: '2022-01-01 09:10:00',
+					color: 'yellow',
+					textColor: 'yellow',
 				},
-			}).on('init', () => {
-				console.log('init')
-			})
-		</script>
-	</body>
-</html>
+				{
+					name: '1-event-1',
+					start: '2022-01-01 09:10:10',
+					end: '2022-01-01 09:20:00',
+				},
+			],
+		},
+	],
+	column: {
+		width: 10,
+		timeMetric: 18000,
+	},
+}).on('init', () => {
+	console.log('init')
+})
 ```
 
 ## gantt chart components

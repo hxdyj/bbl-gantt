@@ -14,6 +14,14 @@ export default defineConfig({
 			fileName: format => `index.${format}.js`,
 			cssFileName: 'style'
 		},
+		rollupOptions: {
+			external: ['@svgdotjs/svg.js'],
+			output: {
+				globals: {
+					'@svgdotjs/svg.js': 'SVG'
+				}
+			}
+		},
 		// rollupOptions: {
 		// 	external: (id) => {
 		// 		return Object.keys(pkg.dependencies).includes(id); // ESM 格式下设置外部依赖
